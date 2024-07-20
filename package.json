@@ -1,0 +1,16 @@
+{
+  "name": "sortech-ncbr",
+  "version": "1.0.0",
+  "description": "Reaserch project created for NCBR. The aim of the project is to create a smart data solution for an emergency response hospital (SOR)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
