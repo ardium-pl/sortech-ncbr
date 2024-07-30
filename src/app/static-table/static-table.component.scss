@@ -1,15 +1,29 @@
 :host {
-    flex: 1;
-    
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  // background-color: green;
 }
 
 ag-grid-angular {
   height: var(--grid-height);
   width: var(--grid-width);
 
-//   margin-top: var(--grid-ofset);
+  margin-top: var(--grid-ofset);
 }
+
+// .ag-theme-quartz {
+//     --ag-foreground-color: rgb(126, 46, 132);
+//     --ag-background-color: rgb(249, 245, 227);
+//     --ag-header-foreground-color: rgb(204, 245, 172);
+//     --ag-header-background-color: rgb(209, 64, 129);
+//     --ag-odd-row-background-color: rgb(0, 0, 0, 0.03);
+//     --ag-header-column-resize-handle-color: rgb(126, 46, 132);
+
+//     --ag-font-size: 17px;
+//     --ag-font-family: monospace;
+// }

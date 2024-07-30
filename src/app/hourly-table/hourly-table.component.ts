@@ -20,114 +20,114 @@ import 'ag-grid-community/styles/ag-theme-quartz.css';
   styleUrl: './hourly-table.component.scss',
 })
 export class HourlyTableComponent {
-  readonly AUTO_SIZE_STRATEGY: SizeColumnsToFitGridStrategy = {
-    type: 'fitGridWidth',
-    defaultMinWidth: 100,
-  };
   readonly HEADER_HEIGHT = 70;
   readonly GROUP_HEADER_HEIGHT = 70;
 
   defaultColDef: ColDef = {
-    headerClass: 'grid-header-inner',
+    headerClass: 'grid-header grid-header-outer',
+    wrapHeaderText: true,
+    // autoHeaderHeight: true,
     sortable: false,
     resizable: true,
+    minWidth: 120,
+    flex: 1,
   };
 
   columnDefs: (ColDef | ColGroupDef)[] = [
     {
       headerName: 'Godzina',
       field: 'godzina',
-      headerClass: 'grid-header-outer',
+      headerClass: 'grid-header grid-header-outer',
     },
     {
       headerName: 'Oczek. l. wizyt',
       field: 'oczekiwaneWizyty',
-      headerClass: 'grid-header-outer',
+      headerClass: 'grid-header grid-header-outer',
     },
     {
       headerName: 'Pielęgniarki',
-      headerClass: 'grid-header-outer',
+      headerClass: 'grid-header grid-header-outer',
       children: [
         {
           headerName: 'Liczba Pielęgn.',
           field: 'liczbaPielegniarek',
-          headerClass: 'grid-header-mid',
+          headerClass: 'grid-header grid-header-mid',
         },
         {
           headerName: 'Wydajność l. pacj.',
           field: 'wydajnoscPielegniarek',
-          headerClass: 'grid-header-mid',
+          headerClass: 'grid-header grid-header-mid',
         },
       ],
     },
     {
       headerName: 'Lekarze',
-      headerClass: 'grid-header-outer',
+      headerClass: 'grid-header grid-header-outer',
       children: [
         {
           headerName: 'Liczba Lekarze',
           field: 'liczbaLekarzy',
-          headerClass: 'grid-header-mid',
+          headerClass: 'grid-header grid-header-mid',
         },
         {
           headerName: 'Wyd. l. pacj.',
           field: 'wydajnoscLekarzy',
-          headerClass: 'grid-header-mid',
+          headerClass: 'grid-header grid-header-mid',
         },
       ],
     },
     {
       headerName: 'Łóżka',
-      headerClass: 'grid-header-outer',
+      headerClass: 'grid-header grid-header-outer',
       children: [
         {
           headerName: 'Liczba Łóżka',
           field: 'liczbaLozek',
-          headerClass: 'grid-header-mid',
+          headerClass: 'grid-header grid-header-mid',
         },
         {
           headerName: 'Wyd. l. pacj.',
           field: 'wydajnoscLozek',
-          headerClass: 'grid-header-mid',
+          headerClass: 'grid-header grid-header-mid',
         },
       ],
     },
     {
       headerName: 'Łóżka obserw.',
-      headerClass: 'grid-header-outer',
+      headerClass: 'grid-header grid-header-outer',
       children: [
         {
           headerName: 'Liczba łóżek',
           field: 'liczbaLozekObserw',
-          headerClass: 'grid-header-mid',
+          headerClass: 'grid-header grid-header-mid',
         },
         {
           headerName: 'Wyd. l. pacj.',
           field: 'wydajnoscLozekObserw',
-          headerClass: 'grid-header-mid',
+          headerClass: 'grid-header grid-header-mid',
         },
       ],
     },
     {
       headerName: 'Wąskie gardło procesu',
-      headerClass: 'grid-header-outer',
+      headerClass: 'grid-header grid-header-outer',
       children: [
         {
           headerName: 'Zasób',
           field: 'zasob',
-          headerClass: 'grid-header-mid',
+          headerClass: 'grid-header grid-header-mid',
         },
         {
           headerName: 'Wyd. l. pacj.',
           field: 'wydajnoscWaska',
-          headerClass: 'grid-header-mid',
+          headerClass: 'grid-header grid-header-mid',
         },
       ],
     },
     {
       headerName: 'Możliwość pokrycia zapotrz. okresu',
       field: 'mozliwoscPokrycia',
-      headerClass: 'grid-header-outer',
+      headerClass: 'grid-header grid-header-outer',
     },
   ];
 

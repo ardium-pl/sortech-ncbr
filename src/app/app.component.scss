@@ -1,28 +1,24 @@
 :host {
     height: 100%;
     width: 100%;
-    box-sizing: border-box;
 
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.navigation {
-    height: 10vh;
-
-    display: flex;    
-}
-
-.content {
-    flex: 1;
+// .content {
+//     flex: 1;
     
-    display: flex;
+//     display: flex;
 
-    background-color: var(--grey);
-}
+//     background-color: var(--grey);
+// }
 
-.footer {
-    height: 8vh;
+.mat-tabs-container {
+    height: 86%;
+    width: 86%;
 
-    display: flex;
+    // background-color: var(--test);
 }

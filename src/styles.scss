@@ -1,6 +1,6 @@
 :root {
-  --grid-ofset: 25px;
-  --grid-height: 90%;
+  --grid-ofset: 30px;
+  --grid-height: 75vh;
   --grid-width: 90%;
 
   /* Color palette: */
@@ -8,12 +8,14 @@
   --navy: #14274e;
   --faded-blue: #394867;
   --grey: #9ba4b4;
-  --background: #c5dcf0;
+  --background: rgb(245, 250, 255);
 
   --header-inner: #f8ede3;
   --header-mid: #dfd3c3;
   --header-sub-mid: #d0b8a8;
   --header-outer: #e3a598;
+
+  --test: rgb(95, 142, 199);
 }
 
 html,
@@ -24,46 +26,62 @@ body {
   background-color: var(--background);
 }
 
-.grid-header-inner {
+// AG Grid global theme styling
+// .ag-theme-quartz {
+//     --ag-foreground-color: rgb(126, 46, 132);
+//     --ag-background-color: rgb(249, 245, 227);
+//     --ag-header-foreground-color: rgb(204, 245, 172);
+//     --ag-header-background-color: rgb(209, 64, 129);
+//     --ag-odd-row-background-color: rgb(0, 0, 0, 0.03);
+//     --ag-header-column-resize-handle-color: rgb(126, 46, 132);
+
+//     --ag-font-size: 17px;
+//     --ag-font-family: monospace;
+// }
+
+
+// AG Grid headers styling
+
+// Centering grid headers text
+.grid-header {
+  font-family: cursive;
+  // font-weight: bold;
+  font-size: 15px;
+  color: black;
   text-align: center;
   white-space: normal;
 
   display: flex;
   justify-content: center;
   align-items: center;
+}
 
+.ag-header-cell-label {
+  display: flex;
+  justify-content: center;
+}
+
+
+// Wrap group column headers' text manually (no auto height)
+.grid-header .ag-header-group-text {
+  white-space: normal;
+}
+
+// Setting header background colors
+.grid-header-inner {
   background-color: var(--header-inner);
 }
 
-.grid-header-sub-mid {
-  text-align: center;
-  white-space: normal;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background-color: var(--header-sub-mid);
-}
+// .grid-header-sub-mid {
+//   background-color: var(--header-sub-mid);
+// }
 
 .grid-header-mid {
-  text-align: center;
-  white-space: normal;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
   background-color: var(--header-mid);
 }
 
 .grid-header-outer {
-  text-align: center;
-  white-space: normal;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
   background-color: var(--header-outer);
 }
+
+

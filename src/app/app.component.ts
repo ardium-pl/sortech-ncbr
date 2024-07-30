@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { FooterComponent } from './footer/footer.component';
-import { HomeComponent } from './home/home.component';
-import { NavbarComponent } from './navbar/navbar.component';
+import { MatTabsModule } from '@angular/material/tabs';
+// import { HomeComponent } from './home/home.component';
 import { StaticTableComponent } from './static-table/static-table.component';
+import { HourlyTableComponent } from './hourly-table/hourly-table.component';
+import { LengthOfStayComponent } from './length-of-stay/length-of-stay.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, StaticTableComponent, HomeComponent, FooterComponent],
+  imports: [RouterOutlet, MatTabsModule, StaticTableComponent, HourlyTableComponent, LengthOfStayComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

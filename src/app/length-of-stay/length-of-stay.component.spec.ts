@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FooterComponent } from './footer.component';
+import { LengthOfStayComponent } from './length-of-stay.component';
 
-describe('FooterComponent', () => {
-  let component: FooterComponent;
-  let fixture: ComponentFixture<FooterComponent>;
+describe('LengthOfStayComponent', () => {
+  let component: LengthOfStayComponent;
+  let fixture: ComponentFixture<LengthOfStayComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FooterComponent]
+      imports: [LengthOfStayComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(FooterComponent);
+    fixture = TestBed.createComponent(LengthOfStayComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

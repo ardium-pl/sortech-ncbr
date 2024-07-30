@@ -20,88 +20,118 @@ import 'ag-grid-community/styles/ag-theme-quartz.css';
   styleUrl: './static-table.component.scss',
 })
 export class StaticTableComponent {
-  readonly AUTO_SIZE_STRATEGY: SizeColumnsToFitGridStrategy = {
-    type: 'fitGridWidth',
-    defaultMinWidth: 100,
-  };
   readonly HEADER_HEIGHT = 70;
   readonly GROUP_HEADER_HEIGHT = 70;
 
   defaultColDef: ColDef = {
-    // wrapHeaderText: true,
+    headerClass: 'grid-header grid-header-outer',
+    wrapHeaderText: true,
     // autoHeaderHeight: true,
-    headerClass: 'grid-header-inner',
     sortable: false,
     resizable: true,
+    minWidth: 120,
+    flex: 1,
   };
 
   columnDefs: (ColDef | ColGroupDef)[] = [
     {
       headerName: 'Typ pacjenta',
-      headerClass: 'grid-header-outer',
       field: 'typPacjenta',
+      headerClass: 'grid-header grid-header-outer',
     },
     {
       headerName: 'Proc. pacjentów',
-      headerClass: 'grid-header-outer',
       field: 'procPacjentow',
-      width: 130,
+      headerClass: 'grid-header grid-header-outer',
     },
     {
       headerName: 'Zasoby',
-      headerClass: 'grid-header-outer',
+      headerClass: 'grid-header grid-header-outer',
       children: [
         {
           headerName: 'Triage',
-          headerClass: 'grid-header-mid',
-          children: [{ headerName: 'min', field: 'triageMin', width: 100 }],
+          headerClass: 'grid-header grid-header-mid',
+          children: [
+            {
+              headerName: 'min',
+              field: 'triageMin',
+              headerClass: 'grid-header grid-header-inner',
+            },
+          ],
         },
         {
           headerName: 'Łóżko',
-          headerClass: 'grid-header-mid',
-          children: [{ headerName: 'godz.', field: 'lozkoGodz', width: 100 }],
+          headerClass: 'grid-header grid-header-mid',
+          // wrapHeaderText: false,
+          // autoHeaderHeight: true,
+          children: [
+            {
+              headerName: 'godz.',
+              // wrapHeaderText: false,
+              // autoHeaderHeight: true,
+              field: 'lozkoGodz',
+              headerClass: 'grid-header grid-header-inner',
+            },
+          ],
         },
         {
           headerName: 'Lekarz',
-          headerClass: 'grid-header-mid',
-          children: [{ headerName: 'min', field: 'triageMin', width: 100 }],
+          headerClass: 'grid-header grid-header-mid',
+          children: [
+            {
+              headerName: 'min',
+              field: 'triageMin',
+              headerClass: 'grid-header grid-header-inner',
+            },
+          ],
         },
         {
           headerName: 'Pielęgn.',
-          headerClass: 'grid-header-mid',
-          children: [{ headerName: 'min', field: 'triageMin', width: 100 }],
+          headerClass: 'grid-header grid-header-mid',
+          children: [
+            {
+              headerName: 'min',
+              field: 'triageMin',
+              headerClass: 'grid-header grid-header-inner',
+            },
+          ],
         },
         {
           headerName: 'Łóżko obserw.',
-          headerClass: 'grid-header-mid',
-          children: [{ headerName: 'godz.', field: 'lozkoGodz', width: 100 }],
+          headerClass: 'grid-header grid-header-mid',
+          children: [
+            {
+              headerName: 'godz.',
+              field: 'lozkoGodz',
+              headerClass: 'grid-header grid-header-inner',
+            },
+          ],
         },
       ],
     },
     {
       headerName: 'Ograniczenia przyjęć',
-      headerClass: 'grid-header-outer',
+      headerClass: 'grid-header grid-header-outer',
       children: [
         {
           headerName: 'Łóżko oczek. na przyj. do szpit.',
-          headerClass: 'grid-header-mid',
+          headerClass: 'grid-header grid-header-mid',
           children: [
             {
               headerName: 'godz.',
-              headerClass: 'grid-header-inner',
               field: 'lozkoOczekGodz',
-              width: 100,
+              headerClass: 'grid-header grid-header-inner',
             },
           ],
         },
         {
           headerName: 'Wydajność przyjmowania',
-          headerClass: 'grid-header-mid',
+          headerClass: 'grid-header grid-header-mid',
           children: [
             {
               headerName: 'pacj./godz.',
               field: 'wydajnoscPrzyjmowania',
-              width: 100,
+              headerClass: 'grid-header grid-header-inner',
             },
           ],
         },
