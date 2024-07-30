@@ -20,10 +20,12 @@ import 'ag-grid-community/styles/ag-theme-quartz.css';
   styleUrl: './static-table.component.scss',
 })
 export class StaticTableComponent {
-  autoSizeStrategy: SizeColumnsToFitGridStrategy = {
+  readonly AUTO_SIZE_STRATEGY: SizeColumnsToFitGridStrategy = {
     type: 'fitGridWidth',
     defaultMinWidth: 100,
   };
+  readonly HEADER_HEIGHT = 70;
+  readonly GROUP_HEADER_HEIGHT = 70;
 
   defaultColDef: ColDef = {
     // wrapHeaderText: true,
@@ -33,16 +35,15 @@ export class StaticTableComponent {
     resizable: true,
   };
 
-  headerHeight = 120;
-  groupHeaderHeight = 120;
-
   columnDefs: (ColDef | ColGroupDef)[] = [
     {
       headerName: 'Typ pacjenta',
+      headerClass: 'grid-header-outer',
       field: 'typPacjenta',
     },
     {
       headerName: 'Proc. pacjentów',
+      headerClass: 'grid-header-outer',
       field: 'procPacjentow',
       width: 130,
     },
