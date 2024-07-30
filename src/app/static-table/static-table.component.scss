@@ -1,0 +1,15 @@
+:host {
+    flex: 1;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+ag-grid-angular {
+  height: var(--grid-height);
+  width: var(--grid-width);
+
+//   margin-top: var(--grid-ofset);
+}
