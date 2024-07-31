@@ -11,6 +11,7 @@ import {
 } from 'ag-grid-community'; // Column Definition Type Interface
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 @Component({
   selector: 'app-static-table',
