@@ -24,6 +24,6 @@ ag-grid-angular {
     --ag-odd-row-background-color: rgb(211, 211, 211);
     // --ag-header-column-resize-handle-color: rgb(126, 46, 132);
 
-    --ag-font-size: 16px;
+    --ag-font-size: var(--row-font-size);
     --ag-font-family: monospace;
 }

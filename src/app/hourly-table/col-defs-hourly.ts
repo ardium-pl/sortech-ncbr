@@ -1,15 +1,21 @@
 import { ColDef, ColGroupDef } from 'ag-grid-community';
 
+const DECIMAL_PLACES = 100; // 10 for 1, 100 for 2, 1000 for 3 ...
+
 export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
   {
     headerName: 'Godzina',
     field: 'godzina',
     headerClass: 'grid-header grid-header-outer',
+    cellDataType: 'text',
   },
   {
     headerName: 'Oczek. l. wizyt',
     field: 'oczekiwaneWizyty',
     headerClass: 'grid-header grid-header-outer',
+    valueFormatter: (params: any) => {
+      return `${Math.round(params.value * DECIMAL_PLACES) / DECIMAL_PLACES}`;
+    },
   },
   {
     headerName: 'Pielęgniarki',
@@ -29,8 +35,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
           const styles: any = {};
 
           if (params.data['id'] < 24) {
-            styles.backgroundColor = '#394867';
-            styles.color = 'rgb(211, 211, 211)';
+            styles.backgroundColor = 'var(--editable-cell-background)';
+            styles.color = 'var(--editable-cell-font-color)';
           }
           return styles;
         },
@@ -39,6 +45,20 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Wydajność l. pacj.',
         field: 'wydajnoscPielegniarek',
         headerClass: 'grid-header grid-header-mid',
+        valueFormatter: (params: any) => {
+          return `${
+            Math.round(params.value * DECIMAL_PLACES) / DECIMAL_PLACES
+          }`;
+        },
+        cellStyle: (params) => {
+          const styles: any = {};
+
+          if (params.data['id'] > 23) {
+            styles.backgroundColor = 'var(--summation-cell-background)';
+            styles.color = 'var(--summation-cell-font-color)';
+          }
+          return styles;
+        },
       },
     ],
   },
@@ -60,8 +80,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
           const styles: any = {};
 
           if (params.data['id'] < 24) {
-            styles.backgroundColor = '#394867';
-            styles.color = 'rgb(211, 211, 211)';
+            styles.backgroundColor = 'var(--editable-cell-background)';
+            styles.color = 'var(--editable-cell-font-color)';
           }
           return styles;
         },
@@ -70,6 +90,20 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Wyd. l. pacj.',
         field: 'wydajnoscLekarzy',
         headerClass: 'grid-header grid-header-mid',
+        valueFormatter: (params: any) => {
+          return `${
+            Math.round(params.value * DECIMAL_PLACES) / DECIMAL_PLACES
+          }`;
+        },
+        cellStyle: (params) => {
+          const styles: any = {};
+
+          if (params.data['id'] > 23) {
+            styles.backgroundColor = 'var(--summation-cell-background)';
+            styles.color = 'var(--summation-cell-font-color)';
+          }
+          return styles;
+        },
       },
     ],
   },
@@ -91,8 +125,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
           const styles: any = {};
 
           if (params.data['id'] < 24) {
-            styles.backgroundColor = '#394867';
-            styles.color = 'rgb(211, 211, 211)';
+            styles.backgroundColor = 'var(--editable-cell-background)';
+            styles.color = 'var(--editable-cell-font-color)';
           }
           return styles;
         },
@@ -101,6 +135,20 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Wyd. l. pacj.',
         field: 'wydajnoscLozek',
         headerClass: 'grid-header grid-header-mid',
+        valueFormatter: (params: any) => {
+          return `${
+            Math.round(params.value * DECIMAL_PLACES) / DECIMAL_PLACES
+          }`;
+        },
+        cellStyle: (params) => {
+          const styles: any = {};
+
+          if (params.data['id'] > 23) {
+            styles.backgroundColor = 'var(--summation-cell-background)';
+            styles.color = 'var(--summation-cell-font-color)';
+          }
+          return styles;
+        },
       },
     ],
   },
@@ -122,8 +170,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
           const styles: any = {};
 
           if (params.data['id'] < 24) {
-            styles.backgroundColor = '#394867';
-            styles.color = 'rgb(211, 211, 211)';
+            styles.backgroundColor = 'var(--editable-cell-background)';
+            styles.color = 'var(--editable-cell-font-color)';
           }
           return styles;
         },
@@ -132,6 +180,20 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Wyd. l. pacj.',
         field: 'wydajnoscLozekObserwacja',
         headerClass: 'grid-header grid-header-mid',
+        valueFormatter: (params: any) => {
+          return `${
+            Math.round(params.value * DECIMAL_PLACES) / DECIMAL_PLACES
+          }`;
+        },
+        cellStyle: (params) => {
+          const styles: any = {};
+
+          if (params.data['id'] > 23) {
+            styles.backgroundColor = 'var(--summation-cell-background)';
+            styles.color = 'var(--summation-cell-font-color)';
+          }
+          return styles;
+        },
       },
     ],
   },
@@ -143,11 +205,17 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Zasób',
         field: 'waskiZasob',
         headerClass: 'grid-header grid-header-mid',
+        cellDataType: 'text',
       },
       {
         headerName: 'Wyd. l. pacj.',
         field: 'waskaWydajnosc',
         headerClass: 'grid-header grid-header-mid',
+        valueFormatter: (params: any) => {
+          return `${
+            Math.round(params.value * DECIMAL_PLACES) / DECIMAL_PLACES
+          }`;
+        },
       },
     ],
   },
@@ -155,5 +223,6 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     headerName: 'Możliwość pokrycia zapotrz. okresu',
     field: 'mozliwoscPokryciaZopatrzenia',
     headerClass: 'grid-header grid-header-outer',
+    cellDataType: 'text',
   },
 ];

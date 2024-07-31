@@ -1,11 +1,132 @@
 import { Injectable, signal } from '@angular/core';
+import { CONSTANTS } from './hourly-table/constants';
 import { Hour } from './hour';
 import { Summary } from './summary';
+import { HOME } from '@angular/cdk/keycodes';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HourlyDataService {
+  readonly currentDayOfWeek = 'poniedzialek';
+
+  updateHours(changedHour: Hour) {
+    this.rowData.update((hours) =>
+      hours.map((hour) => (changedHour.id === hour.id ? changedHour : hour))
+    );
+  }
+
+  applyHourCalculations(hourObject: Hour) {
+    const hour = { ...hourObject };
+
+    // Set oczekiwaneWizyty
+    hour.oczekiwaneWizyty =
+      7 *
+      CONSTANTS.pacjentDzien *
+      CONSTANTS.godzina[hour.godzina] *
+      CONSTANTS.dzien[this.currentDayOfWeek];
+
+    // Set wydajnosci
+    hour.wydajnoscPielegniarek =
+      (hour.liczbaPielegniarek * 60) /
+      CONSTANTS.sredniCzasNaPacjenta['pielegniarka'];
+
+    hour.wydajnoscLekarzy =
+      (hour.liczbaLekarzy * 60) / CONSTANTS.sredniCzasNaPacjenta['lekarz'];
+
+    hour.wydajnoscLozek =
+      hour.liczbaLozek / CONSTANTS.sredniCzasNaPacjenta['lozko'];
+
+    hour.wydajnoscLozekObserwacja =
+      hour.liczbaLozekObserwacja / CONSTANTS.sredniCzasNaPacjenta['obserwacja'];
+
+    // Set waskaWydajnosc
+    hour.waskaWydajnosc = Math.min(
+      hour.wydajnoscPielegniarek,
+      hour.wydajnoscLekarzy,
+      hour.wydajnoscLozek,
+      hour.wydajnoscLozekObserwacja
+    );
+
+    // Set waskiZasob
+    switch (hour.waskaWydajnosc) {
+      case hour.wydajnoscPielegniarek:
+        hour.waskiZasob = 'Pielęgniarki';
+        break;
+      case hour.wydajnoscLekarzy:
+        hour.waskiZasob = 'Lekarze';
+        break;
+      case hour.wydajnoscLozek:
+        hour.waskiZasob = 'Łóżka';
+        break;
+      case hour.wydajnoscLozekObserwacja:
+        hour.waskiZasob = 'Obs. Łóżka';
+        break;
+      default:
+        hour.waskiZasob = 'Demand';
+    }
+
+    // Set mozliwoscPokryciaZopatrzenia
+    hour.mozliwoscPokryciaZopatrzenia =
+      hour.waskaWydajnosc <= hour.oczekiwaneWizyty ? 'Niedobór wydajności' : '';
+
+    // Round numeric properties (exlducing id) to 2 decimal places
+    // for (let key in hour) {
+    //   if (typeof hour[key] === 'number' && key !== 'id') {
+    //     hour[key] = Math.round((hour[key] as number) * 100) / 100;
+    //   }
+    // }
+
+    return hour;
+  }
+
+
+  applySummaryCalcuations() {
+    const summaryRow1 = this.rowData()[24];
+    const summaryRow2 = this.rowData()[25];
+
+    // Oblicz Wyd./dobę
+    summaryRow1.oczekiwaneWizyty! = 0;
+    summaryRow1.wydajnoscPielegniarek = 0;
+    summaryRow1.wydajnoscLekarzy = 0;
+    summaryRow1.wydajnoscLozek = 0;
+    summaryRow1.wydajnoscLozekObserwacja = 0;
+
+    for (const n of Array(24).keys()) {
+      summaryRow1.oczekiwaneWizyty! += this.rowData()[n].oczekiwaneWizyty!;
+      summaryRow1.wydajnoscPielegniarek +=
+        this.rowData()[n].wydajnoscPielegniarek;
+      summaryRow1.wydajnoscLekarzy += this.rowData()[n].wydajnoscLekarzy;
+      summaryRow1.wydajnoscLozek += this.rowData()[n].wydajnoscLozek;
+      summaryRow1.wydajnoscLozekObserwacja +=
+        this.rowData()[n].wydajnoscLozekObserwacja;
+    }
+
+    // Oblicz Śr. zajęt.
+    summaryRow2.wydajnoscPielegniarek =
+      summaryRow1.oczekiwaneWizyty! / summaryRow1.wydajnoscPielegniarek;
+    summaryRow2.wydajnoscLekarzy =
+      summaryRow1.oczekiwaneWizyty! / summaryRow1.wydajnoscLekarzy;
+    summaryRow2.wydajnoscLozek =
+      summaryRow1.oczekiwaneWizyty! / summaryRow1.wydajnoscLozek;
+    summaryRow2.wydajnoscLozekObserwacja =
+      summaryRow1.oczekiwaneWizyty! / summaryRow1.wydajnoscLozekObserwacja;
+
+    // Update main signal
+    this.rowData.update((rows) =>
+      rows.map((row) => {
+        switch (row.id) {
+          case 24:
+            return summaryRow1;
+          case 25:
+            return summaryRow2;
+          default:
+            return row;
+        }
+      })
+    );
+  }
+
   readonly rowData = signal<(Hour | Summary)[]>([
     {
       id: 0,
@@ -395,33 +516,33 @@ export class HourlyDataService {
       id: 24,
       godzina: 'Zapotrz./dobę',
       oczekiwaneWizyty: 161.35,
-      liczbaPielegniarek: 777,
+      liczbaPielegniarek: null,
       wydajnoscPielegniarek: 166.61,
-      liczbaLekarzy: 777,
+      liczbaLekarzy: null,
       wydajnoscLekarzy: 219.84,
-      liczbaLozek: 777,
+      liczbaLozek: null,
       wydajnoscLozek: 292.35,
-      liczbaLozekObserwacja: 777,
+      liczbaLozekObserwacja: null,
       wydajnoscLozekObserwacja: 272.73,
-      waskiZasob: '',
-      waskaWydajnosc: 777,
-      mozliwoscPokryciaZopatrzenia: '',
+      waskiZasob: null,
+      waskaWydajnosc: null,
+      mozliwoscPokryciaZopatrzenia: null,
     } as Summary,
     {
       id: 25,
-      godzina: '',
-      oczekiwaneWizyty: 777,
-      liczbaPielegniarek: 777,
+      godzina: null,
+      oczekiwaneWizyty: null,
+      liczbaPielegniarek: null,
       wydajnoscPielegniarek: 0.9684,
-      liczbaLekarzy: 777,
+      liczbaLekarzy: null,
       wydajnoscLekarzy: 0.7339,
-      liczbaLozek: 777,
+      liczbaLozek: null,
       wydajnoscLozek: 0.5519,
-      liczbaLozekObserwacja: 777,
+      liczbaLozekObserwacja: null,
       wydajnoscLozekObserwacja: 0.5916,
-      waskiZasob: '',
-      waskaWydajnosc: 777,
-      mozliwoscPokryciaZopatrzenia: '',
+      waskiZasob: null,
+      waskaWydajnosc: null,
+      mozliwoscPokryciaZopatrzenia: null,
     } as Summary,
   ]);
 

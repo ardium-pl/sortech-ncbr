@@ -1,19 +1,19 @@
 export interface Summary {
   id: number;
-  godzina: string;
-  oczekiwaneWizyty: number;
-  liczbaPielegniarek: 777;
+  godzina: string | null;
+  oczekiwaneWizyty: number | null;
+  liczbaPielegniarek: null;
   wydajnoscPielegniarek: number;
-  liczbaLekarzy: 777;
+  liczbaLekarzy: null;
   wydajnoscLekarzy: number;
-  liczbaLozek: 777;
+  liczbaLozek: null;
   wydajnoscLozek: number;
-  liczbaLozekObserwacja: 777;
+  liczbaLozekObserwacja: null;
   wydajnoscLozekObserwacja: number;
-  waskiZasob: string;
-  waskaWydajnosc: 777;
-  mozliwoscPokryciaZopatrzenia: string;
+  waskiZasob: null;
+  waskaWydajnosc: null;
+  mozliwoscPokryciaZopatrzenia: null;
 
-  [property: string]: string | number | 777;
+  [property: string]: string | number | null;
 }
 

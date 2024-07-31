@@ -3,19 +3,30 @@
   --grid-height: 75vh;
   --grid-width: 90%;
 
-  /* Color palette: */
+  /* Color palettes: */
+
+  // App layout
   --white: #f1f6f9;
   --navy: #14274e;
   --faded-blue: #394867;
   --grey: #9ba4b4;
-  --background: rgb(157, 164, 172);
+  --background: #edf5ff;
 
+  //  Headers
   --header-inner: #f8ede3;
   --header-mid: #dfd3c3;
   --header-sub-mid: #d0b8a8;
   --header-outer: #e3a598;
 
-  --test: rgb(95, 142, 199);
+  // Cell styling
+  --editable-cell-background: #394867;
+  --editable-cell-font-color: rgb(211, 211, 211);
+
+  --summation-cell-background: rgb(180, 93, 180);
+  --summation-cell-font-color: rgb(242, 242, 242);
+
+  /* Font sizes: */
+  --row-font-size: 15px;
 }
 
 html,
@@ -39,7 +50,6 @@ body {
 //     --ag-font-family: monospace;
 // }
 
-
 // AG Grid headers styling
 
 // Centering grid headers text
@@ -60,7 +70,6 @@ body {
   display: flex;
   justify-content: center;
 }
-
 
 // Wrap group column headers' text manually (no auto height)
 .grid-header .ag-header-group-text {
@@ -83,5 +92,3 @@ body {
 .grid-header-outer {
   background-color: var(--header-outer);
 }
-
-

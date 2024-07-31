@@ -5,5 +5,7 @@
   [defaultColDef]="defaultColDef"
   [headerHeight]="HEADER_HEIGHT"
   [groupHeaderHeight]="GROUP_HEADER_HEIGHT"
+  [suppressScrollOnNewData]="true"
+  (cellValueChanged)="onCellValueChanged($event)"
 >
 </ag-grid-angular>

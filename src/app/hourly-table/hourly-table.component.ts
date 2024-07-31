@@ -2,6 +2,7 @@ import { Component, inject, computed } from '@angular/core';
 import { HourlyDataService } from '../hourly-data.service';
 import { hourlyTableColDefs } from './col-defs-hourly';
 import { AgGridAngular } from 'ag-grid-angular';
+import { Hour } from '../hour';
 import {
   ColDef,
   ColGroupDef,
@@ -30,13 +31,24 @@ export class HourlyTableComponent {
 
   readonly defaultColDef: ColDef = {
     headerClass: 'grid-header grid-header-outer',
+    cellDataType: 'number',
     wrapHeaderText: true,
     // autoHeaderHeight: true,
     sortable: false,
     resizable: true,
-    minWidth: 120,
+    minWidth: 130,
     flex: 1,
   };
   readonly columnDefs: (ColDef | ColGroupDef)[] = hourlyTableColDefs;
   readonly rowData = computed(() => this.hourlyDataService.rowData());
+
+  onCellValueChanged(event: CellValueChangedEvent) {
+    // Get the changed row (=hour)
+    let changedHour: Hour = event.data;
+    // Apply calculations
+    changedHour = this.hourlyDataService.applyHourCalculations(changedHour);
+    // Update main signal
+    this.hourlyDataService.updateHours(changedHour);
+    this.hourlyDataService.applySummaryCalcuations();
+  }
 }
