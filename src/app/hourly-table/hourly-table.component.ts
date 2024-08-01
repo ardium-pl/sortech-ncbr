@@ -34,6 +34,7 @@ export class HourlyTableComponent {
   readonly defaultColDef: ColDef = {
     headerClass: 'grid-header grid-header-outer',
     cellDataType: 'number',
+    cellClass: 'cell',
     wrapHeaderText: true,
     // autoHeaderHeight: true,
     sortable: false,

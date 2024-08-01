@@ -10,7 +10,7 @@
   --navy: #14274e;
   --faded-blue: #394867;
   --grey: #9ba4b4;
-  --background: #d8d8d8;
+  --background: #a9a6a6;
 
   //  Headers
   --header-inner: #f8ede3;
@@ -38,12 +38,13 @@
   --summary-cell-background-even: rgb(121, 172, 120);
   --summary-cell-font-color-even: rgb(242, 242, 242);
 
-  // Cell font
+  // Fonts
   --editable-cell-font-width: bold;
+  --font-size: 15px;
+  --font-family: monospace;
 
-
-  /* Font sizes: */
-  --row-font-size: 15px;
+  // Borders
+  --standard-border: solid 3px black;
 }
 
 html,
@@ -54,13 +55,9 @@ body {
   background-color: var(--background);
 }
 
-// AG Grid headers styling
 
 // Centering grid headers text
 .grid-header {
-  font-family: cursive;
-  font-size: 15px;
-  color: black;
   text-align: center;
   white-space: normal;
 
@@ -68,6 +65,12 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+// Centering grid cell text
+.cell {
+  text-align: center;
+}
+
 
 .ag-header-cell-label {
   display: flex;
@@ -87,22 +90,33 @@ body {
 
 // Outer headers
 .grid-header-outer {
-  background-color: rgb(169,169,169);
-  // border: 5px solid black;
-  // box-sizing: border-box;
+  background-color: rgb(169, 169, 169);
+  font-size: 19px;
+
 }
 
-.pielegniarki, .lozka {
+.waskie-gardlo {
+  border-left: var(--standard-border);
+}
+
+.pielegniarki,
+.lozka {
   background-color: rgb(146, 26, 64);
+  border-top: var(--standard-border);
+  border-left: var(--standard-border);
 }
 
-.lekarze, .obserwacja {
+.lekarze,
+.obserwacja {
   background-color: rgb(97, 130, 100);
+  border-top: var(--standard-border);
+  border-left: var(--standard-border);
 }
 
 // Mid headers
 .grid-header-mid {
-  background-color: rgb(192,192,192);
+  background-color: rgb(192, 192, 192);
+  // font-size: 16px;
 }
 
 // Inner-most headers
@@ -110,18 +124,28 @@ body {
   background-color: var(--header-inner);
 }
 
-.pielegniarki-odd, .lozka-odd {
+.pielegniarki-odd,
+.lozka-odd {
+  background-color: rgb(199, 91, 122);
+  border-left: var(--standard-border);
+}
+
+.pielegniarki-even,
+.lozka-even {
   background-color: rgb(199, 91, 122);
 }
 
-.pielegniarki-even, .lozka-even {
-  background-color: rgb(199, 91, 122);
+.lekarze-odd,
+.obserwacja-odd {
+  background-color: rgb(121, 172, 120);
+  border-left: var(--standard-border);
 }
 
-.lekarze-odd, .obserwacja-odd {
+.lekarze-even,
+.obserwacja-even {
   background-color: rgb(121, 172, 120);
 }
 
-.lekarze-even, .obserwacja-even {
-  background-color: rgb(121, 172, 120);
+.waskie-gardlo-odd {
+  border-left: var(--standard-border);
 }

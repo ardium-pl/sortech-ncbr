@@ -2,6 +2,30 @@ import { ColDef, ColGroupDef } from 'ag-grid-community';
 
 const DECIMAL_PLACES = 100; // 10 for 1, 100 for 2, 1000 for 3 ...
 
+function cellStylerWaskieGardloZasob(params: any) {
+  const styles: any = {};
+
+  if (params.data['id'] < 24) {
+    // styles.backgroundColor = 'var(--editable-cell-background-odd)';
+    // styles.color = 'var(--editable-cell-font-color-odd)';
+    // styles.fontWeight = 'var(--editable-cell-font-width)';
+  }
+  styles.borderLeft = 'var(--standard-border)';
+  return styles;
+}
+
+function cellStylerWaskieGardloWydajnosc(params: any) {
+  const styles: any = {};
+
+  if (params.data['id'] < 24) {
+    // styles.backgroundColor = 'var(--editable-cell-background-odd)';
+    // styles.color = 'var(--editable-cell-font-color-odd)';
+    // styles.fontWeight = 'var(--editable-cell-font-width)';
+  }
+  styles.borderLeft = 'var(--standard-border)';
+  return styles;
+}
+
 function cellStylerEditableEven(params: any) {
   const styles: any = {};
 
@@ -9,7 +33,13 @@ function cellStylerEditableEven(params: any) {
     styles.backgroundColor = 'var(--editable-cell-background-even)';
     styles.color = 'var(--editable-cell-font-color-even)';
     styles.fontWeight = 'var(--editable-cell-font-width)';
+  } else if (params.data['id'] === 24) {
+    styles.borderTop = 'var(--standard-border)';
+  } else if (params.data['id'] === 25) {
+    styles.borderBottom = 'var(--standard-border)';
   }
+  styles.borderLeft = 'var(--standard-border)';
+
   return styles;
 }
 
@@ -20,7 +50,12 @@ function cellStylerEditableOdd(params: any) {
     styles.backgroundColor = 'var(--editable-cell-background-odd)';
     styles.color = 'var(--editable-cell-font-color-odd)';
     styles.fontWeight = 'var(--editable-cell-font-width)';
+  } else if (params.data['id'] === 24) {
+    styles.borderTop = 'var(--standard-border)';
+  } else if (params.data['id'] === 25) {
+    styles.borderBottom = 'var(--standard-border)';
   }
+  styles.borderLeft = 'var(--standard-border)';
   return styles;
 }
 
@@ -30,7 +65,15 @@ function cellStylerWydajnoscEven(params: any) {
   if (params.data['id'] < 24) {
     styles.backgroundColor = 'var(--wydajnosc-cell-background-even)';
     styles.color = 'var(--wydajnosc-cell-font-color-even)';
-  } else {
+  } else if (params.data['id'] === 24) {
+    styles.borderTop = 'var(--standard-border)';
+    styles.borderBottom = 'var(--standard-border)';
+    styles.borderLeft = 'var(--standard-border)';
+    styles.backgroundColor = 'var(--summary-cell-background-even)';
+    styles.color = 'var(--summary-cell-font-color-even)';
+  } else if (params.data['id'] === 25) {
+    styles.borderBottom = 'var(--standard-border)';
+    styles.borderLeft = 'var(--standard-border)';
     styles.backgroundColor = 'var(--summary-cell-background-even)';
     styles.color = 'var(--summary-cell-font-color-even)';
   }
@@ -43,7 +86,16 @@ function cellStylerWydajnoscOdd(params: any) {
   if (params.data['id'] < 24) {
     styles.backgroundColor = 'var(--wydajnosc-cell-background-odd)';
     styles.color = 'var(--wydajnosc-cell-font-color-odd)';
-  } else {
+  } else if (params.data['id'] === 24) {
+    styles.borderTop = 'var(--standard-border)';
+    styles.borderBottom = 'var(--standard-border)';
+    styles.borderLeft = 'var(--standard-border)';
+    styles.backgroundColor = 'var(--summary-cell-background-odd)';
+    styles.color = 'var(--summary-cell-font-color-odd)';
+  } else if (params.data['id'] === 25) {
+    styles.borderBottom = 'var(--standard-border)';
+    styles.borderLeft = 'var(--standard-border)';
+
     styles.backgroundColor = 'var(--summary-cell-background-odd)';
     styles.color = 'var(--summary-cell-font-color-odd)';
   }
@@ -181,18 +233,19 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
   },
   {
     headerName: 'Wąskie gardło procesu',
-    headerClass: 'grid-header grid-header-outer',
+    headerClass: 'grid-header grid-header-outer waskie-gardlo',
     children: [
       {
         headerName: 'Zasób',
         field: 'waskiZasob',
-        headerClass: 'grid-header grid-header-mid',
+        headerClass: 'grid-header grid-header-mid waskie-gardlo-odd',
         cellDataType: 'text',
+        cellStyle: (params: any) => cellStylerWaskieGardloZasob(params),
       },
       {
         headerName: 'Wyd. l. pacj.',
         field: 'waskaWydajnosc',
-        headerClass: 'grid-header grid-header-mid',
+        headerClass: 'grid-header grid-header-mid waskie-gardlo-even',
         cellRenderer: (params: any) => {
           if (params.data['id'] > 23) {
             return '';

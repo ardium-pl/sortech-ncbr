@@ -1,12 +1,12 @@
 :host {
-    flex: 1;
-    
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  flex: 1;
 
-    // background-color: red;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  // background-color: red;
 }
 
 ag-grid-angular {
@@ -17,13 +17,33 @@ ag-grid-angular {
 }
 
 .ag-theme-alpine {
-    // --ag-foreground-color: rgb(126, 46, 132);
-    --ag-background-color: rgb(220,220,220);
-    // --ag-header-foreground-color: rgb(204, 245, 172);
-    // --ag-header-background-color: rgb(209, 64, 129);
-    --ag-odd-row-background-color: 	rgb(211,211,211);
-    // --ag-header-column-resize-handle-color: rgb(126, 46, 132);
+  // Fonts
+  --ag-font-family: var(--font-family);
+  --ag-font-size: var(--font-size);
 
-    --ag-font-size: var(--row-font-size);
-    --ag-font-family: monospace;
+  // Cell colors
+
+  // --ag-foreground-color: rgb(126, 46, 132);
+  --ag-background-color: rgb(220, 220, 220);
+  // --ag-header-foreground-color: rgb(204, 245, 172);
+  // --ag-header-background-color: rgb(209, 64, 129);
+  --ag-odd-row-background-color: rgb(211, 211, 211);
+
+  // Resize handles
+  // --ag-header-column-resize-handle-display: none;
+  // --ag-header-column-resize-handle-color: rgb(126, 46, 132);
+
+  // Borders
+  // --ag-borders-critical: solid 10px;
+  // --ag-borders-secondary: dashed;
+
+  // --ag-critical-border-color: black;
+  // --ag-cell-horizontal-border: solid black;
+
+
+  // Header separator
+  // --ag-header-column-separator-display: true;
+  // --ag-header-column-separator-width: 3px;
+  // --ag-header-column-separator-color: black;
+
 }
