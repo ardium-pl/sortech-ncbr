@@ -80,9 +80,55 @@ export class HourlyDataService {
     return hour;
   }
 
-  applySummaryCalcuations() {
-    const summaryRow1 = this.rowData()[24];
-    const summaryRow2 = this.rowData()[25];
+  // applySummaryCalcuations() {
+  //   const summaryRow1 = this.rowData()[24];
+  //   const summaryRow2 = this.rowData()[25];
+
+  //   // Oblicz Wyd./dobę
+  //   summaryRow1.oczekiwaneWizyty! = 0;
+  //   summaryRow1.wydajnoscPielegniarek = 0;
+  //   summaryRow1.wydajnoscLekarzy = 0;
+  //   summaryRow1.wydajnoscLozek = 0;
+  //   summaryRow1.wydajnoscLozekObserwacja = 0;
+
+  //   for (const n of Array(24).keys()) {
+  //     summaryRow1.oczekiwaneWizyty! += this.rowData()[n].oczekiwaneWizyty!;
+  //     summaryRow1.wydajnoscPielegniarek +=
+  //       this.rowData()[n].wydajnoscPielegniarek;
+  //     summaryRow1.wydajnoscLekarzy += this.rowData()[n].wydajnoscLekarzy;
+  //     summaryRow1.wydajnoscLozek += this.rowData()[n].wydajnoscLozek;
+  //     summaryRow1.wydajnoscLozekObserwacja +=
+  //       this.rowData()[n].wydajnoscLozekObserwacja;
+  //   }
+
+  //   // Oblicz Śr. zajęt.
+  //   summaryRow2.wydajnoscPielegniarek =
+  //     summaryRow1.oczekiwaneWizyty! / summaryRow1.wydajnoscPielegniarek;
+  //   summaryRow2.wydajnoscLekarzy =
+  //     summaryRow1.oczekiwaneWizyty! / summaryRow1.wydajnoscLekarzy;
+  //   summaryRow2.wydajnoscLozek =
+  //     summaryRow1.oczekiwaneWizyty! / summaryRow1.wydajnoscLozek;
+  //   summaryRow2.wydajnoscLozekObserwacja =
+  //     summaryRow1.oczekiwaneWizyty! / summaryRow1.wydajnoscLozekObserwacja;
+
+  //   // Update main signal
+  //   this.rowData.update((rows) =>
+  //     rows.map((row) => {
+  //       switch (row.id) {
+  //         case 24:
+  //           return summaryRow1;
+  //         case 25:
+  //           return summaryRow2;
+  //         default:
+  //           return row;
+  //       }
+  //     })
+  //   );
+  // }
+
+  applySummaryCalcuationsForPinnedRows() {
+    const summaryRow1 = this.summaryRow1();
+    const summaryRow2 = this.summaryRow2();
 
     // Oblicz Wyd./dobę
     summaryRow1.oczekiwaneWizyty! = 0;
@@ -111,22 +157,45 @@ export class HourlyDataService {
     summaryRow2.wydajnoscLozekObserwacja =
       summaryRow1.oczekiwaneWizyty! / summaryRow1.wydajnoscLozekObserwacja;
 
-    // Update main signal
-    this.rowData.update((rows) =>
-      rows.map((row) => {
-        switch (row.id) {
-          case 24:
-            return summaryRow1;
-          case 25:
-            return summaryRow2;
-          default:
-            return row;
-        }
-      })
-    );
+    // Update main signals
+    this.summaryRow1.set(summaryRow1);
+    this.summaryRow2.set(summaryRow2);
   }
 
-  readonly rowData = signal<(Hour | Summary)[]>([
+  readonly summaryRow1 = signal<Summary>({
+    id: 24,
+    godzina: 'Zapotrz./dobę',
+    oczekiwaneWizyty: 161.35,
+    liczbaPielegniarek: null,
+    wydajnoscPielegniarek: 166.61,
+    liczbaLekarzy: null,
+    wydajnoscLekarzy: 219.84,
+    liczbaLozek: null,
+    wydajnoscLozek: 292.35,
+    liczbaLozekObserwacja: null,
+    wydajnoscLozekObserwacja: 272.73,
+    waskiZasob: null,
+    waskaWydajnosc: null,
+    mozliwoscPokryciaZopatrzenia: null,
+  });
+  readonly summaryRow2 = signal<Summary>({
+    id: 25,
+    godzina: null,
+    oczekiwaneWizyty: null,
+    liczbaPielegniarek: null,
+    wydajnoscPielegniarek: 0.9684,
+    liczbaLekarzy: null,
+    wydajnoscLekarzy: 0.7339,
+    liczbaLozek: null,
+    wydajnoscLozek: 0.5519,
+    liczbaLozekObserwacja: null,
+    wydajnoscLozekObserwacja: 0.5916,
+    waskiZasob: null,
+    waskaWydajnosc: null,
+    mozliwoscPokryciaZopatrzenia: null,
+  });
+
+  readonly rowData = signal<Hour[]>([
     {
       id: 0,
       godzina: '0-1',
@@ -511,38 +580,38 @@ export class HourlyDataService {
       waskaWydajnosc: 5.05,
       mozliwoscPokryciaZopatrzenia: '',
     },
-    {
-      id: 24,
-      godzina: 'Zapotrz./dobę',
-      oczekiwaneWizyty: 161.35,
-      liczbaPielegniarek: null,
-      wydajnoscPielegniarek: 166.61,
-      liczbaLekarzy: null,
-      wydajnoscLekarzy: 219.84,
-      liczbaLozek: null,
-      wydajnoscLozek: 292.35,
-      liczbaLozekObserwacja: null,
-      wydajnoscLozekObserwacja: 272.73,
-      waskiZasob: null,
-      waskaWydajnosc: null,
-      mozliwoscPokryciaZopatrzenia: null,
-    } as Summary,
-    {
-      id: 25,
-      godzina: null,
-      oczekiwaneWizyty: null,
-      liczbaPielegniarek: null,
-      wydajnoscPielegniarek: 0.9684,
-      liczbaLekarzy: null,
-      wydajnoscLekarzy: 0.7339,
-      liczbaLozek: null,
-      wydajnoscLozek: 0.5519,
-      liczbaLozekObserwacja: null,
-      wydajnoscLozekObserwacja: 0.5916,
-      waskiZasob: null,
-      waskaWydajnosc: null,
-      mozliwoscPokryciaZopatrzenia: null,
-    } as Summary,
+    // {
+    //   id: 24,
+    //   godzina: 'Zapotrz./dobę',
+    //   oczekiwaneWizyty: 161.35,
+    //   liczbaPielegniarek: null,
+    //   wydajnoscPielegniarek: 166.61,
+    //   liczbaLekarzy: null,
+    //   wydajnoscLekarzy: 219.84,
+    //   liczbaLozek: null,
+    //   wydajnoscLozek: 292.35,
+    //   liczbaLozekObserwacja: null,
+    //   wydajnoscLozekObserwacja: 272.73,
+    //   waskiZasob: null,
+    //   waskaWydajnosc: null,
+    //   mozliwoscPokryciaZopatrzenia: null,
+    // } as Summary,
+    // {
+    //   id: 25,
+    //   godzina: null,
+    //   oczekiwaneWizyty: null,
+    //   liczbaPielegniarek: null,
+    //   wydajnoscPielegniarek: 0.9684,
+    //   liczbaLekarzy: null,
+    //   wydajnoscLekarzy: 0.7339,
+    //   liczbaLozek: null,
+    //   wydajnoscLozek: 0.5519,
+    //   liczbaLozekObserwacja: null,
+    //   wydajnoscLozekObserwacja: 0.5916,
+    //   waskiZasob: null,
+    //   waskaWydajnosc: null,
+    //   mozliwoscPokryciaZopatrzenia: null,
+    // } as Summary,
   ]);
 
   constructor() {}

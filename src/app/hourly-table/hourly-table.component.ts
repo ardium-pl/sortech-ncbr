@@ -15,6 +15,7 @@ import {
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
+import { Summary } from '../summary';
 
 @Component({
   selector: 'app-hourly-table',
@@ -26,7 +27,6 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 export class HourlyTableComponent {
   readonly hourlyDataService = inject(HourlyDataService);
 
-  
   readonly ROW_HEIGHT = undefined;
   readonly HEADER_HEIGHT = 70;
   readonly GROUP_HEADER_HEIGHT = 70;
@@ -43,6 +43,9 @@ export class HourlyTableComponent {
   };
   readonly columnDefs: (ColDef | ColGroupDef)[] = hourlyTableColDefs;
   readonly rowData = computed(() => this.hourlyDataService.rowData());
+  readonly summaryRow1 = computed(() => this.hourlyDataService.summaryRow1());
+  readonly summaryRow2 = computed(() => this.hourlyDataService.summaryRow2());
+  // readonly summaryRow3 = {}
 
   onCellValueChanged(event: CellValueChangedEvent) {
     // Get the changed row (=hour)
@@ -51,6 +54,7 @@ export class HourlyTableComponent {
     changedHour = this.hourlyDataService.applyHourCalculations(changedHour);
     // Update main signal
     this.hourlyDataService.updateHours(changedHour);
-    this.hourlyDataService.applySummaryCalcuations();
+    // this.hourlyDataService.applySummaryCalcuations();
+    this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
   }
 }

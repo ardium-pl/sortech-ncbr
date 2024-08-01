@@ -10,7 +10,7 @@
   --navy: #14274e;
   --faded-blue: #394867;
   --grey: #9ba4b4;
-  --background: #8e9092;
+  --background: #d8d8d8;
 
   //  Headers
   --header-inner: #f8ede3;
@@ -18,12 +18,29 @@
   --header-sub-mid: #d0b8a8;
   --header-outer: #e3a598;
 
-  // Cell styling
-  --editable-cell-background: #394867;
-  --editable-cell-font-color: rgb(211, 211, 211);
+  // Cell color - ODD
+  --editable-cell-background-odd: rgb(217, 171, 171);
+  // --editable-cell-font-color-odd: rgb(211, 211, 211);
 
-  --summation-cell-background: rgb(180, 93, 180);
-  --summation-cell-font-color: rgb(242, 242, 242);
+  --wydajnosc-cell-background-odd: rgb(244, 217, 208);
+  // --wydajnosc-cell-font-color-odd: rgb(211, 211, 211);
+
+  --summary-cell-background-odd: rgb(199, 91, 122);
+  --summary-cell-font-color-odd: rgb(242, 242, 242);
+
+  // Cell color - EVEN
+  --editable-cell-background-even: rgb(176, 217, 177);
+  // --editable-cell-font-color-even: rgb(211, 211, 211);
+
+  --wydajnosc-cell-background-even: rgb(208, 231, 210);
+  // --wydajnosc-cell-font-color-even: rgb(211, 211, 211);
+
+  --summary-cell-background-even: rgb(121, 172, 120);
+  --summary-cell-font-color-even: rgb(242, 242, 242);
+
+  // Cell font
+  --editable-cell-font-width: bold;
+
 
   /* Font sizes: */
   --row-font-size: 15px;
@@ -37,25 +54,11 @@ body {
   background-color: var(--background);
 }
 
-// AG Grid global theme styling
-// .ag-theme-quartz {
-//     --ag-foreground-color: rgb(126, 46, 132);
-//     --ag-background-color: rgb(249, 245, 227);
-//     --ag-header-foreground-color: rgb(204, 245, 172);
-//     --ag-header-background-color: rgb(209, 64, 129);
-//     --ag-odd-row-background-color: rgb(0, 0, 0, 0.03);
-//     --ag-header-column-resize-handle-color: rgb(126, 46, 132);
-
-//     --ag-font-size: 17px;
-//     --ag-font-family: monospace;
-// }
-
 // AG Grid headers styling
 
 // Centering grid headers text
 .grid-header {
   font-family: cursive;
-  // font-weight: bold;
   font-size: 15px;
   color: black;
   text-align: center;
@@ -77,18 +80,48 @@ body {
 }
 
 // Setting header background colors
-.grid-header-inner {
-  background-color: var(--header-inner);
-}
 
 // .grid-header-sub-mid {
 //   background-color: var(--header-sub-mid);
 // }
 
-.grid-header-mid {
-  background-color: var(--header-mid);
+// Outer headers
+.grid-header-outer {
+  background-color: rgb(169,169,169);
+  // border: 5px solid black;
+  // box-sizing: border-box;
 }
 
-.grid-header-outer {
-  background-color: var(--header-outer);
+.pielegniarki, .lozka {
+  background-color: rgb(146, 26, 64);
+}
+
+.lekarze, .obserwacja {
+  background-color: rgb(97, 130, 100);
+}
+
+// Mid headers
+.grid-header-mid {
+  background-color: rgb(192,192,192);
+}
+
+// Inner-most headers
+.grid-header-inner {
+  background-color: var(--header-inner);
+}
+
+.pielegniarki-odd, .lozka-odd {
+  background-color: rgb(199, 91, 122);
+}
+
+.pielegniarki-even, .lozka-even {
+  background-color: rgb(199, 91, 122);
+}
+
+.lekarze-odd, .obserwacja-odd {
+  background-color: rgb(121, 172, 120);
+}
+
+.lekarze-even, .obserwacja-even {
+  background-color: rgb(121, 172, 120);
 }
