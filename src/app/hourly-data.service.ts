@@ -80,7 +80,6 @@ export class HourlyDataService {
     return hour;
   }
 
-
   applySummaryCalcuations() {
     const summaryRow1 = this.rowData()[24];
     const summaryRow2 = this.rowData()[25];

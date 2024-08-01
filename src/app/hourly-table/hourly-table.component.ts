@@ -26,6 +26,8 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 export class HourlyTableComponent {
   readonly hourlyDataService = inject(HourlyDataService);
 
+  
+  readonly ROW_HEIGHT = undefined;
   readonly HEADER_HEIGHT = 70;
   readonly GROUP_HEADER_HEIGHT = 70;
 

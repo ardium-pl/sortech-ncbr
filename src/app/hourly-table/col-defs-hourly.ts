@@ -8,11 +8,19 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     field: 'godzina',
     headerClass: 'grid-header grid-header-outer',
     cellDataType: 'text',
+    // valueGetter: (params: any) => params.data.godzina ? params.data.godzina : "abc"
   },
   {
     headerName: 'Oczek. l. wizyt',
     field: 'oczekiwaneWizyty',
     headerClass: 'grid-header grid-header-outer',
+    cellRenderer: (params: any) => {
+      if (params.data['id'] === 25) {
+        return '';
+      } else {
+        return params.value;
+      }
+    },
     valueFormatter: (params: any) => {
       return `${Math.round(params.value * DECIMAL_PLACES) / DECIMAL_PLACES}`;
     },
@@ -211,6 +219,13 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Wyd. l. pacj.',
         field: 'waskaWydajnosc',
         headerClass: 'grid-header grid-header-mid',
+        cellRenderer: (params: any) => {
+          if (params.data['id'] > 23) {
+            return '';
+          } else {
+            return params.value;
+          }
+        },
         valueFormatter: (params: any) => {
           return `${
             Math.round(params.value * DECIMAL_PLACES) / DECIMAL_PLACES
