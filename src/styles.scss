@@ -69,6 +69,7 @@ body {
 // Centering grid cell text
 .cell {
   text-align: center;
+
 }
 
 
@@ -78,9 +79,9 @@ body {
 }
 
 // Wrap group column headers' text manually (no auto height)
-.grid-header .ag-header-group-text {
-  white-space: normal;
-}
+  .grid-header .ag-header-group-text {
+    white-space: normal;
+  }
 
 // Setting header background colors
 
@@ -148,4 +149,16 @@ body {
 
 .waskie-gardlo-odd {
   border-left: var(--standard-border);
+}
+
+// Adjusting Możliowość Pokrycia cell content
+.mozliwosc-pokrycia {
+  // font-size: 14px;
+//   text-align: center;
+//   white-space: normal;
+//   line-height: 1;
+
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
 }

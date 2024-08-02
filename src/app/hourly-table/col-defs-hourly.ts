@@ -122,6 +122,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     field: 'godzina',
     headerClass: 'grid-header grid-header-outer',
     cellDataType: 'text',
+    minWidth: 140,
   },
   {
     headerName: 'Oczek. l. wizyt',
@@ -134,6 +135,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         return numberRoundingFormatter(params);
       }
     },
+    minWidth: 140,
   },
   {
     headerName: 'Pielęgniarki',
@@ -222,32 +224,41 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
   {
     headerName: 'Wąskie gardło procesu',
     headerClass: 'grid-header grid-header-outer waskie-gardlo',
-    children: [
-      {
-        headerName: 'Zasób',
-        field: 'waskiZasob',
-        headerClass: 'grid-header grid-header-mid waskie-gardlo-odd',
-        cellDataType: 'text',
-        cellStyle: (params: any) => cellStylerWaskieGardloZasob(params),
-      },
-      {
-        headerName: 'Wyd. l. pacj.',
-        field: 'waskaWydajnosc',
-        headerClass: 'grid-header grid-header-mid waskie-gardlo-even',
-        cellRenderer: (params: any) => {
-          if (params.data['id'] > 23) {
-            return '';
-          } else {
-            return numberRoundingFormatter(params);
-          }
-        },
-      },
-    ],
+    field: 'waskiZasob',
+    cellDataType: 'text',
+    cellStyle: (params: any) => cellStylerWaskieGardloZasob(params),
+    minWidth: 160,
+
+    // children: [
+    //   {
+    //     headerName: 'Zasób',
+    //     field: 'waskiZasob',
+    //     headerClass: 'grid-header grid-header-mid waskie-gardlo-odd',
+    //     cellDataType: 'text',
+    //     cellStyle: (params: any) => cellStylerWaskieGardloZasob(params),
+    //   },
+    //   {
+    //     headerName: 'Wyd. l. pacj.',
+    //     field: 'waskaWydajnosc',
+    //     headerClass: 'grid-header grid-header-mid waskie-gardlo-even',
+    //     cellRenderer: (params: any) => {
+    //       if (params.data['id'] > 23) {
+    //         return '';
+    //       } else {
+    //         return numberRoundingFormatter(params);
+    //       }
+    //     },
+    //   },
+    // ],
   },
   {
     headerName: 'Możliwość pokrycia zapotrz. okresu',
     field: 'mozliwoscPokryciaZopatrzenia',
-    headerClass: 'grid-header grid-header-outer mozliwosc-pokrycia',
+    headerClass: 'grid-header grid-header-outer',
     cellDataType: 'text',
+    cellClass: 'mozliwosc-pokrycia',
+    minWidth: 160,
+    // wrapText: true,
+    // autoHeight: true,
   },
 ];

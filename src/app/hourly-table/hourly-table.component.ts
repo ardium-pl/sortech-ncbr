@@ -35,11 +35,13 @@ export class HourlyTableComponent {
     headerClass: 'grid-header grid-header-outer',
     cellDataType: 'number',
     cellClass: 'cell',
-    wrapHeaderText: true,
+    // wrapHeaderText: true,
     // autoHeaderHeight: true,
     sortable: false,
     resizable: true,
-    minWidth: 110,
+    // wrapText: true,
+    // autoHeight: true,
+    minWidth: 100,
     flex: 1,
   };
   readonly columnDefs: (ColDef | ColGroupDef)[] = hourlyTableColDefs;

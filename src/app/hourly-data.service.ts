@@ -67,7 +67,7 @@ export class HourlyDataService {
 
     // Set mozliwoscPokryciaZopatrzenia
     hour.mozliwoscPokryciaZopatrzenia =
-      hour.waskaWydajnosc <= hour.oczekiwaneWizyty ? 'Niedobór wydajności' : '';
+      hour.waskaWydajnosc <= hour.oczekiwaneWizyty ? 'Niedobór wyd.' : '';
 
     // Round numeric properties (exlducing id) to 2 decimal places
     // for (let key in hour) {
@@ -199,7 +199,7 @@ export class HourlyDataService {
       id: 0,
       godzina: '0-1',
       oczekiwaneWizyty: 3.23,
-      liczbaPielegniarek: 4,
+      liczbaPielegniarek: 1,
       wydajnoscPielegniarek: 5.05,
       liczbaLekarzy: 6,
       wydajnoscLekarzy: 8.24,
