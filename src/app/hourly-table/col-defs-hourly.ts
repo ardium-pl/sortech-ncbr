@@ -6,7 +6,6 @@ function numberRoundingFormatter(params: any) {
     return `${Math.round(params.value * DECIMAL_PLACES) / DECIMAL_PLACES}`;
   } else {
     return params.value;
-    // return 'Not a number';
   }
 }
 

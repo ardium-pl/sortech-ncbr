@@ -44,6 +44,7 @@ export class HourlyTableComponent {
     minWidth: 100,
     flex: 1,
   };
+  
   readonly columnDefs: (ColDef | ColGroupDef)[] = hourlyTableColDefs;
   readonly rowData = computed(() => this.hourlyDataService.rowData());
   readonly summaryRow1 = computed(() => this.hourlyDataService.summaryRow1());
