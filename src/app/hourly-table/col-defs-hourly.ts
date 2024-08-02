@@ -45,7 +45,7 @@ function cellStylerWaskieGardloWydajnosc(params: any) {
   const styles: any = {};
 
   if (params.data['id'] < 24) {
-    // styles.backgroundColor = 'var(--editable-cell-background-odd)';
+    // styles.backgroundColor = 'var(--dark-red)';
     // styles.color = 'var(--editable-cell-font-color-odd)';
     // styles.fontWeight = 'var(--editable-cell-font-width)';
   }
@@ -57,7 +57,7 @@ function cellStylerEditableEven(params: any) {
   const styles: any = {};
 
   if (params.data['id'] < 24) {
-    styles.backgroundColor = 'var(--editable-cell-background-even)';
+    styles.backgroundColor = 'var(--dark-green)';
     styles.color = 'var(--editable-cell-font-color-even)';
     styles.fontWeight = 'var(--editable-cell-font-width)';
   } else if (params.data['id'] === 24) {
@@ -74,7 +74,7 @@ function cellStylerEditableOdd(params: any) {
   const styles: any = {};
 
   if (params.data['id'] < 24) {
-    styles.backgroundColor = 'var(--editable-cell-background-odd)';
+    styles.backgroundColor = 'var(--dark-red)';
     styles.color = 'var(--editable-cell-font-color-odd)';
     styles.fontWeight = 'var(--editable-cell-font-width)';
   } else if (params.data['id'] === 24) {
@@ -90,18 +90,18 @@ function cellStylerWydajnoscEven(params: any) {
   const styles: any = {};
 
   if (params.data['id'] < 24) {
-    styles.backgroundColor = 'var(--wydajnosc-cell-background-even)';
+    styles.backgroundColor = 'var(--mid-green)';
     styles.color = 'var(--wydajnosc-cell-font-color-even)';
   } else if (params.data['id'] === 24) {
     styles.borderTop = 'var(--standard-border)';
     styles.borderBottom = 'var(--standard-border)';
     styles.borderLeft = 'var(--standard-border)';
-    styles.backgroundColor = 'var(--summary-cell-background-even)';
+    styles.backgroundColor = 'var(--darkest-green)';
     styles.color = 'var(--summary-cell-font-color-even)';
   } else if (params.data['id'] === 25) {
     styles.borderBottom = 'var(--standard-border)';
     styles.borderLeft = 'var(--standard-border)';
-    styles.backgroundColor = 'var(--summary-cell-background-even)';
+    styles.backgroundColor = 'var(--darkest-green)';
     styles.color = 'var(--summary-cell-font-color-even)';
   }
   return styles;
@@ -111,19 +111,19 @@ function cellStylerWydajnoscOdd(params: any) {
   const styles: any = {};
 
   if (params.data['id'] < 24) {
-    styles.backgroundColor = 'var(--wydajnosc-cell-background-odd)';
+    styles.backgroundColor = 'var(--mid-red)';
     styles.color = 'var(--wydajnosc-cell-font-color-odd)';
   } else if (params.data['id'] === 24) {
     styles.borderTop = 'var(--standard-border)';
     styles.borderBottom = 'var(--standard-border)';
     styles.borderLeft = 'var(--standard-border)';
-    styles.backgroundColor = 'var(--summary-cell-background-odd)';
+    styles.backgroundColor = 'var(--darkest-red)';
     styles.color = 'var(--summary-cell-font-color-odd)';
   } else if (params.data['id'] === 25) {
     styles.borderBottom = 'var(--standard-border)';
     styles.borderLeft = 'var(--standard-border)';
 
-    styles.backgroundColor = 'var(--summary-cell-background-odd)';
+    styles.backgroundColor = 'var(--darkest-red)';
     styles.color = 'var(--summary-cell-font-color-odd)';
   }
   return styles;

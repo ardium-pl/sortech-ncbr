@@ -12,30 +12,37 @@
   --grey: #9ba4b4;
   --background: #dfdfdf;
 
-  //  Headers
-  --header-inner: #f8ede3;
-  --header-mid: #dfd3c3;
-  --header-sub-mid: #d0b8a8;
-  --header-outer: #e3a598;
+  // Orange color palette
+  --darkest-orange: #e3a598;
+  --dark-orange: #d0b8a8;
+  --mid-orange: #dfd3c3;
+  --light-orange: #f8ede3;
+  --lightest-orange: #fbeae0;
+  --white-orange: #fdf5eb;
+
+  // Grey color palette
+  --darkest-grey: rgb(169, 169, 169);
+  --dark-grey: rgb(192, 192, 192);
+  --mid-grey: ;
+  --light-grey: rgb(211, 211, 211);
+  --lightest-grey: rgb(220, 220, 220);
+  --white-grey: rgb(208, 208, 208);
+
+  // Red color palette
+  --super-dark-red: rgb(146, 26, 64);
+  --darkest-red: rgb(199, 91, 122);
+  --dark-red: rgb(217, 171, 171);
+  
+  // Green color palette
+  --super-dark-green: rgb(97, 130, 100);
+  --darkest-green: rgb(121, 172, 120);
+  --dark-green: rgb(176, 217, 177);
+  --mid-green: rgb(208, 231, 210);
 
   // Cell color - ODD
-  --editable-cell-background-odd: rgb(217, 171, 171);
-  // --editable-cell-font-color-odd: rgb(211, 211, 211);
-
-  --wydajnosc-cell-background-odd: rgb(244, 217, 208);
-  // --wydajnosc-cell-font-color-odd: rgb(211, 211, 211);
-
-  --summary-cell-background-odd: rgb(199, 91, 122);
   --summary-cell-font-color-odd: rgb(242, 242, 242);
 
   // Cell color - EVEN
-  --editable-cell-background-even: rgb(176, 217, 177);
-  // --editable-cell-font-color-even: rgb(211, 211, 211);
-
-  --wydajnosc-cell-background-even: rgb(208, 231, 210);
-  // --wydajnosc-cell-font-color-even: rgb(211, 211, 211);
-
-  --summary-cell-background-even: rgb(121, 172, 120);
   --summary-cell-font-color-even: rgb(242, 242, 242);
 
   // Cell color - waskie gardlo
@@ -61,7 +68,6 @@ body {
   background-color: var(--background);
 }
 
-
 // Centering grid headers text
 .grid-header {
   text-align: center;
@@ -75,9 +81,7 @@ body {
 // Centering grid cell text
 .cell {
   text-align: center;
-
 }
-
 
 .ag-header-cell-label {
   display: flex;
@@ -85,74 +89,25 @@ body {
 }
 
 // Wrap group column headers' text manually (no auto height)
-  .grid-header .ag-header-group-text {
-    white-space: normal;
-  }
+.grid-header .ag-header-group-text {
+  white-space: normal;
+}
 
 // Setting header background colors
 
-// .grid-header-sub-mid {
-//   background-color: var(--header-sub-mid);
-// }
-
 // Outer headers
 .grid-header-outer {
-  background-color: rgb(169, 169, 169);
+  background-color: var(--darkest-grey);
   font-size: 19px;
-
-}
-
-.waskie-gardlo {
-  border-left: var(--standard-border);
-}
-
-.pielegniarki,
-.lozka {
-  background-color: rgb(146, 26, 64);
-  border-top: var(--standard-border);
-  border-left: var(--standard-border);
-}
-
-.lekarze,
-.obserwacja {
-  background-color: rgb(97, 130, 100);
-  border-top: var(--standard-border);
-  border-left: var(--standard-border);
 }
 
 // Mid headers
 .grid-header-mid {
-  background-color: rgb(192, 192, 192);
+  background-color: var(--dark-grey);
   // font-size: 16px;
 }
 
 // Inner-most headers
 .grid-header-inner {
-  background-color: var(--header-inner);
-}
-
-.pielegniarki-odd,
-.lozka-odd {
-  background-color: rgb(199, 91, 122);
-  border-left: var(--standard-border);
-}
-
-.pielegniarki-even,
-.lozka-even {
-  background-color: rgb(199, 91, 122);
-}
-
-.lekarze-odd,
-.obserwacja-odd {
-  background-color: rgb(121, 172, 120);
-  border-left: var(--standard-border);
-}
-
-.lekarze-even,
-.obserwacja-even {
-  background-color: rgb(121, 172, 120);
-}
-
-.waskie-gardlo-odd {
-  border-left: var(--standard-border);
+  background-color: var(--white-grey);
 }

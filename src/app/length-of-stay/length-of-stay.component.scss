@@ -1,12 +1,12 @@
 :host {
-    flex: 1;
-    
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  flex: 1;
 
-    // background-color: pink;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  // background-color: pink;
 }
 
 ag-grid-angular {
@@ -14,4 +14,77 @@ ag-grid-angular {
   width: var(--grid-width);
 
   margin-top: var(--grid-ofset);
+}
+
+.ag-theme-alpine {
+  // Fonts
+  --ag-font-family: var(--font-family);
+  --ag-font-size: var(--font-size);
+
+  // Cell colors
+
+  // --ag-foreground-color: rgb(126, 46, 132);
+  --ag-background-color: var(--lightest-grey);
+  // --ag-header-foreground-color: rgb(204, 245, 172);
+  // --ag-header-background-color: rgb(209, 64, 129);
+  --ag-odd-row-background-color: var(--light-grey);
+}
+
+::ng-deep {
+  app-length-of-stay {
+    // Outer headers
+    .grid-header-outer {
+      background-color: var(--darkest-grey);
+      font-size: 19px;
+    }
+
+    .waskie-gardlo {
+      border-left: var(--standard-border);
+    }
+
+    .pielegniarki,
+    .lozka {
+      background-color: var(--super-dark-red);
+      border-top: var(--standard-border);
+      border-left: var(--standard-border);
+    }
+
+    .lekarze,
+    .obserwacja {
+      background-color: var(--super-dark-green);
+      border-top: var(--standard-border);
+      border-left: var(--standard-border);
+    }
+
+    // Inner-most headers
+    .grid-header-inner {
+      background-color: var(--white-grey);
+    }
+
+    .pielegniarki-odd,
+    .lozka-odd {
+      background-color: var(--darkest-red);
+      border-left: var(--standard-border);
+    }
+
+    .pielegniarki-even,
+    .lozka-even {
+      background-color: var(--darkest-red);
+    }
+
+    .lekarze-odd,
+    .obserwacja-odd {
+      background-color: var(--darkest-green);
+      border-left: var(--standard-border);
+    }
+
+    .lekarze-even,
+    .obserwacja-even {
+      background-color: var(--darkest-green);
+    }
+
+    .waskie-gardlo-odd {
+      border-left: var(--standard-border);
+    }
+  }
 }
