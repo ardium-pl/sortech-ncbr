@@ -38,7 +38,13 @@
   --summary-cell-background-even: rgb(121, 172, 120);
   --summary-cell-font-color-even: rgb(242, 242, 242);
 
+  // Cell color - waskie gardlo
+  --waskie-gardlo-background-color: rgb(228, 245, 0);
+
   // Fonts
+  --waskie-gardlo-font-color: rgb(155, 0, 0);
+  --waskie-gardlo-font-size: 16px;
+  --waskie-gardlo-font-width: bold;
   --editable-cell-font-width: bold;
   --font-size: 15px;
   --font-family: monospace;
@@ -149,16 +155,4 @@ body {
 
 .waskie-gardlo-odd {
   border-left: var(--standard-border);
-}
-
-// Adjusting Możliowość Pokrycia cell content
-.mozliwosc-pokrycia {
-  // font-size: 14px;
-//   text-align: center;
-//   white-space: normal;
-//   line-height: 1;
-
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
 }

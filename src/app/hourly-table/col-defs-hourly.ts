@@ -10,15 +10,34 @@ function numberRoundingFormatter(params: any) {
   }
 }
 
-function cellStylerWaskieGardloZasob(params: any) {
+function cellStylerMozliwoscPokrycia(params: any) {
   const styles: any = {};
 
-  if (params.data['id'] < 24) {
-    // styles.backgroundColor = 'var(--editable-cell-background-odd)';
+  if (params.data['mozliwoscPokryciaZopatrzenia'] === 'Niedobór wyd.') {
+    styles.fontWeight = 'var(--waskie-gardlo-font-width)';
+    styles.fontSize = 'var(--waskie-gardlo-font-size)';
+    styles.backgroundColor = 'var(--waskie-gardlo-background-color';
+    styles.color = 'var(--waskie-gardlo-font-color)';
     // styles.color = 'var(--editable-cell-font-color-odd)';
-    // styles.fontWeight = 'var(--editable-cell-font-width)';
   }
+  return styles;
+}
+
+function cellStylerWaskieGardlo(params: any) {
+  const styles: any = {};
   styles.borderLeft = 'var(--standard-border)';
+
+  // // if (params.data['id'] < 24) {
+  // if (params.colDef.field === 'waskiZasob') {
+  //   styles.borderLeft = 'var(--standard-border)';
+  // }
+  // if (params.data['mozliwoscPokryciaZopatrzenia'] === 'Niedobór wyd.') {
+  //   styles.fontWeight = 'var(--waskie-gardlo-font-width)';
+  //   styles.fontSize = 'var(--waskie-gardlo-font-size)';
+  //   styles.backgroundColor = 'var(--waskie-gardlo-background-color';
+  //   styles.color = 'var(--waskie-gardlo-font-color)';
+  //   // styles.color = 'var(--editable-cell-font-color-odd)';
+  // }
   return styles;
 }
 
@@ -226,7 +245,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     headerClass: 'grid-header grid-header-outer waskie-gardlo',
     field: 'waskiZasob',
     cellDataType: 'text',
-    cellStyle: (params: any) => cellStylerWaskieGardloZasob(params),
+    cellStyle: (params: any) => cellStylerWaskieGardlo(params),
     minWidth: 160,
 
     // children: [
@@ -256,7 +275,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     field: 'mozliwoscPokryciaZopatrzenia',
     headerClass: 'grid-header grid-header-outer',
     cellDataType: 'text',
-    cellClass: 'mozliwosc-pokrycia',
+    cellStyle: (params: any) => cellStylerMozliwoscPokrycia(params),
     minWidth: 160,
     // wrapText: true,
     // autoHeight: true,
