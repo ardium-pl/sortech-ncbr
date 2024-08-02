@@ -9,5 +9,6 @@
   [suppressScrollOnNewData]="true"
   [pinnedBottomRowData]="[summaryRow1(), summaryRow2()]"
   (cellValueChanged)="onCellValueChanged($event)"
+  (gridReady)="onGridReady($event)"
 >
 </ag-grid-angular>

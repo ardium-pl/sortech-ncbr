@@ -15,7 +15,7 @@ import {
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { Summary } from '../summary';
+import { Summary1, Summary2 } from '../summaries';
 
 @Component({
   selector: 'app-hourly-table',
@@ -46,7 +46,7 @@ export class HourlyTableComponent {
   readonly rowData = computed(() => this.hourlyDataService.rowData());
   readonly summaryRow1 = computed(() => this.hourlyDataService.summaryRow1());
   readonly summaryRow2 = computed(() => this.hourlyDataService.summaryRow2());
-  // readonly summaryRow3 = {}
+  readonly summaryRow3 = {};
 
   onCellValueChanged(event: CellValueChangedEvent) {
     // Get the changed row (=hour)
@@ -58,4 +58,18 @@ export class HourlyTableComponent {
     // this.hourlyDataService.applySummaryCalcuations();
     this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
   }
+
+  private api!: GridApi;
+  onGridReady = (event: GridReadyEvent) => {
+    // Store the api for later use
+    this.api = event.api;
+
+    // Apply calculations
+    this.rowData().forEach((hour) => {
+      const updatedHour = this.hourlyDataService.applyHourCalculations(hour);
+      // Update main signal
+      this.hourlyDataService.updateHours(updatedHour);
+    });
+    this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
+  };
 }

@@ -1,8 +1,8 @@
 import { Injectable, signal } from '@angular/core';
 import { CONSTANTS } from './hourly-table/constants';
 import { Hour } from './hour';
-import { Summary } from './summary';
-import { HOME } from '@angular/cdk/keycodes';
+import { Summary1, Summary2 } from './summaries';
+import { HOME, S } from '@angular/cdk/keycodes';
 
 @Injectable({
   providedIn: 'root',
@@ -127,18 +127,18 @@ export class HourlyDataService {
   // }
 
   applySummaryCalcuationsForPinnedRows() {
-    const summaryRow1 = this.summaryRow1();
-    const summaryRow2 = this.summaryRow2();
+    const summaryRow1 = { ...this.summaryRow1() };
+    const summaryRow2 = { ...this.summaryRow2() };
 
     // Oblicz Wyd./dobę
-    summaryRow1.oczekiwaneWizyty! = 0;
+    summaryRow1.oczekiwaneWizyty = 0;
     summaryRow1.wydajnoscPielegniarek = 0;
     summaryRow1.wydajnoscLekarzy = 0;
     summaryRow1.wydajnoscLozek = 0;
     summaryRow1.wydajnoscLozekObserwacja = 0;
 
     for (const n of Array(24).keys()) {
-      summaryRow1.oczekiwaneWizyty! += this.rowData()[n].oczekiwaneWizyty!;
+      summaryRow1.oczekiwaneWizyty += this.rowData()[n].oczekiwaneWizyty;
       summaryRow1.wydajnoscPielegniarek +=
         this.rowData()[n].wydajnoscPielegniarek;
       summaryRow1.wydajnoscLekarzy += this.rowData()[n].wydajnoscLekarzy;
@@ -149,20 +149,23 @@ export class HourlyDataService {
 
     // Oblicz Śr. zajęt.
     summaryRow2.wydajnoscPielegniarek =
-      summaryRow1.oczekiwaneWizyty! / summaryRow1.wydajnoscPielegniarek;
+      summaryRow1.oczekiwaneWizyty / summaryRow1.wydajnoscPielegniarek;
     summaryRow2.wydajnoscLekarzy =
-      summaryRow1.oczekiwaneWizyty! / summaryRow1.wydajnoscLekarzy;
+      summaryRow1.oczekiwaneWizyty / summaryRow1.wydajnoscLekarzy;
     summaryRow2.wydajnoscLozek =
-      summaryRow1.oczekiwaneWizyty! / summaryRow1.wydajnoscLozek;
+      summaryRow1.oczekiwaneWizyty / summaryRow1.wydajnoscLozek;
     summaryRow2.wydajnoscLozekObserwacja =
-      summaryRow1.oczekiwaneWizyty! / summaryRow1.wydajnoscLozekObserwacja;
+      summaryRow1.oczekiwaneWizyty / summaryRow1.wydajnoscLozekObserwacja;
 
     // Update main signals
     this.summaryRow1.set(summaryRow1);
     this.summaryRow2.set(summaryRow2);
+
+    console.log(this.summaryRow2());
+    console.log(this.rowData()[5]);
   }
 
-  readonly summaryRow1 = signal<Summary>({
+  readonly summaryRow1 = signal<Summary1>({
     id: 24,
     godzina: 'Zapotrz./dobę',
     oczekiwaneWizyty: 161.35,
@@ -174,14 +177,14 @@ export class HourlyDataService {
     wydajnoscLozek: 292.35,
     liczbaLozekObserwacja: null,
     wydajnoscLozekObserwacja: 272.73,
-    waskiZasob: null,
-    waskaWydajnosc: null,
-    mozliwoscPokryciaZopatrzenia: null,
+    // waskiZasob: null,
+    // waskaWydajnosc: null,
+    // mozliwoscPokryciaZopatrzenia: null,
   });
-  readonly summaryRow2 = signal<Summary>({
+  readonly summaryRow2 = signal<Summary2>({
     id: 25,
-    godzina: null,
-    oczekiwaneWizyty: null,
+    // godzina: null,
+    // oczekiwaneWizyty: null,
     liczbaPielegniarek: null,
     wydajnoscPielegniarek: 0.9684,
     liczbaLekarzy: null,
@@ -190,9 +193,9 @@ export class HourlyDataService {
     wydajnoscLozek: 0.5519,
     liczbaLozekObserwacja: null,
     wydajnoscLozekObserwacja: 0.5916,
-    waskiZasob: null,
-    waskaWydajnosc: null,
-    mozliwoscPokryciaZopatrzenia: null,
+    // waskiZasob: null,
+    // waskaWydajnosc: null,
+    // mozliwoscPokryciaZopatrzenia: null,
   });
 
   readonly rowData = signal<Hour[]>([
