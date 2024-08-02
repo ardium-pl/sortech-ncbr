@@ -1,8 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { CONSTANTS } from './hourly-table/constants';
 import { Hour } from './hour';
-import { Summary1, Summary2 } from './summaries';
-import { HOME, S } from '@angular/cdk/keycodes';
+import { Summary, Summary1, Summary2 } from './summaries';
 
 @Injectable({
   providedIn: 'root',
@@ -160,12 +159,9 @@ export class HourlyDataService {
     // Update main signals
     this.summaryRow1.set(summaryRow1);
     this.summaryRow2.set(summaryRow2);
-
-    console.log(this.summaryRow2());
-    console.log(this.rowData()[5]);
   }
 
-  readonly summaryRow1 = signal<Summary1>({
+  readonly summaryRow1 = signal<Summary>({
     id: 24,
     godzina: 'Zapotrz./dobę',
     oczekiwaneWizyty: 161.35,
@@ -177,14 +173,14 @@ export class HourlyDataService {
     wydajnoscLozek: 292.35,
     liczbaLozekObserwacja: null,
     wydajnoscLozekObserwacja: 272.73,
-    // waskiZasob: null,
-    // waskaWydajnosc: null,
-    // mozliwoscPokryciaZopatrzenia: null,
+    waskiZasob: null,
+    waskaWydajnosc: null,
+    mozliwoscPokryciaZopatrzenia: null,
   });
-  readonly summaryRow2 = signal<Summary2>({
+  readonly summaryRow2 = signal<Summary>({
     id: 25,
-    // godzina: null,
-    // oczekiwaneWizyty: null,
+    godzina: null,
+    oczekiwaneWizyty: null,
     liczbaPielegniarek: null,
     wydajnoscPielegniarek: 0.9684,
     liczbaLekarzy: null,
@@ -193,9 +189,9 @@ export class HourlyDataService {
     wydajnoscLozek: 0.5519,
     liczbaLozekObserwacja: null,
     wydajnoscLozekObserwacja: 0.5916,
-    // waskiZasob: null,
-    // waskaWydajnosc: null,
-    // mozliwoscPokryciaZopatrzenia: null,
+    waskiZasob: null,
+    waskaWydajnosc: null,
+    mozliwoscPokryciaZopatrzenia: null,
   });
 
   readonly rowData = signal<Hour[]>([

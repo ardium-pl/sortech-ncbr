@@ -3,7 +3,7 @@ import { ColDef, ColGroupDef } from 'ag-grid-community';
 const DECIMAL_PLACES = 100; // 10 for 1, 100 for 2, 1000 for 3 ...
 function numberRoundingFormatter(params: any) {
   if (!isNaN(Number(params.value))) {
-    return `${Math.round(params.value * DECIMAL_PLACES) / DECIMAL_PLACES}`
+    return `${Math.round(params.value * DECIMAL_PLACES) / DECIMAL_PLACES}`;
   } else {
     return params.value;
     // return 'Not a number';
@@ -122,20 +122,18 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     field: 'godzina',
     headerClass: 'grid-header grid-header-outer',
     cellDataType: 'text',
-    // valueGetter: (params: any) => params.data.godzina ? params.data.godzina : "abc"
   },
   {
     headerName: 'Oczek. l. wizyt',
     field: 'oczekiwaneWizyty',
     headerClass: 'grid-header grid-header-outer',
-    // cellRenderer: (params: any) => {
-    //   if (params.data['id'] === 25) {
-    //     return '';
-    //   } else {
-    //     return params.value;
-    //   }
-    // },
-    valueFormatter: (params: any) => numberRoundingFormatter(params),
+    cellRenderer: (params: any) => {
+      if (params.data['id'] === 25) {
+        return '';
+      } else {
+        return numberRoundingFormatter(params);
+      }
+    },
   },
   {
     headerName: 'Pielęgniarki',
@@ -236,20 +234,20 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Wyd. l. pacj.',
         field: 'waskaWydajnosc',
         headerClass: 'grid-header grid-header-mid waskie-gardlo-even',
-        // cellRenderer: (params: any) => {
-        //   if (params.data['id'] > 23) {
-        //     return '';
-        //   }
-        //     return params.value;
-        // },
-        valueFormatter: (params: any) => numberRoundingFormatter(params),
+        cellRenderer: (params: any) => {
+          if (params.data['id'] > 23) {
+            return '';
+          } else {
+            return numberRoundingFormatter(params);
+          }
+        },
       },
     ],
   },
   {
     headerName: 'Możliwość pokrycia zapotrz. okresu',
     field: 'mozliwoscPokryciaZopatrzenia',
-    headerClass: 'grid-header grid-header-outer',
+    headerClass: 'grid-header grid-header-outer mozliwosc-pokrycia',
     cellDataType: 'text',
   },
 ];

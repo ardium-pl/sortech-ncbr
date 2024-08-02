@@ -39,7 +39,7 @@ export class HourlyTableComponent {
     // autoHeaderHeight: true,
     sortable: false,
     resizable: true,
-    minWidth: 130,
+    minWidth: 110,
     flex: 1,
   };
   readonly columnDefs: (ColDef | ColGroupDef)[] = hourlyTableColDefs;
