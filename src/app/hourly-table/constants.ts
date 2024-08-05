@@ -13,6 +13,7 @@ interface SredniCzasNaPacjenta {
 interface Constants {
   pacjentRok: number;
   pacjentDzien: number;
+  wspolczynnikV: number;
   dzien: Dzien;
   godzina: Godzina;
   sredniCzasNaPacjenta: SredniCzasNaPacjenta
@@ -21,6 +22,8 @@ interface Constants {
 export const CONSTANTS: Constants = {
   pacjentRok: 51000,
   pacjentDzien: Math.round(51000 / 365),
+
+  wspolczynnikV: 0.5,
 
   dzien: {
     poniedzialek: 0.1646,

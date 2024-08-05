@@ -1,19 +1,16 @@
 import { Component, inject, computed } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular'; // Angular Data Grid Component
-import { LOSTableColDefs } from './col-defs-los';
+import { LOSTableColDefs, numberRoundingFormatter } from './col-defs-los';
 import {
   ColDef,
   ColGroupDef,
   CellValueChangedEvent,
   GridApi,
   GridReadyEvent,
-  RowStyle,
-  SizeColumnsToFitGridStrategy,
 } from 'ag-grid-community'; // Column Definition Type Interface
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import { HourlyDataService } from '../hourly-data.service';
-import { SignalNode } from '@angular/core/primitives/signals';
 import { Hour } from '../hour';
 
 @Component({
@@ -42,6 +39,7 @@ export class LengthOfStayComponent {
     // autoHeight: true,
     minWidth: 100,
     flex: 1,
+    cellRenderer: (params: any) => numberRoundingFormatter(params),
   };
 
   readonly columnDefs: (ColDef | ColGroupDef)[] = LOSTableColDefs;
@@ -50,11 +48,8 @@ export class LengthOfStayComponent {
   onCellValueChanged(event: CellValueChangedEvent) {
     // Get the changed row (=hour)
     let changedHour: Hour = event.data;
-    // Apply calculations
-    changedHour = this.hourlyDataService.applyHourCalculations(changedHour);
-    // Update main signal
-    this.hourlyDataService.updateHours(changedHour);
-    // this.hourlyDataService.applySummaryCalcuations();
+    // Apply calculations & update main signal
+    this.hourlyDataService.applyHourCalculations(changedHour);
     this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
   }
 
@@ -64,11 +59,7 @@ export class LengthOfStayComponent {
     this.api = event.api;
 
     // Apply calculations
-    this.rowData().forEach((hour) => {
-      const updatedHour = this.hourlyDataService.applyHourCalculations(hour);
-      // Update main signal
-      this.hourlyDataService.updateHours(updatedHour);
-    });
+    this.hourlyDataService.calculateMissingValues(this.rowData());
     this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
   };
 }

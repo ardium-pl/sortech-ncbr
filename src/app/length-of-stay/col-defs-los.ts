@@ -1,7 +1,8 @@
 import { ColDef, ColGroupDef } from 'ag-grid-community';
 
-const DECIMAL_PLACES = 100; // 10 for 1, 100 for 2, 1000 for 3 ...
-function numberRoundingFormatter(params: any) {
+export const DECIMAL_PLACES = 1000; // 10 for 1, 100 for 2, 1000 for 3 ...
+
+export function numberRoundingFormatter(params: any) {
   if (!isNaN(Number(params.value))) {
     return `${Math.round(params.value * DECIMAL_PLACES) / DECIMAL_PLACES}`;
   } else {
@@ -23,33 +24,37 @@ export const LOSTableColDefs: (ColDef | ColGroupDef)[] = [
   },
   {
     headerName: 'Pielęgniarki',
-    headerClass: 'grid-header grid-header-outer',
+    headerClass: 'grid-header grid-header-outer pielegniarki',
     children: [
       {
         headerName: 'Liczba',
         field: 'liczbaPielegniarek',
-        headerClass: 'grid-header grid-header-mid',
+        headerClass: 'grid-header grid-header-mid pielegniarki-odd',
+        cellStyle: { backgroundColor: 'var(--dark-red)' },
       },
       {
         headerName: 'Wydajność',
         field: 'wydajnoscPielegniarek',
-        headerClass: 'grid-header grid-header-mid',
+        headerClass: 'grid-header grid-header-mid pielegniarki-even',
+        cellStyle: { backgroundColor: 'var(--mid-red)' },
       },
     ],
   },
   {
     headerName: 'Lekarze',
-    headerClass: 'grid-header grid-header-outer',
+    headerClass: 'grid-header grid-header-outer lekarze',
     children: [
       {
         headerName: 'Liczba',
         field: 'liczbaLekarzy',
-        headerClass: 'grid-header grid-header-mid',
+        headerClass: 'grid-header grid-header-mid lekarze-odd',
+        cellStyle: { backgroundColor: 'var(--dark-green)' },
       },
       {
         headerName: 'Wydajność',
         field: 'wydajnoscLekarzy',
-        headerClass: 'grid-header grid-header-mid',
+        headerClass: 'grid-header grid-header-mid lekarze-even',
+        cellStyle: { backgroundColor: 'var(--mid-green)' },
       },
     ],
   },

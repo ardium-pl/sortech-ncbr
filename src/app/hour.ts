@@ -7,15 +7,15 @@ export interface Hour {
   obslugaPielegniarka: number;
   kolejkaPielegniarka: number;
   oczekiwaniePielegniarka: number;
-  lqPielegniarka: number;
-  wqPielegniarka: number;
+  lqPielegniarka: number | string;
+  wqPielegniarka: number | string;
   liczbaLekarzy: number;
   wydajnoscLekarzy: number;
   obslugaLekarz: number;
   kolejkaLekarz: number;
   oczekiwanieLekarz: number;
-  lqLekarz: number;
-  wqLekarz: number;
+  lqLekarz: number | string;
+  wqLekarz: number | string;
   liczbaLozek: number;
   wydajnoscLozek: number;
   liczbaLozekObserwacja: number;
@@ -23,7 +23,7 @@ export interface Hour {
   waskiZasob: string;
   waskaWydajnosc: number;
   mozliwoscPokryciaZopatrzenia: string;
-  opoznienieOgolem: number;
+  opoznienieOgolem: number | string;
 
   [property: string]: string | number;
 }

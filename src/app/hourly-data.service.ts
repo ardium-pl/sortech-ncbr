@@ -2,6 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { CONSTANTS } from './hourly-table/constants';
 import { Hour } from './hour';
 import { Summary, Summary1, Summary2 } from './summaries';
+import { LQparams } from './vbaparams';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,162 @@ export class HourlyDataService {
     );
   }
 
+  // applyHourCalculations(hourObject: Hour) {
+  //   const hour = { ...hourObject };
+
+  //   // Set oczekiwaneWizyty
+  //   hour.oczekiwaneWizyty =
+  //     7 *
+  //     CONSTANTS.pacjentDzien *
+  //     CONSTANTS.godzina[hour.godzina] *
+  //     CONSTANTS.dzien[this.currentDayOfWeek];
+
+  //   // Set wydajnosci
+  //   hour.wydajnoscPielegniarek =
+  //     (hour.liczbaPielegniarek * 60) /
+  //     CONSTANTS.sredniCzasNaPacjenta['pielegniarka'];
+
+  //   hour.wydajnoscLekarzy =
+  //     (hour.liczbaLekarzy * 60) / CONSTANTS.sredniCzasNaPacjenta['lekarz'];
+
+  //   hour.wydajnoscLozek =
+  //     hour.liczbaLozek / CONSTANTS.sredniCzasNaPacjenta['lozko'];
+
+  //   hour.wydajnoscLozekObserwacja =
+  //     hour.liczbaLozekObserwacja / CONSTANTS.sredniCzasNaPacjenta['obserwacja'];
+
+  //   // Set waskaWydajnosc
+  //   hour.waskaWydajnosc = Math.min(
+  //     hour.wydajnoscPielegniarek,
+  //     hour.wydajnoscLekarzy,
+  //     hour.wydajnoscLozek,
+  //     hour.wydajnoscLozekObserwacja
+  //   );
+
+  //   // Set waskiZasob
+  //   switch (hour.waskaWydajnosc) {
+  //     case hour.wydajnoscPielegniarek:
+  //       hour.waskiZasob = 'Pielęgniarki';
+  //       break;
+  //     case hour.wydajnoscLekarzy:
+  //       hour.waskiZasob = 'Lekarze';
+  //       break;
+  //     case hour.wydajnoscLozek:
+  //       hour.waskiZasob = 'Łóżka';
+  //       break;
+  //     case hour.wydajnoscLozekObserwacja:
+  //       hour.waskiZasob = 'Obs. Łóżka';
+  //       break;
+  //     default:
+  //       hour.waskiZasob = 'Demand';
+  //   }
+
+  //   // Set mozliwoscPokryciaZopatrzenia
+  //   hour.mozliwoscPokryciaZopatrzenia =
+  //     hour.waskaWydajnosc <= hour.oczekiwaneWizyty ? 'Niedobór wyd.' : '';
+
+  //   // Set obsługa
+  //   if (hour.id === 0) {
+  //     hour.obslugaPielegniarka = Math.min(
+  //       hour.wydajnoscPielegniarek,
+  //       hour.oczekiwaneWizyty + this.previousDayLastHour.kolejkaPielegniarka
+  //     );
+
+  //     hour.obslugaLekarz = Math.min(
+  //       hour.wydajnoscLekarzy,
+  //       hour.oczekiwaneWizyty + this.previousDayLastHour.kolejkaLekarz
+  //     );
+  //   } else {
+  //     hour.obslugaPielegniarka = Math.min(
+  //       hour.wydajnoscPielegniarek,
+  //       hour.oczekiwaneWizyty + this.rowData()[hour.id - 1].kolejkaPielegniarka
+  //     );
+
+  //     hour.obslugaLekarz = Math.min(
+  //       hour.wydajnoscLekarzy,
+  //       hour.oczekiwaneWizyty + this.rowData()[hour.id - 1].kolejkaLekarz
+  //     );
+  //   }
+
+  //   // Set kolejka
+  //   if (hour.id === 0) {
+  //     hour.kolejkaPielegniarka =
+  //       hour.oczekiwaneWizyty +
+  //       this.previousDayLastHour.kolejkaPielegniarka -
+  //       hour.obslugaPielegniarka;
+
+  //     hour.obslugaLekarz =
+  //       hour.oczekiwaneWizyty +
+  //       this.previousDayLastHour.kolejkaLekarz -
+  //       hour.obslugaLekarz;
+  //   } else {
+  //     hour.kolejkaPielegniarka =
+  //       hour.oczekiwaneWizyty +
+  //       this.rowData()[hour.id - 1].kolejkaPielegniarka -
+  //       hour.obslugaPielegniarka;
+
+  //     hour.obslugaLekarz =
+  //       hour.oczekiwaneWizyty +
+  //       this.rowData()[hour.id - 1].kolejkaLekarz -
+  //       hour.obslugaLekarz;
+  //   }
+
+  //   // Round numeric properties (exlducing id) to 2 decimal places
+  //   // for (let key in hour) {
+  //   //   if (typeof hour[key] === 'number' && key !== 'id') {
+  //   //     hour[key] = Math.round((hour[key] as number) * 100) / 100;
+  //   //   }
+  //   // }
+
+  //   return hour;
+  // }
+
+  calculateMissingValues(rowData: Hour[]) {
+    // Part 1
+    let calculatedRowData = rowData.map((hourObject) => {
+      let hour = { ...hourObject };
+      hour = this.obliczOczekiwaneWizyty(hour);
+      hour = this.obliczWydajnosc(hour);
+      hour = this.obliczWaskaWydajnosc(hour);
+      hour = this.obliczWaskiZasob(hour);
+      hour = this.obliczMozliwoscPokryciaZopatrzenia(hour);
+      hour = this.obliczObsluga(hour);
+      hour = this.obliczKolejka(hour);
+
+      this.updateHours(hour);
+      return hour;
+    });
+
+    // Part 2
+    calculatedRowData.forEach((hourObject) => {
+      let hour = { ...hourObject };
+      hour = this.obliczOczekiwanie(hour);
+      hour = this.obliczLq(hour);
+      hour = this.obliczWq(hour);
+      hour = this.obliczOpoznienieOgolem(hour);
+
+      this.updateHours(hour);
+    });
+  }
+
   applyHourCalculations(hourObject: Hour) {
+    let hour = { ...hourObject };
+    hour = this.obliczOczekiwaneWizyty(hour);
+    hour = this.obliczWydajnosc(hour);
+    hour = this.obliczWaskaWydajnosc(hour);
+    hour = this.obliczWaskiZasob(hour);
+    hour = this.obliczMozliwoscPokryciaZopatrzenia(hour);
+    hour = this.obliczObsluga(hour);
+    hour = this.obliczKolejka(hour);
+    hour = this.obliczOczekiwanie(hour);
+    hour = this.obliczLq(hour);
+    hour = this.obliczWq(hour);
+    hour = this.obliczOpoznienieOgolem(hour);
+
+    this.updateHours(hour);
+  }
+
+  obliczOczekiwaneWizyty(hourObject: Hour) {
     const hour = { ...hourObject };
 
     // Set oczekiwaneWizyty
@@ -24,6 +180,12 @@ export class HourlyDataService {
       CONSTANTS.pacjentDzien *
       CONSTANTS.godzina[hour.godzina] *
       CONSTANTS.dzien[this.currentDayOfWeek];
+
+    return hour;
+  }
+
+  obliczWydajnosc(hourObject: Hour) {
+    const hour = { ...hourObject };
 
     // Set wydajnosci
     hour.wydajnoscPielegniarek =
@@ -39,6 +201,12 @@ export class HourlyDataService {
     hour.wydajnoscLozekObserwacja =
       hour.liczbaLozekObserwacja / CONSTANTS.sredniCzasNaPacjenta['obserwacja'];
 
+    return hour;
+  }
+
+  obliczWaskaWydajnosc(hourObject: Hour) {
+    const hour = { ...hourObject };
+
     // Set waskaWydajnosc
     hour.waskaWydajnosc = Math.min(
       hour.wydajnoscPielegniarek,
@@ -46,6 +214,12 @@ export class HourlyDataService {
       hour.wydajnoscLozek,
       hour.wydajnoscLozekObserwacja
     );
+
+    return hour;
+  }
+
+  obliczWaskiZasob(hourObject: Hour) {
+    const hour = { ...hourObject };
 
     // Set waskiZasob
     switch (hour.waskaWydajnosc) {
@@ -65,9 +239,21 @@ export class HourlyDataService {
         hour.waskiZasob = 'Demand';
     }
 
+    return hour;
+  }
+
+  obliczMozliwoscPokryciaZopatrzenia(hourObject: Hour) {
+    const hour = { ...hourObject };
+
     // Set mozliwoscPokryciaZopatrzenia
     hour.mozliwoscPokryciaZopatrzenia =
       hour.waskaWydajnosc <= hour.oczekiwaneWizyty ? 'Niedobór wyd.' : '';
+
+    return hour;
+  }
+
+  obliczObsluga(hourObject: Hour) {
+    const hour = { ...hourObject };
 
     // Set obsługa
     if (hour.id === 0) {
@@ -83,7 +269,7 @@ export class HourlyDataService {
     } else {
       hour.obslugaPielegniarka = Math.min(
         hour.wydajnoscPielegniarek,
-        hour.oczekiwaneWizyty + this.rowData()[hour.id-1].kolejkaPielegniarka
+        hour.oczekiwaneWizyty + this.rowData()[hour.id - 1].kolejkaPielegniarka
       );
 
       hour.obslugaLekarz = Math.min(
@@ -92,14 +278,193 @@ export class HourlyDataService {
       );
     }
 
-    // Round numeric properties (exlducing id) to 2 decimal places
-    // for (let key in hour) {
-    //   if (typeof hour[key] === 'number' && key !== 'id') {
-    //     hour[key] = Math.round((hour[key] as number) * 100) / 100;
-    //   }
-    // }
+    return hour;
+  }
+
+  obliczKolejka(hourObject: Hour) {
+    const hour = { ...hourObject };
+
+    // Set kolejka
+    if (hour.id === 0) {
+      hour.kolejkaPielegniarka =
+        hour.oczekiwaneWizyty +
+        this.previousDayLastHour.kolejkaPielegniarka -
+        hour.obslugaPielegniarka;
+
+      hour.obslugaLekarz =
+        hour.oczekiwaneWizyty +
+        this.previousDayLastHour.kolejkaLekarz -
+        hour.obslugaLekarz;
+    } else {
+      hour.kolejkaPielegniarka =
+        hour.oczekiwaneWizyty +
+        this.rowData()[hour.id - 1].kolejkaPielegniarka -
+        hour.obslugaPielegniarka;
+
+      hour.obslugaLekarz =
+        hour.oczekiwaneWizyty +
+        this.rowData()[hour.id - 1].kolejkaLekarz -
+        hour.obslugaLekarz;
+    }
 
     return hour;
+  }
+
+  obliczOczekiwanie(hourObject: Hour) {
+    const hour = { ...hourObject };
+
+    // Set oczekiwanie
+    if (hour.id === 23) {
+      hour.oczekiwaniePielegniarka =
+        hour.kolejkaPielegniarka / this.rowData()[0].wydajnoscPielegniarek;
+      hour.oczekiwanieLekarz =
+        hour.kolejkaLekarz / this.rowData()[0].wydajnoscLekarzy;
+    } else {
+      hour.oczekiwaniePielegniarka =
+        hour.kolejkaPielegniarka /
+        this.rowData()[hour.id + 1].wydajnoscPielegniarek;
+      hour.oczekiwanieLekarz =
+        hour.kolejkaLekarz / this.rowData()[hour.id + 1].wydajnoscLekarzy;
+    }
+    return hour;
+  }
+
+  obliczLq(hourObject: Hour) {
+    const hour = { ...hourObject };
+
+    // Set lq
+    if (hour.oczekiwaniePielegniarka > 0) {
+      hour.lqPielegniarka = 0;
+    } else {
+      // Calling Lq function implemented from VBA script
+      hour.lqPielegniarka = this.Lq({
+        arrivalRate: hour.oczekiwaneWizyty,
+        serviceRate: 60 / CONSTANTS.sredniCzasNaPacjenta['pielegniarka'], // Wydajnosc godzinowa 1 pielegniarki
+        servers: hour.liczbaPielegniarek,
+      });
+      if (typeof hour.lqPielegniarka === 'number') {
+        hour.lqPielegniarka *= CONSTANTS.wspolczynnikV;
+      }
+    }
+
+    if (hour.oczekiwanieLekarz > 0) {
+      hour.lqLekarz = 0;
+    } else {
+      // Calling Lq function implemented from VBA script
+      hour.lqLekarz = this.Lq({
+        arrivalRate: hour.oczekiwaneWizyty,
+        serviceRate: 60 / CONSTANTS.sredniCzasNaPacjenta['lekarz'], // Wydajnosc godzinowa 1 lekarza
+        servers: hour.liczbaLekarzy,
+      });
+      if (typeof hour.lqLekarz === 'number') {
+        hour.lqLekarz *= CONSTANTS.wspolczynnikV;
+      }
+    }
+
+    return hour;
+  }
+
+  obliczWq(hourObject: Hour) {
+    const hour = { ...hourObject };
+
+    // Set wq
+    if (typeof hour.lqPielegniarka === 'number') {
+      hour.wqPielegniarka = hour.lqPielegniarka / hour.oczekiwaneWizyty;
+    } else {
+      hour.wqPielegniarka = 'INVALID VALUE TYPE - STR';
+    }
+
+    if (typeof hour.lqLekarz === 'number') {
+      hour.wqLekarz = hour.lqLekarz / hour.oczekiwaneWizyty;
+    } else {
+      hour.wqLekarz = 'INVALID VALUE TYPE - STR';
+    }
+
+    return hour;
+  }
+
+  obliczOpoznienieOgolem(hourObject: Hour) {
+    const hour = { ...hourObject };
+
+    // Set opznienieOgolem
+    if (
+      typeof hour.wqPielegniarka !== 'number' ||
+      typeof hour.wqLekarz !== 'number'
+    ) {
+      hour.opoznienieOgolem = 'INVALID VALUE TYPE - STR';
+    } else {
+      hour.opoznienieOgolem =
+        Math.max(hour.oczekiwaniePielegniarka, hour.oczekiwanieLekarz) +
+        hour.wqPielegniarka +
+        hour.wqLekarz;
+    }
+
+    return hour;
+  }
+
+  // Lq function is a 1:1 copy of the corresponding Lq function declared in VBA
+  Lq({
+    arrivalRate,
+    serviceRate,
+    servers,
+    queueCapacity = null,
+  }: LQparams): string | number {
+    let sum: number = 0;
+    let term: number = 1;
+    let rho: number;
+    let n: number;
+    let p: number;
+    let q: number;
+    let expQLength: number = 0;
+
+    // Validate inputs
+    if (arrivalRate <= 0) {
+      return '#Arrival_Rate <= 0';
+    } else if (serviceRate <= 0) {
+      return '#Service_Rate <= 0';
+    } else if (servers < 1) {
+      return '#Servers <= 0';
+    } else if (Math.floor(servers) !== servers) {
+      return '#Servers not integer';
+    }
+
+    if (
+      queueCapacity === undefined ||
+      queueCapacity === null ||
+      queueCapacity.toString().toLowerCase().startsWith('inf')
+    ) {
+      // M/M/s with infinite queue capacity
+      rho = arrivalRate / (servers * serviceRate);
+      if (rho >= 1) {
+        return '#Utilization >= 100%';
+      } else {
+        for (n = 0; n < servers; n++) {
+          sum += term;
+          term *= arrivalRate / serviceRate / (n + 1);
+        }
+        return ((term * rho) / (1 - rho) ** 2) * (1 / (sum + term / (1 - rho)));
+      }
+    } else {
+      // M/M/s with finite queue capacity
+      if (Math.floor(queueCapacity) !== queueCapacity) {
+        return '#Queue_Capacity not integer';
+      } else if (queueCapacity < 0) {
+        return '#Queue Capacity <= 0';
+      } else {
+        p = 1;
+        q = 1;
+        for (n = 1; n <= servers; n++) {
+          p *= arrivalRate / (n * serviceRate);
+          q += p;
+        }
+        for (n = servers + 1; n <= servers + queueCapacity; n++) {
+          p *= arrivalRate / (servers * serviceRate);
+          q += p;
+          expQLength += (n - servers) * p;
+        }
+        return expQLength / q;
+      }
+    }
   }
 
   applySummaryCalcuationsForPinnedRows() {
@@ -203,7 +568,7 @@ export class HourlyDataService {
       id: 0,
       godzina: '0-1',
       oczekiwaneWizyty: 3.23,
-      liczbaPielegniarek: 1,
+      liczbaPielegniarek: 4,
       wydajnoscPielegniarek: 5.05,
       obslugaPielegniarka: 5.0489,
       kolejkaPielegniarka: 18.7608,
