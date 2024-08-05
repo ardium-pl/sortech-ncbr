@@ -46,9 +46,9 @@ export class LengthOfStayComponent {
   readonly rowData = computed(() => this.hourlyDataService.rowData());
 
   onCellValueChanged(event: CellValueChangedEvent) {
-    // Get the changed row (=hour)
+    // // Get the changed row (=hour)
     let changedHour: Hour = event.data;
-    // Apply calculations & update main signal
+    // // Apply calculations & update main signal
     this.hourlyDataService.applyHourCalculations(changedHour);
     this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
   }
@@ -61,5 +61,14 @@ export class LengthOfStayComponent {
     // Apply calculations
     this.hourlyDataService.calculateMissingValues(this.rowData());
     this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
+
+    let lq_log = this.hourlyDataService.Lq({
+      arrivalRate: 5.66,
+      serviceRate: 1.374, // Wydajnosc godzinowa 1 lekarza
+      servers: 8,
+    }) as number;
+
+    // lq_log = Math.round((lq_log) * 10000) / 10000;
+    console.log(lq_log * 0.5);
   };
 }

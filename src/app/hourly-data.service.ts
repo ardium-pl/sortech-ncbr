@@ -126,9 +126,19 @@ export class HourlyDataService {
   //   return hour;
   // }
 
-  calculateMissingValues(rowData: Hour[]) {
+  calculateMissingValues(rowData: Hour[], changedRow?: Hour) {
+    let rows: Hour[];
+
+    if (changedRow) {
+      rows = rowData.map((row) => {
+        return row.id === changedRow.id ? changedRow : row;
+      });
+    } else {
+      rows = rowData;
+    }
+
     // Part 1
-    let calculatedRowData = rowData.map((hourObject) => {
+    let calculatedRowData = rows.map((hourObject) => {
       let hour = { ...hourObject };
       hour = this.obliczOczekiwaneWizyty(hour);
       hour = this.obliczWydajnosc(hour);
@@ -188,15 +198,41 @@ export class HourlyDataService {
     const hour = { ...hourObject };
 
     // Set wydajnosci
-    hour.wydajnoscPielegniarek =
-      (hour.liczbaPielegniarek * 60) /
-      CONSTANTS.sredniCzasNaPacjenta['pielegniarka'];
+    if (hour.id === 0) {
+      hour.wydajnoscPielegniarek =
+        (hour.liczbaPielegniarek * 60) /
+        CONSTANTS.sredniCzasNaPacjenta['pielegniarka'];
 
-    hour.wydajnoscLekarzy =
-      (hour.liczbaLekarzy * 60) / CONSTANTS.sredniCzasNaPacjenta['lekarz'];
+      hour.wydajnoscLekarzy =
+        (hour.liczbaLekarzy * 60) / CONSTANTS.sredniCzasNaPacjenta['lekarz'];
 
-    hour.wydajnoscLozek =
-      hour.liczbaLozek / CONSTANTS.sredniCzasNaPacjenta['lozko'];
+      hour.wydajnoscLozek =
+        hour.liczbaLozek / CONSTANTS.sredniCzasNaPacjenta['lozko'];
+    } else if (hour.id === 23) {
+      hour.wydajnoscPielegniarek =
+        (this.rowData()[0].liczbaPielegniarek * 60) /
+        CONSTANTS.sredniCzasNaPacjenta['pielegniarka'];
+
+      hour.wydajnoscLekarzy =
+        (this.rowData()[0].liczbaLekarzy * 60) /
+        CONSTANTS.sredniCzasNaPacjenta['lekarz'];
+
+      hour.wydajnoscLozek =
+        this.rowData()[hour.id - 1].liczbaLozek /
+        CONSTANTS.sredniCzasNaPacjenta['lozko'];
+    } else {
+      hour.wydajnoscPielegniarek =
+        (this.rowData()[hour.id - 1].liczbaPielegniarek * 60) /
+        CONSTANTS.sredniCzasNaPacjenta['pielegniarka'];
+
+      hour.wydajnoscLekarzy =
+        (this.rowData()[hour.id - 1].liczbaLekarzy * 60) /
+        CONSTANTS.sredniCzasNaPacjenta['lekarz'];
+
+      hour.wydajnoscLozek =
+        this.rowData()[hour.id - 1].liczbaLozek /
+        CONSTANTS.sredniCzasNaPacjenta['lozko'];
+    }
 
     hour.wydajnoscLozekObserwacja =
       hour.liczbaLozekObserwacja / CONSTANTS.sredniCzasNaPacjenta['obserwacja'];
@@ -291,7 +327,7 @@ export class HourlyDataService {
         this.previousDayLastHour.kolejkaPielegniarka -
         hour.obslugaPielegniarka;
 
-      hour.obslugaLekarz =
+      hour.kolejkaLekarz =
         hour.oczekiwaneWizyty +
         this.previousDayLastHour.kolejkaLekarz -
         hour.obslugaLekarz;
@@ -301,7 +337,7 @@ export class HourlyDataService {
         this.rowData()[hour.id - 1].kolejkaPielegniarka -
         hour.obslugaPielegniarka;
 
-      hour.obslugaLekarz =
+      hour.kolejkaLekarz =
         hour.oczekiwaneWizyty +
         this.rowData()[hour.id - 1].kolejkaLekarz -
         hour.obslugaLekarz;
@@ -342,6 +378,7 @@ export class HourlyDataService {
         serviceRate: 60 / CONSTANTS.sredniCzasNaPacjenta['pielegniarka'], // Wydajnosc godzinowa 1 pielegniarki
         servers: hour.liczbaPielegniarek,
       });
+
       if (typeof hour.lqPielegniarka === 'number') {
         hour.lqPielegniarka *= CONSTANTS.wspolczynnikV;
       }
@@ -356,9 +393,21 @@ export class HourlyDataService {
         serviceRate: 60 / CONSTANTS.sredniCzasNaPacjenta['lekarz'], // Wydajnosc godzinowa 1 lekarza
         servers: hour.liczbaLekarzy,
       });
+
       if (typeof hour.lqLekarz === 'number') {
         hour.lqLekarz *= CONSTANTS.wspolczynnikV;
       }
+
+      // if (hour.id === 9) {
+      //   console.log(
+      //     {
+      //       arrivalRate: hour.oczekiwaneWizyty,
+      //       serviceRate: 60 / CONSTANTS.sredniCzasNaPacjenta['lekarz'], // Wydajnosc godzinowa 1 lekarza
+      //       servers: hour.liczbaLekarzy,
+      //     },
+      //     hour.lqLekarz
+      //   );
+      // }
     }
 
     return hour;

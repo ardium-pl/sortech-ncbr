@@ -1,6 +1,6 @@
 import { ColDef, ColGroupDef } from 'ag-grid-community';
 
-export const DECIMAL_PLACES = 1000; // 10 for 1, 100 for 2, 1000 for 3 ...
+export const DECIMAL_PLACES = 100; // 10 for 1, 100 for 2, 1000 for 3 ...
 
 export function numberRoundingFormatter(params: any) {
   if (!isNaN(Number(params.value))) {
@@ -31,6 +31,7 @@ export const LOSTableColDefs: (ColDef | ColGroupDef)[] = [
         field: 'liczbaPielegniarek',
         headerClass: 'grid-header grid-header-mid pielegniarki-odd',
         cellStyle: { backgroundColor: 'var(--dark-red)' },
+        editable: true,
       },
       {
         headerName: 'Wydajność',
@@ -49,6 +50,7 @@ export const LOSTableColDefs: (ColDef | ColGroupDef)[] = [
         field: 'liczbaLekarzy',
         headerClass: 'grid-header grid-header-mid lekarze-odd',
         cellStyle: { backgroundColor: 'var(--dark-green)' },
+        editable: true,
       },
       {
         headerName: 'Wydajność',
@@ -132,12 +134,12 @@ export const LOSTableColDefs: (ColDef | ColGroupDef)[] = [
         children: [
           {
             headerName: 'Lq',
-            field: 'lqPielegniarka',
+            field: 'lqLekarz',
             headerClass: 'grid-header grid-header-inner',
           },
           {
             headerName: 'Wq',
-            field: 'wqPielegniarka',
+            field: 'wqLekarz',
             headerClass: 'grid-header grid-header-inner',
           },
         ],

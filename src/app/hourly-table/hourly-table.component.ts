@@ -49,10 +49,15 @@ export class HourlyTableComponent {
   readonly summaryRow3 = {};
 
   onCellValueChanged(event: CellValueChangedEvent) {
-    // Get the changed row (=hour)
+    // // Get the changed row (=hour)
     let changedHour: Hour = event.data;
-    // Apply calculations & update main signal
+    // // Apply calculations & update main signal
     this.hourlyDataService.applyHourCalculations(changedHour);
+    this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
+
+    console.log(changedHour);
+    // Apply calculations
+    this.hourlyDataService.calculateMissingValues(this.rowData(), changedHour);
     this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
   }
 
