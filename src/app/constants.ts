@@ -1,23 +1,4 @@
-interface Dzien {
-  [key: string]: number;
-}
-
-interface Godzina {
-  [key: string]: number;
-}
-
-interface SredniCzasNaPacjenta {
-  [key: string]: number;
-}
-
-interface Constants {
-  pacjentRok: number;
-  pacjentDzien: number;
-  wspolczynnikV: number;
-  dzien: Dzien;
-  godzina: Godzina;
-  sredniCzasNaPacjenta: SredniCzasNaPacjenta;
-}
+import { Constants } from './interfaces/utils';
 
 export const CONSTANTS: Constants = {
   pacjentRok: 51000,
@@ -65,8 +46,8 @@ export const CONSTANTS: Constants = {
   sredniCzasNaPacjenta: {
     triage: 5, // min
     lozko: 4.10468250688705, // godz
-    lekarz: 43.66838567493110, // min
-    pielegniarka: 47.53533057851240, // min
+    lekarz: 43.6683856749311, // min
+    pielegniarka: 47.5353305785124, // min
     obserwacja: 1.32, // godz
   },
 };

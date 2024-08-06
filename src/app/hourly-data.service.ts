@@ -1,14 +1,15 @@
 import { Injectable, signal } from '@angular/core';
-import { CONSTANTS } from './hourly-table/constants';
-import { Hour } from './hour';
-import { Summary, Summary1, Summary2 } from './summaries';
-import { LQparams } from './vbaparams';
+import { CONSTANTS } from './constants';
+import { Dzien } from './interfaces/utils';
+import { Hour } from './interfaces/hour';
+import { Summary, Summary1, Summary2 } from './interfaces/summaries';
+import { LQparams } from './interfaces/utils';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HourlyDataService {
-  readonly currentDayOfWeek = 'poniedzialek';
+  readonly currentDayOfWeek: keyof Dzien = 'poniedzialek';
 
   updateHours(changedHour: Hour) {
     this.rowData.update((hours) =>
@@ -16,7 +17,7 @@ export class HourlyDataService {
     );
   }
 
-  // applyHourCalculations(hourObject: Hour) {
+  // applyHourCalculationOld(hourObject: Hour) {
   //   const hour = { ...hourObject };
 
   //   // Set oczekiwaneWizyty
@@ -126,7 +127,7 @@ export class HourlyDataService {
   //   return hour;
   // }
 
-  calculateMissingValues(rowData: Hour[], changedRow?: Hour) {
+  applyHourCalculations(rowData: Hour[], changedRow?: Hour) {
     let rows: Hour[];
 
     if (changedRow) {
@@ -164,22 +165,22 @@ export class HourlyDataService {
     });
   }
 
-  applyHourCalculations(hourObject: Hour) {
-    let hour = { ...hourObject };
-    hour = this.obliczOczekiwaneWizyty(hour);
-    hour = this.obliczWydajnosc(hour);
-    hour = this.obliczWaskaWydajnosc(hour);
-    hour = this.obliczWaskiZasob(hour);
-    hour = this.obliczMozliwoscPokryciaZopatrzenia(hour);
-    hour = this.obliczObsluga(hour);
-    hour = this.obliczKolejka(hour);
-    hour = this.obliczOczekiwanie(hour);
-    hour = this.obliczLq(hour);
-    hour = this.obliczWq(hour);
-    hour = this.obliczOpoznienieOgolem(hour);
+  // applyHourCalculations(hourObject: Hour) {
+  //   let hour = { ...hourObject };
+  //   hour = this.obliczOczekiwaneWizyty(hour);
+  //   hour = this.obliczWydajnosc(hour);
+  //   hour = this.obliczWaskaWydajnosc(hour);
+  //   hour = this.obliczWaskiZasob(hour);
+  //   hour = this.obliczMozliwoscPokryciaZopatrzenia(hour);
+  //   hour = this.obliczObsluga(hour);
+  //   hour = this.obliczKolejka(hour);
+  //   hour = this.obliczOczekiwanie(hour);
+  //   hour = this.obliczLq(hour);
+  //   hour = this.obliczWq(hour);
+  //   hour = this.obliczOpoznienieOgolem(hour);
 
-    this.updateHours(hour);
-  }
+  //   this.updateHours(hour);
+  // }
 
   obliczOczekiwaneWizyty(hourObject: Hour) {
     const hour = { ...hourObject };
@@ -397,17 +398,6 @@ export class HourlyDataService {
       if (typeof hour.lqLekarz === 'number') {
         hour.lqLekarz *= CONSTANTS.wspolczynnikV;
       }
-
-      // if (hour.id === 9) {
-      //   console.log(
-      //     {
-      //       arrivalRate: hour.oczekiwaneWizyty,
-      //       serviceRate: 60 / CONSTANTS.sredniCzasNaPacjenta['lekarz'], // Wydajnosc godzinowa 1 lekarza
-      //       servers: hour.liczbaLekarzy,
-      //     },
-      //     hour.lqLekarz
-      //   );
-      // }
     }
 
     return hour;
@@ -514,6 +504,19 @@ export class HourlyDataService {
         return expQLength / q;
       }
     }
+  }
+
+  consoleLogLq() {
+    let calculatedLq = this.Lq({
+      arrivalRate: 5.66,
+      serviceRate: 1.374, // Wydajnosc godzinowa 1 lekarza
+      servers: 8,
+    }) as number;
+
+    const DECIMAL_PLACES = 1000;
+    calculatedLq = Math.round(calculatedLq * DECIMAL_PLACES) / DECIMAL_PLACES;
+    console.log(calculatedLq);
+    console.log(calculatedLq * 0.5);
   }
 
   applySummaryCalcuationsForPinnedRows() {

@@ -11,7 +11,7 @@ import {
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import { HourlyDataService } from '../hourly-data.service';
-import { Hour } from '../hour';
+import { Hour } from '../interfaces/hour';
 
 @Component({
   selector: 'app-length-of-stay',
@@ -46,10 +46,10 @@ export class LengthOfStayComponent {
   readonly rowData = computed(() => this.hourlyDataService.rowData());
 
   onCellValueChanged(event: CellValueChangedEvent) {
-    // // Get the changed row (=hour)
+    // Get the changed row (=hour)
     let changedHour: Hour = event.data;
-    // // Apply calculations & update main signal
-    this.hourlyDataService.applyHourCalculations(changedHour);
+    // Apply calculations & update main signal
+    this.hourlyDataService.applyHourCalculations(this.rowData(), changedHour);
     this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
   }
 
@@ -59,16 +59,7 @@ export class LengthOfStayComponent {
     this.api = event.api;
 
     // Apply calculations
-    this.hourlyDataService.calculateMissingValues(this.rowData());
+    this.hourlyDataService.applyHourCalculations(this.rowData());
     this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
-
-    let lq_log = this.hourlyDataService.Lq({
-      arrivalRate: 5.66,
-      serviceRate: 1.374, // Wydajnosc godzinowa 1 lekarza
-      servers: 8,
-    }) as number;
-
-    // lq_log = Math.round((lq_log) * 10000) / 10000;
-    console.log(lq_log * 0.5);
   };
 }

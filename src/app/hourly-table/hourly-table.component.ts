@@ -2,7 +2,7 @@ import { Component, inject, computed } from '@angular/core';
 import { HourlyDataService } from '../hourly-data.service';
 import { hourlyTableColDefs } from './col-defs-hourly';
 import { AgGridAngular } from 'ag-grid-angular';
-import { Hour } from '../hour';
+import { Hour } from '../interfaces/hour';
 import {
   ColDef,
   ColGroupDef,
@@ -49,15 +49,10 @@ export class HourlyTableComponent {
   readonly summaryRow3 = {};
 
   onCellValueChanged(event: CellValueChangedEvent) {
-    // // Get the changed row (=hour)
+    // Get the changed row (=hour)
     let changedHour: Hour = event.data;
-    // // Apply calculations & update main signal
-    this.hourlyDataService.applyHourCalculations(changedHour);
-    this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
-
-    console.log(changedHour);
-    // Apply calculations
-    this.hourlyDataService.calculateMissingValues(this.rowData(), changedHour);
+    // Apply calculations & update main signal
+    this.hourlyDataService.applyHourCalculations(this.rowData(), changedHour);
     this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
   }
 
@@ -67,7 +62,7 @@ export class HourlyTableComponent {
     this.api = event.api;
 
     // Apply calculations
-    this.hourlyDataService.calculateMissingValues(this.rowData());
+    this.hourlyDataService.applyHourCalculations(this.rowData());
     this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
   };
 }

@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { CONSTANTS } from './hourly-table/constants';
+import { CONSTANTS } from './constants';
 
 @Injectable({
   providedIn: 'root',
