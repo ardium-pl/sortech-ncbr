@@ -1,6 +1,6 @@
 import { ColDef, ColGroupDef } from 'ag-grid-community';
 
-export const DECIMAL_PLACES = 100; // 10 for 1, 100 for 2, 1000 for 3 ...
+const DECIMAL_PLACES = 100; // 10 for 1, 100 for 2, 1000 for 3 ...
 
 export function numberRoundingFormatter(params: any) {
   if (!isNaN(Number(params.value))) {

@@ -86,5 +86,23 @@ ag-grid-angular {
     .waskie-gardlo-odd {
       border-left: var(--standard-border);
     }
+
+    // Cells
+    .cell {
+      text-align: center;
+
+      &.editable {
+        background-color: var(--mid-orange);
+      }
+
+      &.typPacjenta {
+        text-align: left;
+      }
+
+      &.mean-time-per-patient-row {
+        background-color: var(--dark-orange);
+        font-weight: bold;
+      }
+    }
   }
 }

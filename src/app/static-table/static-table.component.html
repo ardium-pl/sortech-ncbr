@@ -1,10 +1,13 @@
 <ag-grid-angular
   class="ag-theme-alpine"
-  [rowData]="rowData"
+  [rowData]="rowData()"
   [columnDefs]="columnDefs"
   [defaultColDef]="defaultColDef"
+  [rowHeight]="ROW_HEIGHT"
   [headerHeight]="HEADER_HEIGHT"
   [groupHeaderHeight]="GROUP_HEADER_HEIGHT"
-  >
+  [suppressScrollOnNewData]="true"
+  (cellValueChanged)="onCellValueChanged($event)"
+  (gridReady)="onGridReady($event)"
+>
 </ag-grid-angular>
-

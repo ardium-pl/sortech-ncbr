@@ -1,9 +1,8 @@
 import { Injectable, signal } from '@angular/core';
 import { CONSTANTS } from './constants';
-import { Dzien } from './interfaces/utils';
+import { Dzien, LQparams} from './interfaces/utils';
 import { Hour } from './interfaces/hour';
 import { Summary, Summary1, Summary2 } from './interfaces/summaries';
-import { LQparams } from './interfaces/utils';
 
 @Injectable({
   providedIn: 'root',
