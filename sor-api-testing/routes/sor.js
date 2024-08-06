@@ -1,66 +1,71 @@
 import express from "express";
-import {getPacjenci, getPacjent, addPacjent, updatePacjent, removePacjent, getTriage} from "../services/sor.js";
-import {validatePacjent} from '../middleware/validation.js';
+import {getStanZasobow, getPacjenci, insertStanZasobow, insertPacjent} from "../services/sor.js";
+import moment from 'moment';
 
 export const sorRouter = express.Router();
 
-sorRouter.route('/')
-    .get(async (req, res, next) => {
-        try {
-            if (req.query.triage) {
-                const triageList = await getTriage();
-                res.json(triageList);
-            } else {
-                const pacjenci = await getPacjenci(req.query);
-                res.json(pacjenci);
-            }
-        } catch (error) {
-            next(error);
+sorRouter.get("/stan-zasobow", async (req, res, next) => {
+    try {
+        const {date} = req.query;
+        if (!date) {
+            return res.status(400).json({message: "Brak parametru date"});
         }
-    })
-    .post(validatePacjent, async (req, res, next) => {
-        try {
-            const newPacjent = await addPacjent(req.body);
-            res.status(201).json(newPacjent);
-        } catch (error) {
-            next(error);
-        }
-    });
 
-sorRouter.route('/:id')
-    .get(async (req, res, next) => {
-        try {
-            const pacjent = await getPacjent(req.params.id);
-            if (pacjent) {
-                res.json(pacjent);
-            } else {
-                res.status(404).json({message: "Pacjent nie znaleziony"});
-            }
-        } catch (error) {
-            next(error);
+        const parsedDate = moment(date);
+        if (!parsedDate.isValid()) {
+            return res.status(400).json({message: "Nieprawidłowy format daty"});
         }
-    })
-    .put(validatePacjent, async (req, res, next) => {
-        try {
-            const updatedPacjent = await updatePacjent(req.params.id, req.body);
-            if (updatedPacjent) {
-                res.json(updatedPacjent);
-            } else {
-                res.status(404).json({message: "Pacjent nie znaleziony"});
-            }
-        } catch (error) {
-            next(error);
+
+        const stanZasobow = await getStanZasobow(parsedDate.toDate());
+        res.json(stanZasobow);
+    } catch (error) {
+        next(error);
+    }
+});
+
+sorRouter.get("/pacjenci", async (req, res, next) => {
+    try {
+        const {date} = req.query;
+        if (!date) {
+            return res.status(400).json({message: "Brak parametru date"});
         }
-    })
-    .delete(async (req, res, next) => {
-        try {
-            const result = await removePacjent(req.params.id);
-            if (result) {
-                res.status(204).send();
-            } else {
-                res.status(404).json({message: "Pacjent nie znaleziony"});
-            }
-        } catch (error) {
-            next(error);
+
+        const parsedDate = moment(date);
+        if (!parsedDate.isValid()) {
+            return res.status(400).json({message: "Nieprawidłowy format daty"});
         }
-    });
+
+        const pacjenci = await getPacjenci(parsedDate.toDate());
+        res.json(pacjenci);
+    } catch (error) {
+        next(error);
+    }
+});
+
+sorRouter.post("/stan-zasobow", async (req, res, next) => {
+    try {
+        const {stan} = req.body;
+        if (!stan || !stan.ostatnia_aktualizacja) {
+            return res.status(400).json({message: "Nieprawidłowe dane"});
+        }
+
+        const insertedId = await insertStanZasobow(stan);
+        res.status(201).json({message: "Stan zasobów dodany", id: insertedId});
+    } catch (error) {
+        next(error);
+    }
+});
+
+sorRouter.post("/pacjenci", async (req, res, next) => {
+    try {
+        const {pacjent} = req.body;
+        if (!pacjent || !pacjent.data_przyjecia || !pacjent.typ) {
+            return res.status(400).json({message: "Nieprawidłowe dane pacjenta"});
+        }
+
+        const insertedId = await insertPacjent(pacjent);
+        res.status(201).json({message: "Pacjent dodany", id: insertedId});
+    } catch (error) {
+        next(error);
+    }
+});

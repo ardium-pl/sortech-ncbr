@@ -1,56 +1,60 @@
-import pool from '../config/database.js';
+import {getConnection} from '../config/database.js';
+import moment from 'moment';
+const connection = await getConnection();
+export const getStanZasobow = async (date) => {
+    const startDate = moment(date).startOf('day').format('YYYY-MM-DD HH:mm:ss');
+    const endDate = moment(date).endOf('day').format('YYYY-MM-DD HH:mm:ss');
 
-export const getPacjenci = async (filters = {}) => {
-    let query = 'SELECT * FROM pacjenci WHERE 1=1';
-    const values = [];
+    const query = `
+        SELECT *
+        FROM stan_zasobow
+        WHERE ostatnia_aktualizacja BETWEEN ? AND ?
+        ORDER BY ostatnia_aktualizacja ASC
+    `;
 
-    if (filters.stan) {
-        query += ' AND stan = ?';
-        values.push(filters.stan);
-    }
-
-    if (filters.priorytet) {
-        query += ' AND priorytet = ?';
-        values.push(filters.priorytet);
-    }
-
-    query += ' ORDER BY priorytet ASC, data_przyjecia ASC';
-
-    const [rows] = await pool.query(query, values);
+    const [rows] = await connection.query(query, [startDate, endDate]);
     return rows;
 };
 
-export const getPacjent = async (id) => {
-    const [rows] = await pool.query('SELECT * FROM pacjenci WHERE id = ?', [id]);
-    return rows[0];
-};
+export const getPacjenci = async (date) => {
+    const startDate = moment(date).startOf('day').format('YYYY-MM-DD HH:mm:ss');
+    const endDate = moment(date).endOf('day').format('YYYY-MM-DD HH:mm:ss');
 
-export const addPacjent = async (pacjent) => {
-    const {imie, nazwisko, pesel, stan, priorytet} = pacjent;
-    const [result] = await pool.query(
-        'INSERT INTO pacjenci (imie, nazwisko, pesel, stan, priorytet, data_przyjecia) VALUES (?, ?, ?, ?, ?, NOW())',
-        [imie, nazwisko, pesel, stan, priorytet]
-    );
-    return getPacjent(result.insertId);
-};
+    const query = `
+        SELECT p.*, tp.nazwa, tp.czas_lekarza, tp.czas_pielegniarki, tp.czas_lozka, tp.czas_lozka_obserwacji
+        FROM pacjenci p
+                 JOIN typy_pacjenta tp ON p.typ = tp.id
+        WHERE p.data_przyjecia BETWEEN ? AND ?
+        ORDER BY p.data_przyjecia ASC
+    `;
 
-export const updatePacjent = async (id, pacjent) => {
-    const {imie, nazwisko, pesel, stan, priorytet} = pacjent;
-    await pool.query(
-        'UPDATE pacjenci SET imie = ?, nazwisko = ?, pesel = ?, stan = ?, priorytet = ? WHERE id = ?',
-        [imie, nazwisko, pesel, stan, priorytet, id]
-    );
-    return getPacjent(id);
-};
-
-export const removePacjent = async (id) => {
-    const [result] = await pool.query('DELETE FROM pacjenci WHERE id = ?', [id]);
-    return result.affectedRows > 0;
-};
-
-export const getTriage = async () => {
-    const [rows] = await pool.query(
-        'SELECT * FROM pacjenci WHERE stan != "wypisany" ORDER BY priorytet ASC, data_przyjecia ASC LIMIT 10'
-    );
+    const [rows] = await connection.query(query, [startDate, endDate]);
     return rows;
+};
+
+export const insertStanZasobow = async (stan) => {
+    const query = `
+        INSERT INTO stan_zasobow (ostatnia_aktualizacja, ilosc_lekarzy, ilosc_pielegniarek, ilosc_lozek,
+                                  ilosc_lozek_obserwacji)
+        VALUES (?, ?, ?, ?, ?)
+    `;
+
+    const [result] = await connection.query(query, [
+        stan.ostatnia_aktualizacja,
+        stan.ilosc_lekarzy,
+        stan.ilosc_pielegniarek,
+        stan.ilosc_lozek,
+        stan.ilosc_lozek_obserwacji
+    ]);
+    return result.insertId;
+};
+
+export const insertPacjent = async (pacjent) => {
+    const query = `
+        INSERT INTO pacjenci (data_przyjecia, typ)
+        VALUES (?, ?)
+    `;
+
+    const [result] = await connection.query(query, [pacjent.data_przyjecia, pacjent.typ]);
+    return result.insertId;
 };
