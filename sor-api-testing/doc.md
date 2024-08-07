@@ -33,9 +33,7 @@ projekt-sor/
 │   └── validation.js
 │
 ├── routes/
-│   ├── sor.js
-│   ├── personel.js
-│   └── leki.js
+│   └──sor.js
 │
 ├── services/
 │   └── sor.js
