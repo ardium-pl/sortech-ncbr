@@ -88,3 +88,28 @@ sorRouter.get("/hourly-data", async (req, res, next) => {
         next(error);
     }
 });
+
+sorRouter.post("/stan-kolejki", async (req, res, next) => {
+    try {
+        const {data, minuty_lekarz, minuty_pielegniarka} = req.body;
+
+        if (!data || !minuty_lekarz || !minuty_pielegniarka) {
+            return res.status(400).json({message: "Brakuje wymaganych danych"});
+        }
+
+        const parsedDate = moment(data, 'YYYY-MM-DD');
+        if (!parsedDate.isValid()) {
+            return res.status(400).json({message: "Nieprawidłowy format daty"});
+        }
+
+        const result = await addStanKolejki({
+            data: parsedDate.format('YYYY-MM-DD'),
+            minuty_lekarz: parseInt(minuty_lekarz),
+            minuty_pielegniarka: parseInt(minuty_pielegniarka)
+        });
+
+        res.status(201).json({message: "Stan kolejki dodany/zaktualizowany", result});
+    } catch (error) {
+        next(error);
+    }
+});
