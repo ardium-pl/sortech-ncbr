@@ -203,4 +203,3 @@ pm2 start index.js --name "sor-server"
 
 ---
 
-Ta dokumentacja obejmuje główne aspekty Twojego serwera Express. Możesz ją rozszerzyć o dodatkowe szczegóły specyficzne dla Twojego projektu, takie jak dodatkowe endpointy, bardziej szczegółowe opisy procesów biznesowych, czy instrukcje dla zespołu deweloperskiego.
