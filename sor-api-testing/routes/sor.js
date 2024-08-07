@@ -69,3 +69,22 @@ sorRouter.post("/pacjenci", async (req, res, next) => {
         next(error);
     }
 });
+
+sorRouter.get("/hourly-data", async (req, res, next) => {
+    try {
+        const {date} = req.query;
+        if (!date) {
+            return res.status(400).json({message: "Brak parametru date"});
+        }
+
+        const parsedDate = moment(date, 'YYYY-MM-DD');
+        if (!parsedDate.isValid()) {
+            return res.status(400).json({message: "Nieprawidłowy format daty"});
+        }
+
+        const data = await getHourlyData(parsedDate.toDate());
+        res.json(data);
+    } catch (error) {
+        next(error);
+    }
+});

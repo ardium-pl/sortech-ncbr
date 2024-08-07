@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import express from "express";
 import cors from "cors";
-import { sorRouter } from "./routes/sor.js";
-import { logger } from './utils/logger.js';
+import {sorRouter} from "./routes/sor.js";
+import {logger} from './utils/logger.js';
 
 const app = express();
 const port = process.env.PORT || 8080;
