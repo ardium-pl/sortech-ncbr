@@ -1,5 +1,6 @@
 import {getConnection} from '../config/database.js';
 import moment from 'moment';
+
 const connection = await getConnection();
 
 // Pobiera stan zasobów dla danego dnia
@@ -72,19 +73,31 @@ export const getHourlyData = async (date) => {
         const endDate = moment(date).endOf('day').format('YYYY-MM-DD HH:mm:ss');
         const prevDayLastHour = moment(date).subtract(1, 'day').endOf('day').subtract(1, 'hour').format('YYYY-MM-DD HH:mm:ss');
 
-        // Zapytanie dla danych godzinowych wybranego dnia
+        // Zapytanie dla danych godzinowych wybranego dnia --> dla wielu rekordow per godzina
         const queryCurrentDay = `
-            SELECT 
-                DATE_FORMAT(ostatnia_aktualizacja, '%Y-%m-%d %H:00:00') as hour,
-                AVG(ilosc_lekarzy) as avg_ilosc_lekarzy,
-                AVG(ilosc_pielegniarek) as avg_ilosc_pielegniarek,
-                AVG(ilosc_lozek) as avg_ilosc_lozek,
-                AVG(ilosc_lozek_obserwacji) as avg_ilosc_lozek_obserwacji
+            SELECT DATE_FORMAT(ostatnia_aktualizacja, '%Y-%m-%d %H:00:00') as hour,
+                   AVG(ilosc_lekarzy)                                      as avg_ilosc_lekarzy,
+                   AVG(ilosc_pielegniarek)                                 as avg_ilosc_pielegniarek,
+                   AVG(ilosc_lozek)                                        as avg_ilosc_lozek,
+                   AVG(ilosc_lozek_obserwacji)                             as avg_ilosc_lozek_obserwacji
             FROM stan_zasobow
             WHERE ostatnia_aktualizacja BETWEEN ? AND ?
             GROUP BY hour
             ORDER BY hour
         `;
+
+        // Zapytanie dla danych godzinowych wybranego dnia --> dla pojedynczych rekordow per godzina
+        // const queryCurrentDay = `
+        //     SELECT
+        //         DATE_FORMAT(ostatnia_aktualizacja, '%Y-%m-%d %H:00:00') as hour,
+        //         ilosc_lekarzy,
+        //         ilosc_pielegniarek,
+        //         ilosc_lozek,
+        //         ilosc_lozek_obserwacji
+        //     FROM stan_zasobow
+        //     WHERE ostatnia_aktualizacja BETWEEN ? AND ?
+        //     ORDER BY ostatnia_aktualizacja
+        // `;
 
         // Zapytanie dla ostatniej godziny poprzedniego dnia
         const queryPrevDay = `
@@ -108,6 +121,27 @@ export const getHourlyData = async (date) => {
             currentDayData: rowsCurrentDay,
             prevDayLastHourData: rowsPrevDay[0] || null
         };
+    } finally {
+        await connection.end();
+    }
+};
+
+export const addStanKolejki = async (stanKolejki) => {
+    const connection = await getConnection();
+    // On DUPLICATE KEY UPDATE - jeśli rekord istnieje to zaktualizuj dane, anty-crasher gdy rekord istnieje
+    try {
+        const {data, minuty_lekarz, minuty_pielegniarka} = stanKolejki;
+
+        const query = `
+            INSERT INTO stan_kolejki (data, minuty_lekarz, minuty_pielegniarka)
+            VALUES (?, ?, ?)
+            ON DUPLICATE KEY UPDATE minuty_lekarz       = VALUES(minuty_lekarz),
+                                    minuty_pielegniarka = VALUES(minuty_pielegniarka)
+        `;
+
+        const [result] = await connection.query(query, [data, minuty_lekarz, minuty_pielegniarka]);
+
+        return result.insertId || result.affectedRows;
     } finally {
         await connection.end();
     }
