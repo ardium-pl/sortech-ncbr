@@ -27,41 +27,41 @@
   --light-grey: rgb(211, 211, 211);
   --lightest-grey: rgb(220, 220, 220);
   --white-grey: rgb(208, 208, 208);
+  --light-grey-new: rgb(178, 178, 182);
 
   // Red color palette
   --super-dark-red: rgb(146, 26, 64);
   --darkest-red: rgb(199, 91, 122);
   --dark-red: rgb(217, 171, 171);
   --mid-red: rgb(244, 217, 208);
-  
+  --light-red: rgb(255, 199, 206);
+
   // Green color palette
   --super-dark-green: rgb(97, 130, 100);
   --darkest-green: rgb(121, 172, 120);
   --dark-green: rgb(176, 217, 177);
   --mid-green: rgb(208, 231, 210);
+  --light-green: rgb(198, 239, 206);
 
-  // Cell color - ODD
-  --summary-cell-font-color-odd: rgb(242, 242, 242);
+  // Blue color palette
+  --dark-blue: rgb(47, 117, 181);
+  --light-blue: rgb(217, 225, 242);
 
-  // Cell color - EVEN
-  --summary-cell-font-color-even: rgb(242, 242, 242);
 
-  // Cell color - waskie gardlo
-  --waskie-gardlo-background-color: rgb(228, 245, 0);
+  // Attention drawing colors
+  --flashy-yellow: rgb(228, 245, 0);
+  --flashy-red: rgb(155, 0, 0);
 
-  // Fonts
-  --waskie-gardlo-font-color: rgb(155, 0, 0);
-  --waskie-gardlo-font-size: 16px;
-  --waskie-gardlo-font-width: bold;
-  --editable-cell-font-width: bold;
-  --font-size: 15px;
-  --font-family: monospace;
-  
+  --font-size: 21px;
+  --text-column-font-size: 25px;
+  --summary-row-font-size: 19px;
+  --outer-header-font-size: 25px;
+  --mid-header-font-size: 19px;
+  --inner-header-font-size: 15px;
+  --font-family: calibri;
+
   // Borders
-  --standard-border: solid 3px black;
-
-  // Angular material
-  --mdc-filled-text-field-container-color: #f3f3f3;
+  --standard-border: solid 4px black;
 }
 
 html,

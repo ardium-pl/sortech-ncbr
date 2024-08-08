@@ -5,8 +5,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  // background-color: red;
 }
 
 ag-grid-angular {
@@ -22,23 +20,23 @@ ag-grid-angular {
   --ag-font-size: var(--font-size);
 
   // Cell colors
-
   // --ag-foreground-color: rgb(126, 46, 132);
-  --ag-background-color: var(--lightest-grey);
+  --ag-background-color: var(--light-blue);
   // --ag-header-foreground-color: rgb(204, 245, 172);
   // --ag-header-background-color: rgb(209, 64, 129);
-  --ag-odd-row-background-color: var(--light-grey);
+  --ag-odd-row-background-color: var(--white);
 
   // Resize handles
   // --ag-header-column-resize-handle-display: none;
   // --ag-header-column-resize-handle-color: rgb(126, 46, 132);
 
   // Borders
-  // --ag-borders-critical: solid 10px;
+  // --ag-borders-critical: solid 2px;
+  --ag-border-color: black;
   // --ag-borders-secondary: dashed;
 
   // --ag-critical-border-color: black;
-  // --ag-cell-horizontal-border: solid black;
+  --ag-cell-horizontal-border: solid var(--light-grey-new);
 
   // Header separator
   // --ag-header-column-separator-display: true;
@@ -48,59 +46,129 @@ ag-grid-angular {
 
 ::ng-deep {
   app-hourly-table {
-    // Outer headers
+    // Headers
+    .grid-header {
+      background-color: var(--dark-blue);
+      color: white;
+    }
+
     .grid-header-outer {
-      background-color: var(--darkest-grey);
-      font-size: 19px;
-    }
-
-    .waskie-gardlo {
-      border-left: var(--standard-border);
-    }
-
-    .pielegniarki,
-    .lozka {
-      background-color: var(--super-dark-red);
       border-top: var(--standard-border);
       border-left: var(--standard-border);
+      font-size: var(--outer-header-font-size);
+
+      &.godzina,
+      &.oczekiwane-wizyty,
+      &.waskie-gardlo,
+      &.mozliwosc-pokrycia {
+        border-bottom: var(--standard-border);
+      }
+
+      &.mozliwosc-pokrycia {
+        border-right: var(--standard-border);
+      }
+
+      // &.pielegniarki,
+      // &.lozka {
+      //   background-color: var(--super-dark-red);
+      // }
+
+      // &.lekarze,
+      // &.obserwacja {
+      //   background-color: var(--super-dark-green);
+      // }
     }
 
-    .lekarze,
-    .obserwacja {
-      background-color: var(--super-dark-green);
-      border-top: var(--standard-border);
-      border-left: var(--standard-border);
+    .grid-header-mid {
+      border-bottom: var(--standard-border);
+      font-size: var(--mid-header-font-size);
+
+      &.liczba {
+        border-left: var(--standard-border);
+
+        // &.pielegniarki,
+        // &.lozka {
+        //   background-color: var(--darkest-red);
+      }
+
+      //   &.lekarze,
+      //   &.obserwacja {
+      //     background-color: var(--darkest-green);
+      //   }
+      // }
+
+      // &.wydajnosc {
+      //   &.pielegniarki,
+      //   &.lozka {
+      //     background-color: var(--darkest-red);
+      //   }
+
+      //   &.lekarze,
+      //   &.obserwacja {
+      //     background-color: var(--darkest-green);
+      //   }
+      // }
     }
 
-    // Inner-most headers
-    .grid-header-inner {
-      background-color: var(--white-grey);
-    }
+    // Cells
+    .cell {
+      text-align: center;
 
-    .pielegniarki-odd,
-    .lozka-odd {
-      background-color: var(--darkest-red);
-      border-left: var(--standard-border);
-    }
+      &.part-of-table {
+        &.godzina,
+        &.liczba,
+        &.mozliwosc-pokrycia {
+          font-size: var(--text-column-font-size);
+          font-weight: bold;
+        }
 
-    .pielegniarki-even,
-    .lozka-even {
-      background-color: var(--darkest-red);
-    }
+        &.oczekiwane-wizyty,
+        &.wydajnosc {
+          color: var(--light-grey-new);
+        }
 
-    .lekarze-odd,
-    .obserwacja-odd {
-      background-color: var(--darkest-green);
-      border-left: var(--standard-border);
-    }
+        &.mozliwosc-pokrycia {
+          border-right: var(--standard-border);
+          font-size: var(--text-column-font-size);
+        }
 
-    .lekarze-even,
-    .obserwacja-even {
-      background-color: var(--darkest-green);
-    }
+        &.waskie-gardlo {
+          border-left: var(--standard-border);
+          font-size: var(--text-column-font-size);
+        }
 
-    .waskie-gardlo-odd {
-      border-left: var(--standard-border);
+        &.niedobor-wydajnosci {
+          background-color: var(--light-red);
+        }
+
+        &.brak-niedoboru {
+          background-color: var(--light-green);
+        }
+      }
+
+      &.summary-row {
+        background-color: var(--dark-blue);
+        font-size: var(--summary-row-font-size);
+        color: white;
+        font-weight: bold;
+
+        &.top {
+          border-top: var(--standard-border);
+        }
+
+        &.bottom {
+          border-bottom: var(--standard-border);
+        }
+
+        &.godzina {
+          border-left: var(--standard-border);
+        }
+
+        &.mozliwosc-pokrycia {
+          border-right: var(--standard-border);
+        }
+        // background-color: var(--light-red);
+      }
     }
   }
 }
