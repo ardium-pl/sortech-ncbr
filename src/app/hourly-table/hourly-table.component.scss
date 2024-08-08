@@ -21,21 +21,22 @@ ag-grid-angular {
 
   // Cell colors
   // --ag-foreground-color: rgb(126, 46, 132);
-  --ag-background-color: var(--lightest-grey);
+  --ag-background-color: var(--light-blue);
   // --ag-header-foreground-color: rgb(204, 245, 172);
   // --ag-header-background-color: rgb(209, 64, 129);
-  --ag-odd-row-background-color: var(--light-grey);
+  --ag-odd-row-background-color: var(--white);
 
   // Resize handles
   // --ag-header-column-resize-handle-display: none;
   // --ag-header-column-resize-handle-color: rgb(126, 46, 132);
 
   // Borders
-  // --ag-borders-critical: solid 10px;
+  // --ag-borders-critical: solid 2px;
+  --ag-border-color: black;
   // --ag-borders-secondary: dashed;
 
   // --ag-critical-border-color: black;
-  // --ag-cell-horizontal-border: solid black;
+  --ag-cell-horizontal-border: solid var(--light-grey-new);
 
   // Header separator
   // --ag-header-column-separator-display: true;
@@ -46,53 +47,67 @@ ag-grid-angular {
 ::ng-deep {
   app-hourly-table {
     // Headers
+    .grid-header {
+      background-color: var(--dark-blue);
+      color: white;
+    }
+
     .grid-header-outer {
-      background-color: var(--darkest-grey);
+      border-top: var(--standard-border);
+      border-left: var(--standard-border);
       font-size: var(--outer-header-font-size);
 
-      &.pielegniarki,
-      &.lozka {
-        background-color: var(--super-dark-red);
-        border-top: var(--standard-border);
-        border-left: var(--standard-border);
+      &.godzina,
+      &.oczekiwane-wizyty,
+      &.waskie-gardlo,
+      &.mozliwosc-pokrycia {
+        border-bottom: var(--standard-border);
       }
 
-      &.lekarze,
-      &.obserwacja {
-        background-color: var(--super-dark-green);
-        border-top: var(--standard-border);
-        border-left: var(--standard-border);
+      &.mozliwosc-pokrycia {
+        border-right: var(--standard-border);
       }
+
+      // &.pielegniarki,
+      // &.lozka {
+      //   background-color: var(--super-dark-red);
+      // }
+
+      // &.lekarze,
+      // &.obserwacja {
+      //   background-color: var(--super-dark-green);
+      // }
     }
 
     .grid-header-mid {
-      background-color: var(--white-grey);
+      border-bottom: var(--standard-border);
+      font-size: var(--mid-header-font-size);
 
       &.liczba {
-        &.pielegniarki,
-        &.lozka {
-          background-color: var(--darkest-red);
-          border-left: var(--standard-border);
-        }
+        border-left: var(--standard-border);
 
-        &.lekarze,
-        &.obserwacja {
-          background-color: var(--darkest-green);
-          border-left: var(--standard-border);
-        }
+        // &.pielegniarki,
+        // &.lozka {
+        //   background-color: var(--darkest-red);
       }
 
-      &.wydajnosc {
-        &.pielegniarki,
-        &.lozka {
-          background-color: var(--darkest-red);
-        }
+      //   &.lekarze,
+      //   &.obserwacja {
+      //     background-color: var(--darkest-green);
+      //   }
+      // }
 
-        &.lekarze,
-        &.obserwacja {
-          background-color: var(--darkest-green);
-        }
-      }
+      // &.wydajnosc {
+      //   &.pielegniarki,
+      //   &.lozka {
+      //     background-color: var(--darkest-red);
+      //   }
+
+      //   &.lekarze,
+      //   &.obserwacja {
+      //     background-color: var(--darkest-green);
+      //   }
+      // }
     }
 
     // Cells
@@ -100,52 +115,60 @@ ag-grid-angular {
       text-align: center;
 
       &.part-of-table {
-        &.liczba {
-          &.pielegniarka {
-            background-color: var(--dark-red);
-          }
-
-          &.lekarz {
-            background-color: var(--dark-green);
-          }
-
-          &.lozko {
-            background-color: var(--dark-red);
-          }
-
-          &.obserwacja {
-            background-color: var(--dark-green);
-          }
+        &.godzina,
+        &.liczba,
+        &.mozliwosc-pokrycia {
+          font-size: var(--text-column-font-size);
+          font-weight: bold;
         }
 
+        &.oczekiwane-wizyty,
         &.wydajnosc {
-          &.pielegniarka {
-            background-color: var(--mid-red);
-          }
+          color: var(--light-grey-new);
+        }
 
-          &.lekarz {
-            background-color: var(--mid-green);
-          }
+        &.mozliwosc-pokrycia {
+          border-right: var(--standard-border);
+          font-size: var(--text-column-font-size);
+        }
 
-          &.lozko {
-            background-color: var(--mid-red);
-          }
+        &.waskie-gardlo {
+          border-left: var(--standard-border);
+          font-size: var(--text-column-font-size);
+        }
 
-          &.obserwacja {
-            background-color: var(--mid-green);
-          }
+        &.niedobor-wydajnosci {
+          background-color: var(--light-red);
+        }
+
+        &.brak-niedoboru {
+          background-color: var(--light-green);
         }
       }
 
-      &.waskie-gardlo {
-        border-left: var(--standard-border);
-      }
+      &.summary-row {
+        background-color: var(--dark-blue);
+        font-size: var(--summary-row-font-size);
+        color: white;
+        font-weight: bold;
 
-      &.niedobor-wydajnosci {
-        background-color: var(--flashy-yellow);
-        color: var(--flashy-red);
-      }
+        &.top {
+          border-top: var(--standard-border);
+        }
 
+        &.bottom {
+          border-bottom: var(--standard-border);
+        }
+
+        &.godzina {
+          border-left: var(--standard-border);
+        }
+
+        &.mozliwosc-pokrycia {
+          border-right: var(--standard-border);
+        }
+        // background-color: var(--light-red);
+      }
     }
   }
 }

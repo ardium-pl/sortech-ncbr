@@ -21,6 +21,13 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     field: 'godzina',
     headerClass: 'grid-header grid-header-outer godzina',
     cellDataType: 'text',
+    cellClass: ({ data }) => [
+      'cell',
+      'godzina',
+      data['id'] < 24 ? 'part-of-table' : 'summary-row',
+      data['id'] === 24 ? 'top' : '',
+      data['id'] === 25 ? 'bottom' : '',
+    ],
     minWidth: 140,
   },
   {
@@ -34,6 +41,13 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         return numberRoundingFormatter(params);
       }
     },
+    cellClass: ({ data }) => [
+      'cell',
+      'oczekiwane-wizyty',
+      data['id'] < 24 ? 'part-of-table' : 'summary-row',
+      data['id'] === 24 ? 'top' : '',
+      data['id'] === 25 ? 'bottom' : '',
+    ],
     minWidth: 140,
   },
   {
@@ -51,6 +65,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
           'pielegniarka',
           'liczba',
           data['id'] < 24 ? 'part-of-table editable' : 'summary-row',
+          data['id'] === 24 ? 'top' : '',
+          data['id'] === 25 ? 'bottom' : '',
         ],
       },
       {
@@ -63,6 +79,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
           'pielegniarka',
           'wydajnosc',
           data['id'] < 24 ? 'part-of-table' : 'summary-row',
+          data['id'] === 24 ? 'top' : '',
+          data['id'] === 25 ? 'bottom' : '',
         ],
       },
     ],
@@ -82,6 +100,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
           'lekarz',
           'liczba',
           data['id'] < 24 ? 'part-of-table editable' : 'summary-row',
+          data['id'] === 24 ? 'top' : '',
+          data['id'] === 25 ? 'bottom' : '',
         ],
       },
       {
@@ -94,6 +114,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
           'lekarz',
           'wydajnosc',
           data['id'] < 24 ? 'part-of-table' : 'summary-row',
+          data['id'] === 24 ? 'top' : '',
+          data['id'] === 25 ? 'bottom' : '',
         ],
       },
     ],
@@ -113,6 +135,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
           'lozko',
           'liczba',
           data['id'] < 24 ? 'part-of-table editable' : 'summary-row',
+          data['id'] === 24 ? 'top' : '',
+          data['id'] === 25 ? 'bottom' : '',
         ],
       },
       {
@@ -125,6 +149,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
           'lozko',
           'wydajnosc',
           data['id'] < 24 ? 'part-of-table' : 'summary-row',
+          data['id'] === 24 ? 'top' : '',
+          data['id'] === 25 ? 'bottom' : '',
         ],
       },
     ],
@@ -144,6 +170,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
           'obserwacja',
           'liczba',
           data['id'] < 24 ? 'part-of-table editable' : 'summary-row',
+          data['id'] === 24 ? 'top' : '',
+          data['id'] === 25 ? 'bottom' : '',
         ],
       },
       {
@@ -156,6 +184,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
           'obserwacja',
           'wydajnosc',
           data['id'] < 24 ? 'part-of-table' : 'summary-row',
+          data['id'] === 24 ? 'top' : '',
+          data['id'] === 25 ? 'bottom' : '',
         ],
       },
     ],
@@ -169,6 +199,11 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       'cell',
       'waskie-gardlo',
       data['id'] < 24 ? 'part-of-table' : 'summary-row',
+      data['id'] === 24 ? 'top' : '',
+      data['id'] === 25 ? 'bottom' : '',
+      data['mozliwoscPokryciaZopatrzenia'] === 'Niedobór wyd.'
+        ? 'niedobor-wydajnosci'
+        : 'brak-niedoboru',
     ],
     minWidth: 160,
 
@@ -203,6 +238,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       'cell',
       'mozliwosc-pokrycia',
       data['id'] < 24 ? 'part-of-table' : 'summary-row',
+      data['id'] === 24 ? 'top' : '',
+      data['id'] === 25 ? 'bottom' : '',
       data['mozliwoscPokryciaZopatrzenia'] === 'Niedobór wyd.'
         ? 'niedobor-wydajnosci'
         : 'brak-niedoboru',
