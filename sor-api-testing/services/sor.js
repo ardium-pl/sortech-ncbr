@@ -74,30 +74,30 @@ export const getHourlyData = async (date) => {
         const prevDayLastHour = moment(date).subtract(1, 'day').endOf('day').subtract(1, 'hour').format('YYYY-MM-DD HH:mm:ss');
 
         // Zapytanie dla danych godzinowych wybranego dnia --> dla wielu rekordow per godzina
-        const queryCurrentDay = `
-            SELECT DATE_FORMAT(ostatnia_aktualizacja, '%Y-%m-%d %H:00:00') as hour,
-                   AVG(ilosc_lekarzy)                                      as avg_ilosc_lekarzy,
-                   AVG(ilosc_pielegniarek)                                 as avg_ilosc_pielegniarek,
-                   AVG(ilosc_lozek)                                        as avg_ilosc_lozek,
-                   AVG(ilosc_lozek_obserwacji)                             as avg_ilosc_lozek_obserwacji
-            FROM stan_zasobow
-            WHERE ostatnia_aktualizacja BETWEEN ? AND ?
-            GROUP BY hour
-            ORDER BY hour
-        `;
-
-        // Zapytanie dla danych godzinowych wybranego dnia --> dla pojedynczych rekordow per godzina
         // const queryCurrentDay = `
-        //     SELECT
-        //         DATE_FORMAT(ostatnia_aktualizacja, '%Y-%m-%d %H:00:00') as hour,
-        //         ilosc_lekarzy,
-        //         ilosc_pielegniarek,
-        //         ilosc_lozek,
-        //         ilosc_lozek_obserwacji
+        //     SELECT DATE_FORMAT(ostatnia_aktualizacja, '%Y-%m-%d %H:00:00') as hour,
+        //            AVG(ilosc_lekarzy)                                      as avg_ilosc_lekarzy,
+        //            AVG(ilosc_pielegniarek)                                 as avg_ilosc_pielegniarek,
+        //            AVG(ilosc_lozek)                                        as avg_ilosc_lozek,
+        //            AVG(ilosc_lozek_obserwacji)                             as avg_ilosc_lozek_obserwacji
         //     FROM stan_zasobow
         //     WHERE ostatnia_aktualizacja BETWEEN ? AND ?
-        //     ORDER BY ostatnia_aktualizacja
+        //     GROUP BY hour
+        //     ORDER BY hour
         // `;
+
+        // Zapytanie dla danych godzinowych wybranego dnia --> dla pojedynczych rekordow per godzina
+        const queryCurrentDay = `
+            SELECT
+                DATE_FORMAT(ostatnia_aktualizacja, '%Y-%m-%d %H:00:00') as hour,
+                ilosc_lekarzy,
+                ilosc_pielegniarek,
+                ilosc_lozek,
+                ilosc_lozek_obserwacji
+            FROM stan_zasobow
+            WHERE ostatnia_aktualizacja BETWEEN ? AND ?
+            ORDER BY ostatnia_aktualizacja
+        `;
 
         // Zapytanie dla ostatniej godziny poprzedniego dnia
         const queryPrevDay = `

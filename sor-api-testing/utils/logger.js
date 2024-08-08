@@ -35,7 +35,7 @@ export function log(level, message, meta = {}) {
         message: `${logMessage} ${Object.keys(meta).length ? JSON.stringify(meta) : ''}`.trim()
     });
 }
-required
+
 
 // Funkcje pomocnicze dla różnych poziomów logowania
 export const info = (message, meta) => log('info', message, meta);
