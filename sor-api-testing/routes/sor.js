@@ -1,5 +1,12 @@
 import express from "express";
-import {getStanZasobow, getPacjenci, insertStanZasobow, insertPacjent} from "../services/sor.js";
+import {
+    getStanZasobow,
+    getPacjenci,
+    insertStanZasobow,
+    insertPacjent,
+    getHourlyData,
+    addStanKolejki
+} from "../services/sor.js";
 import moment from 'moment';
 
 export const sorRouter = express.Router();
@@ -44,7 +51,7 @@ sorRouter.get("/pacjenci", async (req, res, next) => {
 
 sorRouter.post("/stan-zasobow", async (req, res, next) => {
     try {
-        const {stan} = req.body;
+        const stan = req.body;
         if (!stan || !stan.ostatnia_aktualizacja) {
             return res.status(400).json({message: "Nieprawidłowe dane"});
         }
@@ -58,7 +65,7 @@ sorRouter.post("/stan-zasobow", async (req, res, next) => {
 
 sorRouter.post("/pacjenci", async (req, res, next) => {
     try {
-        const {pacjent} = req.body;
+        const pacjent = req.body;
         if (!pacjent || !pacjent.data_przyjecia || !pacjent.typ) {
             return res.status(400).json({message: "Nieprawidłowe dane pacjenta"});
         }

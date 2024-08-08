@@ -108,10 +108,10 @@ export const getHourlyData = async (date) => {
                    sk.minuty_lekarz       as kolejka_lekarz,
                    sk.minuty_pielegniarka as kolejka_pielegniarka
             FROM stan_zasobow sz
-                     LEFT JOIN stan_kolejki sk ON DATE(sz.ostatnia_aktualizacja) = sk.data
+                     LEFT JOIN stan_kolejki sk ON DATE (sz.ostatnia_aktualizacja) = sk.data
             WHERE sz.ostatnia_aktualizacja BETWEEN ? AND ?
             ORDER BY sz.ostatnia_aktualizacja DESC
-            LIMIT 1
+                LIMIT 1
         `;
 
         const [rowsCurrentDay] = await connection.query(queryCurrentDay, [startDate, endDate]);
@@ -134,9 +134,10 @@ export const addStanKolejki = async (stanKolejki) => {
 
         const query = `
             INSERT INTO stan_kolejki (data, minuty_lekarz, minuty_pielegniarka)
-            VALUES (?, ?, ?)
-            ON DUPLICATE KEY UPDATE minuty_lekarz       = VALUES(minuty_lekarz),
-                                    minuty_pielegniarka = VALUES(minuty_pielegniarka)
+            VALUES (?, ?, ?) ON DUPLICATE KEY
+            UPDATE minuty_lekarz =
+            VALUES (minuty_lekarz), minuty_pielegniarka =
+            VALUES (minuty_pielegniarka)
         `;
 
         const [result] = await connection.query(query, [data, minuty_lekarz, minuty_pielegniarka]);
