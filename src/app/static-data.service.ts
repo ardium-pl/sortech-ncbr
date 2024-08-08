@@ -1,7 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { CONSTANTS } from './constants';
 import { StaticRow } from './interfaces/static-row';
-import { W } from '@angular/cdk/keycodes';
 
 @Injectable({
   providedIn: 'root',
@@ -28,67 +27,38 @@ export class StaticDataService {
     let meanTimePerPatient = rows[9];
     let wydajnoscZasobu = rows[10];
     let waskieGardo = rows[11];
+    let zajetosc = rows[12];
+
+    const fields = [
+      'triage',
+      'lozko',
+      'lekarz',
+      'pielegniarka',
+      'lozkoObserwacja',
+      'lozkoOczekiwanie',
+      'wydajnoscPrzyjmowania',
+    ] as const;
 
     // oblicz Średni ważony czas na pacjenta
-    meanTimePerPatient.triage =
-      rows[0].procPacjentow! * rows[0].triage! +
-      rows[1].procPacjentow! * rows[1].triage! +
-      rows[2].procPacjentow! * rows[2].triage! +
-      rows[3].procPacjentow! * rows[3].triage! +
-      rows[4].procPacjentow! * rows[4].triage! +
-      rows[5].procPacjentow! * rows[5].triage! +
-      rows[6].procPacjentow! * rows[6].triage! +
-      rows[7].procPacjentow! * rows[7].triage!;
-
-    meanTimePerPatient.lozko =
-      rows[0].procPacjentow! * rows[0].lozko! +
-      rows[1].procPacjentow! * rows[1].lozko! +
-      rows[2].procPacjentow! * rows[2].lozko! +
-      rows[3].procPacjentow! * rows[3].lozko! +
-      rows[4].procPacjentow! * rows[4].lozko! +
-      rows[5].procPacjentow! * rows[5].lozko! +
-      rows[6].procPacjentow! * rows[6].lozko! +
-      rows[7].procPacjentow! * rows[7].lozko!;
-
-    meanTimePerPatient.lekarz =
-      rows[0].procPacjentow! * rows[0].lekarz! +
-      rows[1].procPacjentow! * rows[1].lekarz! +
-      rows[2].procPacjentow! * rows[2].lekarz! +
-      rows[3].procPacjentow! * rows[3].lekarz! +
-      rows[4].procPacjentow! * rows[4].lekarz! +
-      rows[5].procPacjentow! * rows[5].lekarz! +
-      rows[6].procPacjentow! * rows[6].lekarz! +
-      rows[7].procPacjentow! * rows[7].lekarz!;
-
-    meanTimePerPatient.pielegniarka =
-      rows[0].procPacjentow! * rows[0].pielegniarka! +
-      rows[1].procPacjentow! * rows[1].pielegniarka! +
-      rows[2].procPacjentow! * rows[2].pielegniarka! +
-      rows[3].procPacjentow! * rows[3].pielegniarka! +
-      rows[4].procPacjentow! * rows[4].pielegniarka! +
-      rows[5].procPacjentow! * rows[5].pielegniarka! +
-      rows[6].procPacjentow! * rows[6].pielegniarka! +
-      rows[7].procPacjentow! * rows[7].pielegniarka!;
-
-    meanTimePerPatient.lozkoObserwacja =
-      rows[0].procPacjentow! * rows[0].lozkoObserwacja! +
-      rows[1].procPacjentow! * rows[1].lozkoObserwacja! +
-      rows[2].procPacjentow! * rows[2].lozkoObserwacja! +
-      rows[3].procPacjentow! * rows[3].lozkoObserwacja! +
-      rows[4].procPacjentow! * rows[4].lozkoObserwacja! +
-      rows[5].procPacjentow! * rows[5].lozkoObserwacja! +
-      rows[6].procPacjentow! * rows[6].lozkoObserwacja! +
-      rows[7].procPacjentow! * rows[7].lozkoObserwacja!;
+    fields.slice(0, 6).forEach((field) => {
+      meanTimePerPatient[field] = rows.slice(0, 8).reduce((acc, row) => {
+        return acc + row.procPacjentow! * row[field]!;
+      }, 0);
+    });
 
     // Oblicz wydajnosc zasobu
     wydajnoscZasobu.triage = 60 / liczbaZasobow.triage!;
-    wydajnoscZasobu.lozko = liczbaZasobow.lozko! / meanTimePerPatient.lozko;
+    wydajnoscZasobu.lozko = liczbaZasobow.lozko! / meanTimePerPatient.lozko!;
     wydajnoscZasobu.lekarz =
-      60 * liczbaZasobow.lekarz! / meanTimePerPatient.lekarz;
+      (60 * liczbaZasobow.lekarz!) / meanTimePerPatient.lekarz!;
     wydajnoscZasobu.pielegniarka =
-      60 * liczbaZasobow.pielegniarka! / meanTimePerPatient.pielegniarka;
+      (60 * liczbaZasobow.pielegniarka!) / meanTimePerPatient.pielegniarka!;
     wydajnoscZasobu.lozkoObserwacja =
-      liczbaZasobow.lozkoObserwacja! / meanTimePerPatient.lozkoObserwacja;
+      liczbaZasobow.lozkoObserwacja! / meanTimePerPatient.lozkoObserwacja!;
+    wydajnoscZasobu.lozkoOczekiwanie =
+      liczbaZasobow.lozkoOczekiwanie! / meanTimePerPatient.lozkoOczekiwanie!;
+    wydajnoscZasobu.wydajnoscPrzyjmowania =
+      rows[7].wydajnoscPrzyjmowania! / rows[7].procPacjentow!;
 
     // Wskaż wąskie gardło
     const minWydajnosci = Math.min(
@@ -99,20 +69,30 @@ export class StaticDataService {
       wydajnoscZasobu.lozkoObserwacja!
     );
 
-    waskieGardo.triage = wydajnoscZasobu.triage === minWydajnosci ? 777 : null;
-    waskieGardo.lozko = wydajnoscZasobu.lozko === minWydajnosci ? 777 : null;
-    waskieGardo.lekarz = wydajnoscZasobu.lekarz === minWydajnosci ? 777 : null;
-    waskieGardo.pielegniarka =
-      wydajnoscZasobu.pielegniarka === minWydajnosci ? 777 : null;
-    waskieGardo.lozkoObserwacja =
-      wydajnoscZasobu.lozkoObserwacja === minWydajnosci ? 777 : null;
+    const przyjeciePacjentow = rows[7].procPacjentow! * minWydajnosci;
 
+    fields.slice(0, 5).forEach((field) => {
+      waskieGardo[field] =
+        wydajnoscZasobu[field] === minWydajnosci ? 777 : null;
+    });
+    waskieGardo.lozkoOczekiwanie =
+      wydajnoscZasobu.lozkoOczekiwanie < minWydajnosci ? 777 : null;
+    waskieGardo.wydajnoscPrzyjmowania =
+      rows[7].wydajnoscPrzyjmowania! < przyjeciePacjentow ? 777 : null;
+
+    // Oblicz zajętość przy danej wydajości
+    fields.forEach((field) => {
+      zajetosc[field] = minWydajnosci / wydajnoscZasobu[field]!;
+    });
+
+    // Assign back updated rows
     rows[9] = meanTimePerPatient;
     rows[10] = wydajnoscZasobu;
     rows[11] = waskieGardo;
+    rows[12] = zajetosc;
 
     this.rowData.set(rows);
-    console.log(this.rowData()[11])
+    // console.log(this.rowData()[11]);
   }
 
   readonly rowData = signal<StaticRow[]>([
@@ -209,8 +189,8 @@ export class StaticDataService {
       lekarz: null,
       pielegniarka: null,
       lozkoObserwacja: null,
-      lozkoOczekiwanie: null,
-      wydajnoscPrzyjmowania: null,
+      lozkoOczekiwanie: 6,
+      wydajnoscPrzyjmowania: 5,
     },
     {
       id: 8,
@@ -222,7 +202,7 @@ export class StaticDataService {
       pielegniarka: 8,
       lozkoObserwacja: 20,
       lozkoOczekiwanie: 30,
-      wydajnoscPrzyjmowania: 5,
+      wydajnoscPrzyjmowania: null,
     },
     {
       id: 9,

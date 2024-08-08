@@ -60,7 +60,7 @@ export class StaticTableComponent {
     this.api = event.api;
 
     // Apply calculations
-    this.staticDataService.applyRowCalculations(this.rowData());
+    this.staticDataService.applyRowCalculations(this.rowData(), this.rowData()[1]);
     console.log(this.rowData()[11]);
 
   };
