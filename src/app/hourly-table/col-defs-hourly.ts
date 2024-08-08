@@ -9,125 +9,6 @@ function numberRoundingFormatter(params: any) {
   }
 }
 
-function cellStylerMozliwoscPokrycia(params: any) {
-  const styles: any = {};
-
-  if (params.data['mozliwoscPokryciaZopatrzenia'] === 'Niedobór wyd.') {
-    styles.fontWeight = 'var(--waskie-gardlo-font-width)';
-    styles.fontSize = 'var(--waskie-gardlo-font-size)';
-    styles.backgroundColor = 'var(--waskie-gardlo-background-color';
-    styles.color = 'var(--waskie-gardlo-font-color)';
-    // styles.color = 'var(--editable-cell-font-color-odd)';
-  }
-  return styles;
-}
-
-function cellStylerWaskieGardlo(params: any) {
-  const styles: any = {};
-  styles.borderLeft = 'var(--standard-border)';
-
-  // // if (params.data['id'] < 24) {
-  // if (params.colDef.field === 'waskiZasob') {
-  //   styles.borderLeft = 'var(--standard-border)';
-  // }
-  // if (params.data['mozliwoscPokryciaZopatrzenia'] === 'Niedobór wyd.') {
-  //   styles.fontWeight = 'var(--waskie-gardlo-font-width)';
-  //   styles.fontSize = 'var(--waskie-gardlo-font-size)';
-  //   styles.backgroundColor = 'var(--waskie-gardlo-background-color';
-  //   styles.color = 'var(--waskie-gardlo-font-color)';
-  //   // styles.color = 'var(--editable-cell-font-color-odd)';
-  // }
-  return styles;
-}
-
-function cellStylerWaskieGardloWydajnosc(params: any) {
-  const styles: any = {};
-
-  if (params.data['id'] < 24) {
-    // styles.backgroundColor = 'var(--dark-red)';
-    // styles.color = 'var(--editable-cell-font-color-odd)';
-    // styles.fontWeight = 'var(--editable-cell-font-width)';
-  }
-  styles.borderLeft = 'var(--standard-border)';
-  return styles;
-}
-
-function cellStylerEditableEven(params: any) {
-  const styles: any = {};
-
-  if (params.data['id'] < 24) {
-    styles.backgroundColor = 'var(--dark-green)';
-    styles.color = 'var(--editable-cell-font-color-even)';
-    styles.fontWeight = 'var(--editable-cell-font-width)';
-  } else if (params.data['id'] === 24) {
-    styles.borderTop = 'var(--standard-border)';
-  } else if (params.data['id'] === 25) {
-    styles.borderBottom = 'var(--standard-border)';
-  }
-  styles.borderLeft = 'var(--standard-border)';
-
-  return styles;
-}
-
-function cellStylerEditableOdd(params: any) {
-  const styles: any = {};
-
-  if (params.data['id'] < 24) {
-    styles.backgroundColor = 'var(--dark-red)';
-    styles.color = 'var(--editable-cell-font-color-odd)';
-    styles.fontWeight = 'var(--editable-cell-font-width)';
-  } else if (params.data['id'] === 24) {
-    styles.borderTop = 'var(--standard-border)';
-  } else if (params.data['id'] === 25) {
-    styles.borderBottom = 'var(--standard-border)';
-  }
-  styles.borderLeft = 'var(--standard-border)';
-  return styles;
-}
-
-function cellStylerWydajnoscEven(params: any) {
-  const styles: any = {};
-
-  if (params.data['id'] < 24) {
-    styles.backgroundColor = 'var(--mid-green)';
-    styles.color = 'var(--wydajnosc-cell-font-color-even)';
-  } else if (params.data['id'] === 24) {
-    styles.borderTop = 'var(--standard-border)';
-    styles.borderBottom = 'var(--standard-border)';
-    styles.borderLeft = 'var(--standard-border)';
-    styles.backgroundColor = 'var(--darkest-green)';
-    styles.color = 'var(--summary-cell-font-color-even)';
-  } else if (params.data['id'] === 25) {
-    styles.borderBottom = 'var(--standard-border)';
-    styles.borderLeft = 'var(--standard-border)';
-    styles.backgroundColor = 'var(--darkest-green)';
-    styles.color = 'var(--summary-cell-font-color-even)';
-  }
-  return styles;
-}
-
-function cellStylerWydajnoscOdd(params: any) {
-  const styles: any = {};
-
-  if (params.data['id'] < 24) {
-    styles.backgroundColor = 'var(--mid-red)';
-    styles.color = 'var(--wydajnosc-cell-font-color-odd)';
-  } else if (params.data['id'] === 24) {
-    styles.borderTop = 'var(--standard-border)';
-    styles.borderBottom = 'var(--standard-border)';
-    styles.borderLeft = 'var(--standard-border)';
-    styles.backgroundColor = 'var(--darkest-red)';
-    styles.color = 'var(--summary-cell-font-color-odd)';
-  } else if (params.data['id'] === 25) {
-    styles.borderBottom = 'var(--standard-border)';
-    styles.borderLeft = 'var(--standard-border)';
-
-    styles.backgroundColor = 'var(--darkest-red)';
-    styles.color = 'var(--summary-cell-font-color-odd)';
-  }
-  return styles;
-}
-
 function cellRendererEditable(params: any) {
   if (params.data['id'] === 24) return 'Wyd./dobę';
   if (params.data['id'] === 25) return 'Śr. zajęt.';
@@ -138,14 +19,14 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
   {
     headerName: 'Godzina',
     field: 'godzina',
-    headerClass: 'grid-header grid-header-outer',
+    headerClass: 'grid-header grid-header-outer godzina',
     cellDataType: 'text',
     minWidth: 140,
   },
   {
     headerName: 'Oczek. l. wizyt',
     field: 'oczekiwaneWizyty',
-    headerClass: 'grid-header grid-header-outer',
+    headerClass: 'grid-header grid-header-outer oczekiwane-wizyty',
     cellRenderer: (params: any) => {
       if (params.data['id'] === 25) {
         return '';
@@ -162,17 +43,27 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       {
         headerName: 'Liczba Pielęgn.',
         field: 'liczbaPielegniarek',
-        headerClass: 'grid-header grid-header-mid pielegniarki-odd',
+        headerClass: 'grid-header grid-header-mid pielegniarki liczba',
         editable: (params: any) => params.data['id'] < 24,
         cellRenderer: (params: any) => cellRendererEditable(params),
-        cellStyle: (params: any) => cellStylerEditableOdd(params),
+        cellClass: ({ data }) => [
+          'cell',
+          'pielegniarka',
+          'liczba',
+          data['id'] < 24 ? 'part-of-table editable' : 'summary-row',
+        ],
       },
       {
         headerName: 'Wydajność l. pacj.',
         field: 'wydajnoscPielegniarek',
-        headerClass: 'grid-header grid-header-mid pielegniarki-even',
-        valueFormatter: (params: any) => numberRoundingFormatter(params),
-        cellStyle: (params: any) => cellStylerWydajnoscOdd(params),
+        headerClass: 'grid-header grid-header-mid pielegniarki wydajnosc',
+        cellRenderer: (params: any) => numberRoundingFormatter(params),
+        cellClass: ({ data }) => [
+          'cell',
+          'pielegniarka',
+          'wydajnosc',
+          data['id'] < 24 ? 'part-of-table' : 'summary-row',
+        ],
       },
     ],
   },
@@ -183,17 +74,27 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       {
         headerName: 'Liczba Lekarze',
         field: 'liczbaLekarzy',
-        headerClass: 'grid-header grid-header-mid lekarze-odd',
+        headerClass: 'grid-header grid-header-mid lekarze liczba',
         editable: (params: any) => params.data['id'] < 24,
         cellRenderer: (params: any) => cellRendererEditable(params),
-        cellStyle: (params: any) => cellStylerEditableEven(params),
+        cellClass: ({ data }) => [
+          'cell',
+          'lekarz',
+          'liczba',
+          data['id'] < 24 ? 'part-of-table editable' : 'summary-row',
+        ],
       },
       {
         headerName: 'Wyd. l. pacj.',
         field: 'wydajnoscLekarzy',
-        headerClass: 'grid-header grid-header-mid lekarze-even',
-        valueFormatter: (params: any) => numberRoundingFormatter(params),
-        cellStyle: (params: any) => cellStylerWydajnoscEven(params),
+        headerClass: 'grid-header grid-header-mid lekarze wydajnosc',
+        cellRenderer: (params: any) => numberRoundingFormatter(params),
+        cellClass: ({ data }) => [
+          'cell',
+          'lekarz',
+          'wydajnosc',
+          data['id'] < 24 ? 'part-of-table' : 'summary-row',
+        ],
       },
     ],
   },
@@ -204,17 +105,27 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       {
         headerName: 'Liczba Łóżka',
         field: 'liczbaLozek',
-        headerClass: 'grid-header grid-header-mid lozka-odd',
+        headerClass: 'grid-header grid-header-mid lozka liczba',
         editable: (params: any) => params.data['id'] < 24,
         cellRenderer: (params: any) => cellRendererEditable(params),
-        cellStyle: (params: any) => cellStylerEditableOdd(params),
+        cellClass: ({ data }) => [
+          'cell',
+          'lozko',
+          'liczba',
+          data['id'] < 24 ? 'part-of-table editable' : 'summary-row',
+        ],
       },
       {
         headerName: 'Wyd. l. pacj.',
         field: 'wydajnoscLozek',
-        headerClass: 'grid-header grid-header-mid lozka-even',
-        valueFormatter: (params: any) => numberRoundingFormatter(params),
-        cellStyle: (params: any) => cellStylerWydajnoscOdd(params),
+        headerClass: 'grid-header grid-header-mid lozka wydajnosc',
+        cellRenderer: (params: any) => numberRoundingFormatter(params),
+        cellClass: ({ data }) => [
+          'cell',
+          'lozko',
+          'wydajnosc',
+          data['id'] < 24 ? 'part-of-table' : 'summary-row',
+        ],
       },
     ],
   },
@@ -225,17 +136,27 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       {
         headerName: 'Liczba łóżek',
         field: 'liczbaLozekObserwacja',
-        headerClass: 'grid-header grid-header-mid obserwacja-odd',
+        headerClass: 'grid-header grid-header-mid obserwacja liczba',
         editable: (params: any) => params.data['id'] < 24,
         cellRenderer: (params: any) => cellRendererEditable(params),
-        cellStyle: (params: any) => cellStylerEditableEven(params),
+        cellClass: ({ data }) => [
+          'cell',
+          'obserwacja',
+          'liczba',
+          data['id'] < 24 ? 'part-of-table editable' : 'summary-row',
+        ],
       },
       {
         headerName: 'Wyd. l. pacj.',
         field: 'wydajnoscLozekObserwacja',
-        headerClass: 'grid-header grid-header-mid obserwacja-even',
-        valueFormatter: (params: any) => numberRoundingFormatter(params),
-        cellStyle: (params: any) => cellStylerWydajnoscEven(params),
+        headerClass: 'grid-header grid-header-mid obserwacja wydajnosc',
+        cellRenderer: (params: any) => numberRoundingFormatter(params),
+        cellClass: ({ data }) => [
+          'cell',
+          'obserwacja',
+          'wydajnosc',
+          data['id'] < 24 ? 'part-of-table' : 'summary-row',
+        ],
       },
     ],
   },
@@ -244,7 +165,11 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     headerClass: 'grid-header grid-header-outer waskie-gardlo',
     field: 'waskiZasob',
     cellDataType: 'text',
-    cellStyle: (params: any) => cellStylerWaskieGardlo(params),
+    cellClass: ({ data }) => [
+      'cell',
+      'waskie-gardlo',
+      data['id'] < 24 ? 'part-of-table' : 'summary-row',
+    ],
     minWidth: 160,
 
     // children: [
@@ -272,9 +197,17 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
   {
     headerName: 'Możliwość pokrycia zapotrz. okresu',
     field: 'mozliwoscPokryciaZopatrzenia',
-    headerClass: 'grid-header grid-header-outer',
+    headerClass: 'grid-header grid-header-outer mozliwosc-pokrycia',
     cellDataType: 'text',
-    cellStyle: (params: any) => cellStylerMozliwoscPokrycia(params),
+    cellClass: ({ data }) => [
+      'cell',
+      'mozliwosc-pokrycia',
+      data['id'] < 24 ? 'part-of-table' : 'summary-row',
+      data['mozliwoscPokryciaZopatrzenia'] === 'Niedobór wyd.'
+        ? 'niedobor-wydajnosci'
+        : 'brak-niedoboru',
+    ],
+
     minWidth: 160,
     // wrapText: true,
     // autoHeight: true,

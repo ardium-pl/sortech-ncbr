@@ -40,21 +40,21 @@
   --dark-green: rgb(176, 217, 177);
   --mid-green: rgb(208, 231, 210);
 
-  // Cell color - ODD
-  --summary-cell-font-color-odd: rgb(242, 242, 242);
-
-  // Cell color - EVEN
-  --summary-cell-font-color-even: rgb(242, 242, 242);
-
-  // Cell color - waskie gardlo
-  --waskie-gardlo-background-color: rgb(228, 245, 0);
+  // Attention drawing colors
+  --flashy-yellow: rgb(228, 245, 0);
+  --flashy-red: rgb(155, 0, 0);
 
   // Fonts
   --waskie-gardlo-font-color: rgb(155, 0, 0);
   --waskie-gardlo-font-size: 16px;
   --waskie-gardlo-font-width: bold;
   --editable-cell-font-width: bold;
+
   --font-size: 15px;
+  --outer-header-font-size: 19px;
+  --mid-header-font-size: 17px;
+  --inner-header-font-size: 15px;
+
   --font-family: monospace;
 
   // Borders
