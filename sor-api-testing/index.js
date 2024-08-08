@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import express from "express";
 import cors from "cors";
-import winston from "winston";
 import {sorRouter} from "./routes/sor.js";
 import {logger} from './utils/logger.js';
 
