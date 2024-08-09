@@ -1,0 +1,174 @@
+:host {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+ag-grid-angular {
+  height: var(--grid-height);
+  width: var(--grid-width);
+
+  margin-top: var(--grid-ofset);
+}
+
+.ag-theme-alpine {
+  // Fonts
+  --ag-font-family: var(--font-family);
+  --ag-font-size: var(--font-size);
+
+  // Cell colors
+  // --ag-foreground-color: rgb(126, 46, 132);
+  --ag-background-color: var(--light-blue);
+  // --ag-header-foreground-color: rgb(204, 245, 172);
+  // --ag-header-background-color: rgb(209, 64, 129);
+  --ag-odd-row-background-color: var(--white);
+
+  // Resize handles
+  // --ag-header-column-resize-handle-display: none;
+  // --ag-header-column-resize-handle-color: rgb(126, 46, 132);
+
+  // Borders
+  // --ag-borders-critical: solid 2px;
+  --ag-border-color: black;
+  // --ag-borders-secondary: dashed;
+
+  // --ag-critical-border-color: black;
+  --ag-cell-horizontal-border: solid var(--light-grey-new);
+
+  // Header separator
+  // --ag-header-column-separator-display: true;
+  // --ag-header-column-separator-width: 3px;
+  // --ag-header-column-separator-color: black;
+}
+
+::ng-deep {
+  app-hourly-table {
+    // Headers
+    .grid-header {
+      background-color: var(--dark-blue);
+      color: white;
+    }
+
+    .grid-header-outer {
+      border-top: var(--standard-border);
+      border-left: var(--standard-border);
+      font-size: var(--outer-header-font-size);
+
+      &.godzina,
+      &.oczekiwane-wizyty,
+      &.waskie-gardlo,
+      &.mozliwosc-pokrycia {
+        border-bottom: var(--standard-border);
+      }
+
+      &.mozliwosc-pokrycia {
+        border-right: var(--standard-border);
+      }
+
+      // &.pielegniarki,
+      // &.lozka {
+      //   background-color: var(--super-dark-red);
+      // }
+
+      // &.lekarze,
+      // &.obserwacja {
+      //   background-color: var(--super-dark-green);
+      // }
+    }
+
+    .grid-header-mid {
+      border-bottom: var(--standard-border);
+      font-size: var(--mid-header-font-size);
+
+      &.liczba {
+        border-left: var(--standard-border);
+
+        // &.pielegniarki,
+        // &.lozka {
+        //   background-color: var(--darkest-red);
+      }
+
+      //   &.lekarze,
+      //   &.obserwacja {
+      //     background-color: var(--darkest-green);
+      //   }
+      // }
+
+      // &.wydajnosc {
+      //   &.pielegniarki,
+      //   &.lozka {
+      //     background-color: var(--darkest-red);
+      //   }
+
+      //   &.lekarze,
+      //   &.obserwacja {
+      //     background-color: var(--darkest-green);
+      //   }
+      // }
+    }
+
+    // Cells
+    .cell {
+      text-align: center;
+
+      &.part-of-table {
+        &.godzina,
+        &.liczba,
+        &.mozliwosc-pokrycia {
+          font-size: var(--text-column-font-size);
+          font-weight: bold;
+        }
+
+        &.oczekiwane-wizyty,
+        &.wydajnosc {
+          color: var(--light-grey-new);
+        }
+
+        &.mozliwosc-pokrycia {
+          border-right: var(--standard-border);
+          font-size: var(--text-column-font-size);
+        }
+
+        &.waskie-gardlo {
+          border-left: var(--standard-border);
+          font-size: var(--text-column-font-size);
+        }
+
+        &.niedobor-wydajnosci {
+          background-color: var(--light-red);
+        }
+
+        &.brak-niedoboru {
+          background-color: var(--light-green);
+        }
+      }
+
+      &.summary-row {
+        background-color: var(--dark-blue);
+        font-size: var(--summary-row-font-size);
+        color: white;
+        font-weight: bold;
+
+        &.top {
+          border-top: var(--standard-border);
+        }
+
+        &.bottom {
+          border-bottom: var(--standard-border);
+        }
+
+        &.godzina {
+          border-left: var(--standard-border);
+        }
+
+        &.mozliwosc-pokrycia {
+          border-right: var(--standard-border);
+        }
+        // background-color: var(--light-red);
+      }
+    }
+  }
+}
