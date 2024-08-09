@@ -55,6 +55,7 @@ ag-grid-angular {
     .grid-header-outer {
       border-top: var(--standard-border);
       border-left: var(--standard-border);
+      border-color: var(--border-black);
       font-size: var(--outer-header-font-size);
 
       &.godzina,
@@ -62,29 +63,23 @@ ag-grid-angular {
       &.waskie-gardlo,
       &.mozliwosc-pokrycia {
         border-bottom: var(--standard-border);
+        border-color: var(--border-black);
       }
 
       &.mozliwosc-pokrycia {
         border-right: var(--standard-border);
+        border-color: var(--border-black);
       }
-
-      // &.pielegniarki,
-      // &.lozka {
-      //   background-color: var(--super-dark-red);
-      // }
-
-      // &.lekarze,
-      // &.obserwacja {
-      //   background-color: var(--super-dark-green);
-      // }
     }
 
     .grid-header-mid {
       border-bottom: var(--standard-border);
+      border-color: var(--border-black);
       font-size: var(--mid-header-font-size);
 
       &.liczba {
         border-left: var(--standard-border);
+        border-color: var(--border-black);
 
         // &.pielegniarki,
         // &.lozka {
@@ -129,11 +124,13 @@ ag-grid-angular {
 
         &.mozliwosc-pokrycia {
           border-right: var(--standard-border);
+          border-right-color: var(--border-black);
           font-size: var(--text-column-font-size);
         }
 
         &.waskie-gardlo {
           border-left: var(--standard-border);
+          border-left-color: var(--border-black);
           font-size: var(--text-column-font-size);
         }
 
@@ -148,26 +145,29 @@ ag-grid-angular {
 
       &.summary-row {
         background-color: var(--dark-blue);
-        font-size: var(--summary-row-font-size);
+        font-size: var(--summary-row-font-size-hourly);
         color: white;
         font-weight: bold;
 
         &.top {
           border-top: var(--standard-border);
+          border-top-color: var(--border-black);
         }
 
         &.bottom {
           border-bottom: var(--standard-border);
+          border-bottom-color: var(--border-black);
         }
 
         &.godzina {
           border-left: var(--standard-border);
+          border-left-color: var(--border-black);
         }
 
         &.mozliwosc-pokrycia {
           border-right: var(--standard-border);
+          border-right-color: var(--border-black);
         }
-        // background-color: var(--light-red);
       }
     }
   }

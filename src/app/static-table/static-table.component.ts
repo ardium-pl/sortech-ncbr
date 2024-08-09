@@ -31,7 +31,6 @@ export class StaticTableComponent {
   readonly defaultColDef: ColDef = {
     headerClass: 'grid-header grid-header-outer',
     cellDataType: 'number',
-    cellClass: 'cell',
     // wrapHeaderText: true,
     // autoHeaderHeight: true,
     sortable: false,
@@ -41,7 +40,7 @@ export class StaticTableComponent {
     minWidth: 100,
     flex: 1,
     cellRenderer: (params: any) => numberRoundingFormatter(params),
-    editable: ({ data }) => data['id'] < 10,
+    editable: ({ data }) => data['id'] < 9,
   };
 
   readonly columnDefs: (ColDef | ColGroupDef)[] = staticTableColDefs;

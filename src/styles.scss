@@ -44,25 +44,34 @@
   --light-green: rgb(198, 239, 206);
 
   // Blue color palette
-  --dark-blue: rgb(47, 117, 181);
+  --darkest-blue: rgb(6, 71, 131);
+  --dark-blue: rgb(26, 91, 153);
+  --mid-blue: rgb(47, 117, 181);
   --light-blue: rgb(217, 225, 242);
 
 
   // Attention drawing colors
   --flashy-yellow: rgb(228, 245, 0);
-  --flashy-red: rgb(155, 0, 0);
+  --flashy-red: rgb(255, 8, 8);
 
   // Fonts
   --font-size: 21px;
-  --text-column-font-size: 25px;
-  --summary-row-font-size: 19px;
+
+  --text-column-font-size-hourly: 25px;
+  --summary-row-font-size-hourly: 19px;
+
+  --summary-row-font-size-static: 25px;
+
   --outer-header-font-size: 25px;
   --mid-header-font-size: 19px;
-  --inner-header-font-size: 15px;
+  --inner-header-font-size: 19px;
+
   --font-family: calibri;
 
   // Borders
-  --standard-border: solid 4px black;
+  --standard-border: solid 4px;
+  --border-black: black;
+  --border-blue: var(--darkest-blue)
 }
 
 html,
