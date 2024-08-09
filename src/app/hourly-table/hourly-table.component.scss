@@ -22,9 +22,9 @@ ag-grid-angular {
   // Cell colors
   // --ag-foreground-color: rgb(126, 46, 132);
   --ag-background-color: var(--light-blue);
+  --ag-odd-row-background-color: var(--white);
   // --ag-header-foreground-color: rgb(204, 245, 172);
   // --ag-header-background-color: rgb(209, 64, 129);
-  --ag-odd-row-background-color: var(--white);
 
   // Resize handles
   // --ag-header-column-resize-handle-display: none;
@@ -113,7 +113,7 @@ ag-grid-angular {
         &.godzina,
         &.liczba,
         &.mozliwosc-pokrycia {
-          font-size: var(--text-column-font-size);
+          font-size: var(--bold-column-font-size);
           font-weight: bold;
         }
 

@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { CONSTANTS } from './constants';
-import { Dzien, LQparams} from './interfaces/utils';
+import { Dzien, LQparams } from './interfaces/utils';
 import { Hour } from './interfaces/hour';
 import { Summary, Summary1, Summary2 } from './interfaces/summaries';
 
@@ -162,6 +162,8 @@ export class HourlyDataService {
 
       this.updateHours(hour);
     });
+
+    // Get min
   }
 
   // applyHourCalculations(hourObject: Hour) {
@@ -554,6 +556,17 @@ export class HourlyDataService {
     this.summaryRow2.set(summaryRow2);
   }
 
+  getExtremeValues(values: (number | string)[]) {
+    const numeric_values = values.map((v) => {
+      return typeof v === 'string' ? 0 : v;
+    });
+
+    this.minValue.set(Math.min(...numeric_values));
+    this.maxValue.set(Math.max(...numeric_values));
+  }
+
+  readonly minValue = signal<number>(0);
+  readonly maxValue = signal<number>(0);
   readonly previousDayLastHour: Hour = {
     id: -1,
     godzina: '23-24',

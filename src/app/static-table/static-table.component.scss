@@ -95,6 +95,8 @@ ag-grid-angular {
 
     // Cells
     .cell {
+      text-align: center;
+
       &:not(.typ-pacjenta) {
         color: var(--light-grey-new);
       }

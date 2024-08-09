@@ -1,5 +1,5 @@
 :root {
-  --grid-ofset: 30px;
+  // --grid-ofset: 30px;
   --grid-height: 75vh;
   --grid-width: 100%;
 
@@ -56,10 +56,9 @@
 
   // Fonts
   --font-size: 21px;
+  --bold-column-font-size: 25px;
 
-  --text-column-font-size-hourly: 25px;
   --summary-row-font-size-hourly: 19px;
-
   --summary-row-font-size-static: 25px;
 
   --outer-header-font-size: 25px;
@@ -92,11 +91,6 @@ body {
   align-items: center;
 }
 
-// Centering grid cell text
-.cell {
-  text-align: center;
-}
-
 .ag-header-cell-label {
   display: flex;
   justify-content: center;
@@ -105,23 +99,4 @@ body {
 // Wrap group column headers' text manually (no auto height)
 .grid-header .ag-header-group-text {
   white-space: normal;
-}
-
-// Setting header background colors
-
-// Outer headers
-.grid-header-outer {
-  background-color: var(--darkest-grey);
-  font-size: 19px;
-}
-
-// Mid headers
-.grid-header-mid {
-  background-color: var(--dark-grey);
-  // font-size: 16px;
-}
-
-// Inner-most headers
-.grid-header-inner {
-  background-color: var(--white-grey);
 }

@@ -63,7 +63,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         cellRenderer: (params: any) => cellRendererEditable(params),
         cellClass: ({ data }) => [
           'cell',
-          'pielegniarka',
+          'pielegniarki',
           'liczba',
           data['id'] < 24 ? 'part-of-table editable' : 'summary-row',
           data['id'] === 24 ? 'top' : '',
@@ -77,7 +77,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         cellRenderer: (params: any) => numberRoundingFormatter(params),
         cellClass: ({ data }) => [
           'cell',
-          'pielegniarka',
+          'pielegniarki',
           'wydajnosc',
           data['id'] < 24 ? 'part-of-table' : 'summary-row',
           data['id'] === 24 ? 'top' : '',

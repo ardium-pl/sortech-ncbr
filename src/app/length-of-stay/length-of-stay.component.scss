@@ -22,69 +22,114 @@ ag-grid-angular {
   --ag-font-size: var(--font-size);
 
   // Cell colors
-
   // --ag-foreground-color: rgb(126, 46, 132);
-  --ag-background-color: var(--lightest-grey);
+  --ag-background-color: var(--light-blue);
+  --ag-odd-row-background-color: var(--white);
   // --ag-header-foreground-color: rgb(204, 245, 172);
   // --ag-header-background-color: rgb(209, 64, 129);
-  --ag-odd-row-background-color: var(--light-grey);
+
+  // Resize handles
+  // --ag-header-column-resize-handle-display: none;
+  // --ag-header-column-resize-handle-color: rgb(126, 46, 132);
+
+  // Borders
+  // --ag-borders-critical: solid 2px;
+  --ag-border-color: black;
+  // --ag-borders-secondary: dashed;
+
+  // --ag-critical-border-color: black;
+  --ag-cell-horizontal-border: solid var(--light-grey-new);
+
+  // Header separator
+  // --ag-header-column-separator-display: true;
+  // --ag-header-column-separator-width: 3px;
+  // --ag-header-column-separator-color: black;
 }
 
 ::ng-deep {
   app-length-of-stay {
-    // Outer headers
+    // Headers
+    .grid-header {
+      background-color: var(--dark-blue);
+      color: white;
+    }
+
     .grid-header-outer {
-      background-color: var(--darkest-grey);
-      font-size: 19px;
-    }
-
-    .waskie-gardlo {
-      border-left: var(--standard-border);
-    }
-
-    .pielegniarki,
-    .lozka {
-      background-color: var(--super-dark-red);
       border-top: var(--standard-border);
       border-left: var(--standard-border);
+      border-color: var(--border-black);
+      font-size: var(--outer-header-font-size);
+
+      &.godzina,
+      &.oczekiwane-wizyty,
+      &.opoznienie-ogolem {
+        border-bottom: var(--standard-border);
+        border-color: var(--border-black);
+      }
+
+      &.opoznienie-ogolem {
+        border-right: var(--standard-border);
+        border-color: var(--border-black);
+      }
     }
 
-    .lekarze,
-    .obserwacja {
-      background-color: var(--super-dark-green);
-      border-top: var(--standard-border);
-      border-left: var(--standard-border);
+    .grid-header-mid {
+      font-size: var(--mid-header-font-size);
+
+      &.liczba,
+      &.wydajnosc {
+        border-bottom: var(--standard-border);
+        border-color: var(--border-black);
+      }
+
+      &.pielegniarka,
+      &.liczba {
+        border-left: var(--standard-border);
+        border-color: var(--border-black);
+      }
     }
 
-    // Inner-most headers
     .grid-header-inner {
-      background-color: var(--white-grey);
+      border-bottom: var(--standard-border);
+      border-color: var(--border-black);
+      font-size: var(--inner-header-font-size);
+
+      &.pielegniarka {
+        &.lq,
+        &.obsluga {
+          border-left: var(--standard-border);
+          border-color: var(--border-black);
+        }
+      }
     }
 
-    .pielegniarki-odd,
-    .lozka-odd {
-      background-color: var(--darkest-red);
-      border-left: var(--standard-border);
-    }
+    // Cells
+    .cell {
+      text-align: center;
+      color: var(--light-grey-new);
 
-    .pielegniarki-even,
-    .lozka-even {
-      background-color: var(--darkest-red);
-    }
+      &.godzina,
+      &.liczba,
+      &.kolejka,
+      &.opoznienie-ogolem {
+        font-size: var(--bold-column-font-size);
+        font-weight: bold;
+        color: black;
+      }
 
-    .lekarze-odd,
-    .obserwacja-odd {
-      background-color: var(--darkest-green);
-      border-left: var(--standard-border);
-    }
+      &.pielegniarka.lq,
+      &.obsluga,
+      &.liczba {
+        border-left: var(--standard-border);
+        border-left-color: var(--light-grey-new);
+      }
 
-    .lekarze-even,
-    .obserwacja-even {
-      background-color: var(--darkest-green);
-    }
-
-    .waskie-gardlo-odd {
-      border-left: var(--standard-border);
+      &.opoznienie-ogolem {
+        border-left: var(--standard-border);
+        border-left-color: var(--border-black);
+        border-right: var(--standard-border);
+        border-right-color: var(--border-black);
+      }
     }
   }
 }
