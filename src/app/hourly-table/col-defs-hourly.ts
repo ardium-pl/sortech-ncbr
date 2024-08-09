@@ -28,6 +28,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       data['id'] === 24 ? 'top' : '',
       data['id'] === 25 ? 'bottom' : '',
     ],
+    colSpan: ({ data }) => (data['id'] === 25 ? 2 : 1),
     minWidth: 140,
   },
   {
@@ -205,6 +206,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         ? 'niedobor-wydajnosci'
         : 'brak-niedoboru',
     ],
+    rowSpan: ({ data }) => (data['id'] === 24 ? 2 : 1),
+    colSpan: ({ data }) => (data['id'] < 24 ? 1 : 2),
     minWidth: 160,
 
     // children: [

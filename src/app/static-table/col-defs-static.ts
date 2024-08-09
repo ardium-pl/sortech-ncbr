@@ -32,6 +32,7 @@ export const staticTableColDefs: (ColDef | ColGroupDef)[] = [
       data['id'] === 12 ? 'bottom' : '',
       data['id'] === 11 ? 'waskie-gardlo' : '',
     ],
+    colSpan: ({ data }) => (data['id'] < 8 ? 1 : 2),
     cellDataType: 'text',
   },
   {

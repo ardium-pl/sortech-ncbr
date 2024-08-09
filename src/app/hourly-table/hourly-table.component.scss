@@ -159,6 +159,15 @@ ag-grid-angular {
           border-bottom-color: var(--border-black);
         }
 
+        &.top.waskie-gardlo {
+          // border-bottom: var(--standard-border);
+          // border-bottom-color: var(--border-black);
+          // border-right: var(--standard-border);
+          // border-right-color: var(--border-black);
+          border: var(--standard-border);
+          border-color: var(--border-black);
+        }
+
         &.godzina {
           border-left: var(--standard-border);
           border-left-color: var(--border-black);
