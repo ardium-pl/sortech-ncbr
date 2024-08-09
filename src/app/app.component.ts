@@ -14,6 +14,6 @@ import { LengthOfStayComponent } from './length-of-stay/length-of-stay.component
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  readonly selectedTabIndex = 2;
+  readonly selectedTabIndex = 1;
   title = 'SOR';
 }
