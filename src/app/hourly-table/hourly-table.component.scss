@@ -14,34 +14,19 @@ ag-grid-angular {
   margin-top: var(--grid-ofset);
 }
 
+// Customizing Ag Grid theme using predefined variables
 .ag-theme-alpine {
   // Fonts
   --ag-font-family: var(--font-family);
   --ag-font-size: var(--font-size);
 
   // Cell colors
-  // --ag-foreground-color: rgb(126, 46, 132);
   --ag-background-color: var(--light-blue);
   --ag-odd-row-background-color: var(--white);
-  // --ag-header-foreground-color: rgb(204, 245, 172);
-  // --ag-header-background-color: rgb(209, 64, 129);
-
-  // Resize handles
-  // --ag-header-column-resize-handle-display: none;
-  // --ag-header-column-resize-handle-color: rgb(126, 46, 132);
 
   // Borders
-  // --ag-borders-critical: solid 2px;
   --ag-border-color: black;
-  // --ag-borders-secondary: dashed;
-
-  // --ag-critical-border-color: black;
   --ag-cell-horizontal-border: solid var(--light-grey-new);
-
-  // Header separator
-  // --ag-header-column-separator-display: true;
-  // --ag-header-column-separator-width: 3px;
-  // --ag-header-column-separator-color: black;
 }
 
 ::ng-deep {
@@ -80,29 +65,7 @@ ag-grid-angular {
       &.liczba {
         border-left: var(--standard-border);
         border-color: var(--border-black);
-
-        // &.pielegniarki,
-        // &.lozka {
-        //   background-color: var(--darkest-red);
       }
-
-      //   &.lekarze,
-      //   &.obserwacja {
-      //     background-color: var(--darkest-green);
-      //   }
-      // }
-
-      // &.wydajnosc {
-      //   &.pielegniarki,
-      //   &.lozka {
-      //     background-color: var(--darkest-red);
-      //   }
-
-      //   &.lekarze,
-      //   &.obserwacja {
-      //     background-color: var(--darkest-green);
-      //   }
-      // }
     }
 
     // Cells
@@ -160,10 +123,6 @@ ag-grid-angular {
         }
 
         &.top.waskie-gardlo {
-          // border-bottom: var(--standard-border);
-          // border-bottom-color: var(--border-black);
-          // border-right: var(--standard-border);
-          // border-right-color: var(--border-black);
           border: var(--standard-border);
           border-color: var(--border-black);
         }

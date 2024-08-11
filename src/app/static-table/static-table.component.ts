@@ -1,7 +1,8 @@
 import { Component, inject, computed } from '@angular/core';
-import { AgGridAngular } from 'ag-grid-angular'; // Angular Data Grid Component
-import { staticTableColDefs, numberRoundingFormatter } from './col-defs-static';
-import { ColDef, ColGroupDef, CellValueChangedEvent, GridApi, GridReadyEvent } from 'ag-grid-community'; // Column Definition Type Interface
+import { AgGridAngular } from 'ag-grid-angular';
+import { staticTableColDefs } from './col-defs-static';
+import { markBottleneckAndRoundFormatter } from '../utils';
+import { ColDef, ColGroupDef, CellValueChangedEvent, GridApi, GridReadyEvent } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
@@ -33,7 +34,7 @@ export class StaticTableComponent {
     // autoHeight: true,
     minWidth: 100,
     flex: 1,
-    cellRenderer: (params: any) => numberRoundingFormatter(params),
+    cellRenderer: markBottleneckAndRoundFormatter,
     editable: ({ data }) => data['id'] < 9,
   };
 
@@ -42,9 +43,9 @@ export class StaticTableComponent {
 
   onCellValueChanged(event: CellValueChangedEvent) {
     // Get the changed row (=hour)
-    let changeRow: StaticRow = event.data;
+    const changedRow: StaticRow = event.data;
     // Apply calculations & update main signal
-    this.staticDataService.applyRowCalculations(this.rowData(), changeRow);
+    this.staticDataService.applyRowCalculations(this.rowData(), changedRow);
   }
 
   private api!: GridApi;
@@ -54,6 +55,5 @@ export class StaticTableComponent {
 
     // Apply calculations
     this.staticDataService.applyRowCalculations(this.rowData(), this.rowData()[1]);
-    console.log(this.rowData()[11]);
   };
 }

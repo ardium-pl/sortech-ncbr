@@ -1,15 +1,5 @@
 import { ColDef, ColGroupDef } from 'ag-grid-community';
 
-const DECIMAL_PLACES = 100; // 10 for 1, 100 for 2, 1000 for 3 ...
-
-export function numberRoundingFormatter(params: any) {
-  if (!isNaN(Number(params.value))) {
-    return `${Math.round(params.value * DECIMAL_PLACES) / DECIMAL_PLACES}`;
-  } else {
-    return params.value;
-  }
-}
-
 export const LOSTableColDefs: (ColDef | ColGroupDef)[] = [
   {
     headerName: 'Godzina',

@@ -1,4 +1,4 @@
-import { Constants } from './interfaces/utils';
+import { Constants } from './utils';
 
 export const CONSTANTS: Constants = {
   pacjentRok: 51000,

@@ -1,18 +1,10 @@
-import { ColDef, ColGroupDef } from 'ag-grid-community';
+import { ColDef, ColGroupDef, ICellRendererParams } from 'ag-grid-community';
+import { numberRoundingFormatter } from '../utils';
 
-const DECIMAL_PLACES = 100; // 10 for 1, 100 for 2, 1000 for 3 ...
-function numberRoundingFormatter(params: any) {
-  if (!isNaN(Number(params.value))) {
-    return `${Math.round(params.value * DECIMAL_PLACES) / DECIMAL_PLACES}`;
-  } else {
-    return params.value;
-  }
-}
-
-function cellRendererEditable(params: any) {
-  if (params.data['id'] === 24) return 'Wyd./dobę';
-  if (params.data['id'] === 25) return 'Śr. zajęt.';
-  return params.value;
+function cellRendererEditable({ data, value }: ICellRendererParams) {
+  if (data['id'] === 24) return 'Wyd./dobę';
+  if (data['id'] === 25) return 'Śr. zajęt.';
+  return value;
 }
 
 export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
@@ -59,8 +51,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Liczba Pielęgn.',
         field: 'liczbaPielegniarek',
         headerClass: 'grid-header grid-header-mid pielegniarki liczba',
-        editable: (params: any) => params.data['id'] < 24,
-        cellRenderer: (params: any) => cellRendererEditable(params),
+        editable: ({ data }) => data['id'] < 24,
+        cellRenderer: cellRendererEditable,
         cellClass: ({ data }) => [
           'cell',
           'pielegniarki',
@@ -74,7 +66,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Wydajność l. pacj.',
         field: 'wydajnoscPielegniarek',
         headerClass: 'grid-header grid-header-mid pielegniarki wydajnosc',
-        cellRenderer: (params: any) => numberRoundingFormatter(params),
+        cellRenderer: numberRoundingFormatter,
         cellClass: ({ data }) => [
           'cell',
           'pielegniarki',
@@ -94,8 +86,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Liczba Lekarze',
         field: 'liczbaLekarzy',
         headerClass: 'grid-header grid-header-mid lekarze liczba',
-        editable: (params: any) => params.data['id'] < 24,
-        cellRenderer: (params: any) => cellRendererEditable(params),
+        editable: ({ data }) => data['id'] < 24,
+        cellRenderer: cellRendererEditable,
         cellClass: ({ data }) => [
           'cell',
           'lekarz',
@@ -109,7 +101,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Wyd. l. pacj.',
         field: 'wydajnoscLekarzy',
         headerClass: 'grid-header grid-header-mid lekarze wydajnosc',
-        cellRenderer: (params: any) => numberRoundingFormatter(params),
+        cellRenderer: numberRoundingFormatter,
         cellClass: ({ data }) => [
           'cell',
           'lekarz',
@@ -129,8 +121,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Liczba Łóżka',
         field: 'liczbaLozek',
         headerClass: 'grid-header grid-header-mid lozka liczba',
-        editable: (params: any) => params.data['id'] < 24,
-        cellRenderer: (params: any) => cellRendererEditable(params),
+        editable: ({ data }) => data['id'] < 24,
+        cellRenderer: cellRendererEditable,
         cellClass: ({ data }) => [
           'cell',
           'lozko',
@@ -144,7 +136,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Wyd. l. pacj.',
         field: 'wydajnoscLozek',
         headerClass: 'grid-header grid-header-mid lozka wydajnosc',
-        cellRenderer: (params: any) => numberRoundingFormatter(params),
+        cellRenderer: numberRoundingFormatter,
         cellClass: ({ data }) => [
           'cell',
           'lozko',
@@ -164,8 +156,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Liczba łóżek',
         field: 'liczbaLozekObserwacja',
         headerClass: 'grid-header grid-header-mid obserwacja liczba',
-        editable: (params: any) => params.data['id'] < 24,
-        cellRenderer: (params: any) => cellRendererEditable(params),
+        editable: ({ data }) => data['id'] < 24,
+        cellRenderer: cellRendererEditable,
         cellClass: ({ data }) => [
           'cell',
           'obserwacja',
@@ -179,7 +171,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Wyd. l. pacj.',
         field: 'wydajnoscLozekObserwacja',
         headerClass: 'grid-header grid-header-mid obserwacja wydajnosc',
-        cellRenderer: (params: any) => numberRoundingFormatter(params),
+        cellRenderer: numberRoundingFormatter,
         cellClass: ({ data }) => [
           'cell',
           'obserwacja',
