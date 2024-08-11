@@ -1,13 +1,7 @@
 import { Component, inject, computed } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular'; // Angular Data Grid Component
 import { LOSTableColDefs, numberRoundingFormatter } from './col-defs-los';
-import {
-  ColDef,
-  ColGroupDef,
-  CellValueChangedEvent,
-  GridApi,
-  GridReadyEvent,
-} from 'ag-grid-community'; // Column Definition Type Interface
+import { ColDef, ColGroupDef, CellValueChangedEvent, GridApi, GridReadyEvent } from 'ag-grid-community'; // Column Definition Type Interface
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import { HourlyDataService } from '../hourly-data.service';

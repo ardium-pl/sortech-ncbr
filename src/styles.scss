@@ -1,3 +1,22 @@
+// CSS reset
+html,
+body {
+  margin: 0px;
+  height: 100%;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+
+  background-color: var(--background);
+}
+
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
 :root {
   --grid-ofset: 30px;
   --grid-height: 75vh;
@@ -49,7 +68,6 @@
   --mid-blue: rgb(47, 117, 181);
   --light-blue: rgb(217, 225, 242);
 
-
   // Attention drawing colors
   --flashy-yellow: rgb(228, 245, 0);
   --flashy-red: rgb(255, 8, 8);
@@ -70,15 +88,7 @@
   // Borders
   --standard-border: solid 4px;
   --border-black: black;
-  --border-blue: var(--darkest-blue)
-}
-
-html,
-body {
-  margin: 0px;
-  height: 100%;
-
-  background-color: var(--background);
+  --border-blue: var(--darkest-blue);
 }
 
 // Centering grid headers text

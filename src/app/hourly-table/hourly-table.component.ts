@@ -3,13 +3,7 @@ import { HourlyDataService } from '../hourly-data.service';
 import { hourlyTableColDefs } from './col-defs-hourly';
 import { AgGridAngular } from 'ag-grid-angular';
 import { Hour } from '../interfaces/hour';
-import {
-  ColDef,
-  ColGroupDef,
-  CellValueChangedEvent,
-  GridApi,
-  GridReadyEvent,
-} from 'ag-grid-community';
+import { ColDef, ColGroupDef, CellValueChangedEvent, GridApi, GridReadyEvent } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';

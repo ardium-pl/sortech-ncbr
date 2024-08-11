@@ -7,16 +7,14 @@ import { StaticRow } from './interfaces/static-row';
 })
 export class StaticDataService {
   updateRows(changedRow: StaticRow) {
-    this.rowData.update((rows) =>
-      rows.map((rows) => (changedRow.id === rows.id ? changedRow : rows))
-    );
+    this.rowData.update(rows => rows.map(rows => (changedRow.id === rows.id ? changedRow : rows)));
   }
 
   applyRowCalculations(rowData: StaticRow[], changedRow?: StaticRow) {
     let rows: StaticRow[];
 
     if (changedRow) {
-      rows = rowData.map((row) => {
+      rows = rowData.map(row => {
         return row.id === changedRow.id ? changedRow : row;
       });
     } else {
@@ -40,7 +38,7 @@ export class StaticDataService {
     ] as const;
 
     // oblicz Średni ważony czas na pacjenta
-    fields.slice(0, 6).forEach((field) => {
+    fields.slice(0, 6).forEach(field => {
       meanTimePerPatient[field] = rows.slice(0, 8).reduce((acc, row) => {
         return acc + row.procPacjentow! * row[field]!;
       }, 0);
@@ -49,16 +47,11 @@ export class StaticDataService {
     // Oblicz wydajnosc zasobu
     wydajnoscZasobu.triage = 60 / liczbaZasobow.triage!;
     wydajnoscZasobu.lozko = liczbaZasobow.lozko! / meanTimePerPatient.lozko!;
-    wydajnoscZasobu.lekarz =
-      (60 * liczbaZasobow.lekarz!) / meanTimePerPatient.lekarz!;
-    wydajnoscZasobu.pielegniarka =
-      (60 * liczbaZasobow.pielegniarka!) / meanTimePerPatient.pielegniarka!;
-    wydajnoscZasobu.lozkoObserwacja =
-      liczbaZasobow.lozkoObserwacja! / meanTimePerPatient.lozkoObserwacja!;
-    wydajnoscZasobu.lozkoOczekiwanie =
-      liczbaZasobow.lozkoOczekiwanie! / meanTimePerPatient.lozkoOczekiwanie!;
-    wydajnoscZasobu.wydajnoscPrzyjmowania =
-      rows[7].wydajnoscPrzyjmowania! / rows[7].procPacjentow!;
+    wydajnoscZasobu.lekarz = (60 * liczbaZasobow.lekarz!) / meanTimePerPatient.lekarz!;
+    wydajnoscZasobu.pielegniarka = (60 * liczbaZasobow.pielegniarka!) / meanTimePerPatient.pielegniarka!;
+    wydajnoscZasobu.lozkoObserwacja = liczbaZasobow.lozkoObserwacja! / meanTimePerPatient.lozkoObserwacja!;
+    wydajnoscZasobu.lozkoOczekiwanie = liczbaZasobow.lozkoOczekiwanie! / meanTimePerPatient.lozkoOczekiwanie!;
+    wydajnoscZasobu.wydajnoscPrzyjmowania = rows[7].wydajnoscPrzyjmowania! / rows[7].procPacjentow!;
 
     // Wskaż wąskie gardło
     const minWydajnosci = Math.min(
@@ -71,17 +64,14 @@ export class StaticDataService {
 
     const przyjeciePacjentow = rows[7].procPacjentow! * minWydajnosci;
 
-    fields.slice(0, 5).forEach((field) => {
-      waskieGardo[field] =
-        wydajnoscZasobu[field] === minWydajnosci ? 777 : null;
+    fields.slice(0, 5).forEach(field => {
+      waskieGardo[field] = wydajnoscZasobu[field] === minWydajnosci ? 777 : null;
     });
-    waskieGardo.lozkoOczekiwanie =
-      wydajnoscZasobu.lozkoOczekiwanie < minWydajnosci ? 777 : null;
-    waskieGardo.wydajnoscPrzyjmowania =
-      rows[7].wydajnoscPrzyjmowania! < przyjeciePacjentow ? 777 : null;
+    waskieGardo.lozkoOczekiwanie = wydajnoscZasobu.lozkoOczekiwanie < minWydajnosci ? 777 : null;
+    waskieGardo.wydajnoscPrzyjmowania = rows[7].wydajnoscPrzyjmowania! < przyjeciePacjentow ? 777 : null;
 
     // Oblicz zajętość przy danej wydajości
-    fields.forEach((field) => {
+    fields.forEach(field => {
       zajetosc[field] = minWydajnosci / wydajnoscZasobu[field]!;
     });
 

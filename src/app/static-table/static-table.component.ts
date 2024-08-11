@@ -1,13 +1,7 @@
 import { Component, inject, computed } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular'; // Angular Data Grid Component
 import { staticTableColDefs, numberRoundingFormatter } from './col-defs-static';
-import {
-  ColDef,
-  ColGroupDef,
-  CellValueChangedEvent,
-  GridApi,
-  GridReadyEvent,
-} from 'ag-grid-community'; // Column Definition Type Interface
+import { ColDef, ColGroupDef, CellValueChangedEvent, GridApi, GridReadyEvent } from 'ag-grid-community'; // Column Definition Type Interface
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
@@ -61,6 +55,5 @@ export class StaticTableComponent {
     // Apply calculations
     this.staticDataService.applyRowCalculations(this.rowData(), this.rowData()[1]);
     console.log(this.rowData()[11]);
-
   };
 }

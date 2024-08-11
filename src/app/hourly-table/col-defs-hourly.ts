@@ -202,9 +202,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       data['id'] < 24 ? 'part-of-table' : 'summary-row',
       data['id'] === 24 ? 'top' : '',
       data['id'] === 25 ? 'bottom' : '',
-      data['mozliwoscPokryciaZopatrzenia'] === 'Niedobór wyd.'
-        ? 'niedobor-wydajnosci'
-        : 'brak-niedoboru',
+      data['mozliwoscPokryciaZopatrzenia'] === 'Niedobór wyd.' ? 'niedobor-wydajnosci' : 'brak-niedoboru',
     ],
     rowSpan: ({ data }) => (data['id'] === 24 ? 2 : 1),
     colSpan: ({ data }) => (data['id'] < 24 ? 1 : 2),
@@ -243,9 +241,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       data['id'] < 24 ? 'part-of-table' : 'summary-row',
       data['id'] === 24 ? 'top' : '',
       data['id'] === 25 ? 'bottom' : '',
-      data['mozliwoscPokryciaZopatrzenia'] === 'Niedobór wyd.'
-        ? 'niedobor-wydajnosci'
-        : 'brak-niedoboru',
+      data['mozliwoscPokryciaZopatrzenia'] === 'Niedobór wyd.' ? 'niedobor-wydajnosci' : 'brak-niedoboru',
     ],
 
     minWidth: 160,
