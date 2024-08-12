@@ -8,9 +8,9 @@ Rozszerzona dokumentacja serwera Express dla Systemu Obsługi SOR:
 2. Struktura projektu
 3. Konfiguracja
 4. Endpointy API
-   4.1. SOR Router
-   4.2. Personel Router
-   4.3. Leki Router
+* 4.1. SOR Router
+* 4.2. Personel Router
+* 4.3. Leki Router
 5. Modele danych
 6. Usługi (Services)
 7. Middleware
