@@ -1,22 +1,27 @@
-# Use a minimal base image
-FROM rocker/r-ver:4.1.0
+# Use the official R base image
+FROM r-base:latest
 
-# Set environment variables
-ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=UTC
-
-# Install system dependencies and R packages in one layer
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     libssl-dev \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && R -e "install.packages(c('plumber', 'lubridate'), repos='https://cloud.r-project.org/', dependencies=TRUE)"
+    libxml2-dev \
+    libsodium-dev \
+    pkg-config
 
-# Create app directory and copy R scripts
+
+# Install R packages
+RUN R -e "install.packages(c('plumber', 'lubridate'), repos='http://cran.rstudio.com/')"
+
+# Create app directory
 WORKDIR /app
-COPY plumber.R router.R ./
 
-# Expose port 8080 and run the API
+# Copy R scripts
+COPY plumber.R /app/plumber.R
+COPY router.R /app/router.R
+
+# Expose port 8080
 EXPOSE 8080
+
+# Run the API
 CMD ["Rscript", "router.R"]
