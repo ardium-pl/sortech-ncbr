@@ -34,4 +34,4 @@ COPY router.R /app/router.R
 EXPOSE 8080
 
 # Run the API
-ENTRYPOINT ["R", "-e", "library(plumber); library(lubridate); library(jsonlite); pr <- plumb('plumber.R'); pr$run(port=8080, host='0.0.0.0')"]
+CMD ["R", "-e", "source('router.R')"]
