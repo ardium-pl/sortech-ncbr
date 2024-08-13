@@ -8,15 +8,17 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
   libxml2-dev \
   && rm -rf /var/lib/apt/lists/*
 
-# Install R packages
-RUN R -e "install.packages(c('plumber', 'lubridate', 'jsonlite'), repos='https://cloud.r-project.org/')"
+# Install R packages and verify installation
+RUN R -e "install.packages(c('plumber', 'lubridate', 'jsonlite'), repos='https://cloud.r-project.org/')" && \
+    R -e "if(!require(plumber)) stop('plumber not installed')" && \
+    R -e "if(!require(lubridate)) stop('lubridate not installed')" && \
+    R -e "if(!require(jsonlite)) stop('jsonlite not installed')"
 
 # Setup workspace
 COPY . /app
 WORKDIR /app
 
 # Run the API
-ENTRYPOINT ["Rscript"]
-CMD ["router.R"]
+CMD ["Rscript", "-e", "library(plumber); pr <- plumb('plumber.R'); pr$run(host='0.0.0.0', port=as.numeric(Sys.getenv('PORT', 8080)))"]
 
 EXPOSE 8080
