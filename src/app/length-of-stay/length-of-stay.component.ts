@@ -81,7 +81,7 @@ export class LengthOfStayComponent {
     },
   };
   readonly columnDefs: (ColDef | ColGroupDef)[] = [...LOSTableColDefs, this.delayColumn];
-  readonly rowData = computed(() => this.hourlyDataService.rowData());
+  readonly rowData = this.hourlyDataService.rowData;
 
   onCellValueChanged(event: CellValueChangedEvent) {
     // Get the changed row (=hour)

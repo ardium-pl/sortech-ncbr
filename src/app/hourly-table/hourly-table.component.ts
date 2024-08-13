@@ -37,10 +37,9 @@ export class HourlyTableComponent {
   };
 
   readonly columnDefs: (ColDef | ColGroupDef)[] = hourlyTableColDefs;
-  readonly rowData = computed(() => this.hourlyDataService.rowData());
-  readonly summaryRow1 = computed(() => this.hourlyDataService.summaryRow1());
-  readonly summaryRow2 = computed(() => this.hourlyDataService.summaryRow2());
-  readonly summaryRow3 = {};
+  readonly rowData = this.hourlyDataService.rowData;
+  readonly summaryRow1 = this.hourlyDataService.summaryRow1;
+  readonly summaryRow2 = this.hourlyDataService.summaryRow2;
 
   onCellValueChanged(event: CellValueChangedEvent) {
     // Get the changed row (=hour)

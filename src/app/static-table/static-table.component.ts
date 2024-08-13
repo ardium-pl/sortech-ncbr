@@ -39,7 +39,7 @@ export class StaticTableComponent {
   };
 
   readonly columnDefs: (ColDef | ColGroupDef)[] = staticTableColDefs;
-  readonly rowData = computed(() => this.staticDataService.rowData());
+  readonly rowData = this.staticDataService.rowData;
 
   onCellValueChanged(event: CellValueChangedEvent) {
     // Get the changed row (=hour)
