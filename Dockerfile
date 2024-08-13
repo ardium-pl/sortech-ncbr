@@ -21,11 +21,14 @@ RUN apt-get update && apt-get install -y \
     libsodium-dev \
     pkg-config \
     r-base \
+    r-base-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install R packages
-RUN R -e "install.packages(c('plumber', 'lubridate', 'jsonlite'), repos='https://cloud.r-project.org/', dependencies=TRUE)"
+# Install R packages in separate steps
+RUN R -e "install.packages('plumber', repos='https://cloud.r-project.org/', dependencies=TRUE)"
+RUN R -e "install.packages('lubridate', repos='https://cloud.r-project.org/', dependencies=TRUE)"
+RUN R -e "install.packages('jsonlite', repos='https://cloud.r-project.org/', dependencies=TRUE)"
 
 # Create app directory
 WORKDIR /app
