@@ -17,14 +17,14 @@ error_handler_404 <- function(req, res) {
 plumber_file <- "plumber.R"
 
 # Create a router
-router <- plumb(plumber_file)
+pr <- Plumber$new(plumber_file)
 
 # Set error handlers
-router$setErrorHandler(error_handler_500)
-router$set404Handler(error_handler_404)
+pr$setErrorHandler(error_handler_500)
+pr$setNotFoundHandler(error_handler_404)
 
 # Add CORS support
-router$add_filter("CORS", function(req, res) {
+pr$filter("CORS", function(req, res) {
   res$setHeader("Access-Control-Allow-Origin", "*")
   res$setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
   res$setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization")
@@ -39,4 +39,4 @@ router$add_filter("CORS", function(req, res) {
 port <- as.numeric(Sys.getenv("PORT", 8080))
 
 # Run the API
-router$run(host = "0.0.0.0", port = port)
+pr$run(host = "0.0.0.0", port = port)

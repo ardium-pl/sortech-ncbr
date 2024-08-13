@@ -8,8 +8,14 @@ WORKDIR /app
 COPY plumber.R /app/plumber.R
 COPY router.R /app/router.R
 
-# Install the lubridate package during the image build
-RUN R -e "install.packages('lubridate', repos='https://cloud.r-project.org')"
+# Install required packages
+RUN R -e "install.packages(c('lubridate', 'jsonlite'), repos='https://cloud.r-project.org')"
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Run the API
+CMD ["Rscript", "/app/router.R"]
 
 # Set the entrypoint to run a shell script
 COPY entrypoint.sh /app/entrypoint.sh
