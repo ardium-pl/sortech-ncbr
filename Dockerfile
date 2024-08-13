@@ -17,10 +17,7 @@ RUN apt-get update && apt-get install -y \
 RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.method = 'libcurl', Ncpus = 4)" >> /usr/local/lib/R/etc/Rprofile.site
 
 # Install required R packages
-RUN R -e 'install.packages("remotes")'
-RUN Rscript -e 'remotes::install_version("plumber", upgrade="never", version = "1.2.0")'
-RUN Rscript -e 'remotes::install_version("lubridate", upgrade="never", version = "1.8.0")'
-RUN Rscript -e 'remotes::install_version("jsonlite", upgrade="never", version = "1.8.4")'
+RUN R -e 'install.packages(c("plumber", "lubridate", "jsonlite"), repos="https://cloud.r-project.org/")'
 
 # Create and set working directory
 RUN mkdir /app

@@ -14,7 +14,7 @@ error_handler_404 <- function(req, res) {
 }
 
 # Create a router
-pr <- plumb("plumber.R")
+pr <- Plumber$new("plumber.R")
 
 # Set error handlers
 pr$setErrorHandler(error_handler_500)
