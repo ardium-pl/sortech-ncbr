@@ -17,7 +17,10 @@ RUN apt-get update && apt-get install -y \
 RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.method = 'libcurl', Ncpus = 4)" >> /usr/local/lib/R/etc/Rprofile.site
 
 # Install required R packages
-RUN R -e 'install.packages(c("plumber", "lubridate", "jsonlite"), repos="https://cloud.r-project.org/")'
+RUN R -e 'install.packages("remotes")'
+RUN Rscript -e 'remotes::install_version("plumber", upgrade="never", version = "1.2.0")'
+RUN Rscript -e 'remotes::install_version("lubridate", upgrade="never", version = "1.8.0")'
+RUN Rscript -e 'remotes::install_version("jsonlite", upgrade="never", version = "1.8.4")'
 
 # Create and set working directory
 RUN mkdir /app
@@ -30,5 +33,9 @@ COPY router.R /app/router.R
 # Expose port 8080
 EXPOSE 8080
 
+# Debugging steps
+RUN R -e "print(list.files('/app')); cat('\n\nContents of router.R:\n'); cat(readLines('/app/router.R'), sep='\n'); cat('\n\nContents of plumber.R:\n'); cat(readLines('/app/plumber.R'), sep='\n')"
+RUN R -e "library(plumber); library(lubridate); library(jsonlite); print(sessionInfo())"
+
 # Run the API
-CMD ["R", "-e", "source('router.R')"]
+CMD ["R", "--no-save", "--no-restore", "-e", "tryCatch({source('/app/router.R')}, error = function(e) {print(paste('Error:', e)); print(traceback()); quit(status = 1)})"]
