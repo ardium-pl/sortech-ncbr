@@ -1,6 +1,4 @@
-# Load packages
 library(plumber)
-library(lubridate)
 
 # Error handlers
 error_handler_500 <- function(req, res, err) {
@@ -13,11 +11,8 @@ error_handler_404 <- function(req, res) {
   list(Error_404 = "Page not found :(")
 }
 
-# Define the path to your plumber.R file
-plumber_file <- "plumber.R"
-
 # Create a router
-pr <- Plumber$new(plumber_file)
+pr <- plumb("plumber.R")
 
 # Set error handlers
 pr$setErrorHandler(error_handler_500)
