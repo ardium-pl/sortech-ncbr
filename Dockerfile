@@ -33,9 +33,5 @@ COPY router.R /app/router.R
 # Expose port 8080
 EXPOSE 8080
 
-# Debugging steps
-RUN R -e "print(list.files('/app')); cat('\n\nContents of router.R:\n'); cat(readLines('/app/router.R'), sep='\n'); cat('\n\nContents of plumber.R:\n'); cat(readLines('/app/plumber.R'), sep='\n')"
-RUN R -e "library(plumber); library(lubridate); library(jsonlite); print(sessionInfo())"
-
 # Run the API
-CMD ["R", "--no-save", "--no-restore", "-e", "tryCatch({source('/app/router.R')}, error = function(e) {print(paste('Error:', e)); print(traceback()); quit(status = 1)})"]
+ENTRYPOINT ["R", "-e", "library(plumber); library(lubridate); library(jsonlite); pr <- plumb('plumber.R'); pr$run(port=8080, host='0.0.0.0')"]
