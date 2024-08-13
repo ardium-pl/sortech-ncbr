@@ -1,3 +1,7 @@
+library(plumber)
+library(lubridate)
+library(jsonlite)
+
 #* Predict number of patients
 #* @param train_set The JSON payload containing the train set for the model
 #* @param future_dates The JSON payload containing the dates for which predictions will be made
