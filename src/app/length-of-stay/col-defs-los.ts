@@ -148,29 +148,4 @@ export const LOSTableColDefs: (ColDef | ColGroupDef)[] = [
       },
     ],
   },
-  {
-    headerName: 'opóźnienie',
-    field: 'opoznienieOgolem',
-    headerClass: 'grid-header grid-header-outer opoznienie-ogolem',
-    cellClass: ({ data }) => ['cell', 'opoznienie-ogolem', data['id'] === 23 ? 'bottom' : ''],
-    cellStyle: ({ value }) => {
-      if (value === null || value === undefined) return undefined;
-
-      const minValue = 0; // Replace with your actual minimum value
-      const maxValue = 5; // Replace with your actual maximum value
-      const weight = (value - minValue) / (maxValue - minValue);
-
-      // Define your RGB colors here
-      const startColor = { r: 36, g: 114, b: 76 }; // Dark Green
-      const endColor = { r: 198, g: 57, b: 9 }; // Dark Red
-
-      const red = Math.round(weight * endColor.r + (1 - weight) * startColor.r);
-      const green = Math.round(weight * endColor.g + (1 - weight) * startColor.g);
-      const blue = Math.round(weight * endColor.b + (1 - weight) * startColor.b);
-
-      return {
-        backgroundColor: `rgb(${red}, ${green}, ${blue})`,
-      };
-    },
-  },
 ];

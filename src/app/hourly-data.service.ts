@@ -52,7 +52,12 @@ export class HourlyDataService {
       this.updateHours(hour);
     });
 
-    // Get min
+    // Get min and max value of delay
+    const opoznienia: (number | string)[] = [];
+    for (let row of rows) {
+      opoznienia.push(row.opoznienieOgolem);
+    }
+    this.getExtremeValues(opoznienia);
   }
 
   obliczOczekiwaneWizyty(hourObject: Hour) {
