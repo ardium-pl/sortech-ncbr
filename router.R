@@ -1,12 +1,4 @@
-# Install & load packages
-if (!require("plumber")) {
-  install.packages("plumber")
-}
-
-if (!require("lubridate")) {
-  install.packages("lubridate")
-}
-
+# Load packages
 library(plumber)
 library(lubridate)
 
