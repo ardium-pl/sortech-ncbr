@@ -94,7 +94,7 @@ body {
 // Centering grid headers text
 .grid-header {
   text-align: center;
-  white-space: normal;
+  white-space: pre-line;
 
   display: flex;
   justify-content: center;
@@ -108,5 +108,5 @@ body {
 
 // Wrap group column headers' text manually (no auto height)
 .grid-header .ag-header-group-text {
-  white-space: normal;
+  white-space: pre-line;;
 }

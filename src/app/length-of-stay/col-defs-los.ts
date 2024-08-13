@@ -7,26 +7,28 @@ export const LOSTableColDefs: (ColDef | ColGroupDef)[] = [
     headerClass: 'grid-header grid-header-outer godzina',
     cellDataType: 'text',
     cellClass: ({ data }) => ['cell', 'godzina', data['id'] === 23 ? 'bottom' : ''],
+    minWidth: 130,
   },
   {
-    headerName: 'Oczek. l. wizyt',
+    headerName: 'Oczek. \n l. wizyt',
     field: 'oczekiwaneWizyty',
     headerClass: 'grid-header grid-header-outer oczekiwane-wizyty',
     cellClass: ({ data }) => ['cell', 'oczekiwane-wizyty', data['id'] === 23 ? 'bottom' : ''],
+    minWidth: 130,
   },
   {
     headerName: 'Pielęgniarki',
     headerClass: 'grid-header grid-header-outer pielegniarki',
     children: [
       {
-        headerName: 'Liczba',
+        headerName: 'Liczba Pielęgn.',
         field: 'liczbaPielegniarek',
         headerClass: 'grid-header grid-header-mid pielegniarki liczba',
         editable: true,
         cellClass: ({ data }) => ['cell', 'pielegniarki', 'liczba', data['id'] === 23 ? 'bottom' : ''],
       },
       {
-        headerName: 'Wydajność',
+        headerName: 'Wyd. \n l. pacj.',
         field: 'wydajnoscPielegniarek',
         headerClass: 'grid-header grid-header-mid pielegniarki wydajnosc',
         cellClass: ({ data }) => ['cell', 'pielegniarki', 'wydajnosc', data['id'] === 23 ? 'bottom' : ''],
@@ -38,14 +40,14 @@ export const LOSTableColDefs: (ColDef | ColGroupDef)[] = [
     headerClass: 'grid-header grid-header-outer lekarze',
     children: [
       {
-        headerName: 'Liczba',
+        headerName: 'Liczba Lekarzy',
         field: 'liczbaLekarzy',
         headerClass: 'grid-header grid-header-mid lekarze liczba',
         editable: true,
         cellClass: ({ data }) => ['cell', 'lekarze', 'liczba', data['id'] === 23 ? 'bottom' : ''],
       },
       {
-        headerName: 'Wydajność',
+        headerName: 'Wyd. \n l. pacj.',
         field: 'wydajnoscLekarzy',
         headerClass: 'grid-header grid-header-mid lekarze wydajnosc',
         cellClass: ({ data }) => ['cell', 'lekarze', 'wydajnosc', data['id'] === 23 ? 'bottom' : ''],

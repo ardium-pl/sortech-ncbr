@@ -27,6 +27,9 @@ ag-grid-angular {
   // Borders
   --ag-border-color: black;
   --ag-cell-horizontal-border: solid var(--light-grey-new);
+
+  // Cell & header padding
+  --ag-cell-horizontal-padding: 10px;
 }
 
 ::ng-deep {

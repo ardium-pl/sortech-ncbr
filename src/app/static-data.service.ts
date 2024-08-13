@@ -172,7 +172,7 @@ export class StaticDataService {
     },
     {
       id: 7,
-      typPacjenta: 'Oczek. na przyj. na oddział leczni',
+      typPacjenta: 'Oczek. na przyj. na oddział leczniczy',
       procPacjentow: 0.4,
       triage: null,
       lozko: null,

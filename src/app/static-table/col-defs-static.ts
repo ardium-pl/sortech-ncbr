@@ -16,6 +16,7 @@ export const staticTableColDefs: (ColDef | ColGroupDef)[] = [
     ],
     colSpan: ({ data }) => (data['id'] < 8 ? 1 : 2),
     cellDataType: 'text',
+    // minWidth: 360,
   },
   {
     headerName: 'Proc. pacjentów',
@@ -142,7 +143,7 @@ export const staticTableColDefs: (ColDef | ColGroupDef)[] = [
     headerClass: 'grid-header grid-header-outer ograniczenia-przyjec',
     children: [
       {
-        headerName: 'Łóżko oczek. na przyj. do szpit.',
+        headerName: 'Łóżko oczek. \n na przyj. \n do szpitala',
         headerClass: 'grid-header grid-header-mid oczekiwanie-lozko',
         children: [
           {

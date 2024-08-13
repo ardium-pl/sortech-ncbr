@@ -39,7 +39,7 @@ export class LengthOfStayComponent {
   };
 
   readonly delayColumn: ColDef = {
-    headerName: 'opóźnienie',
+    headerName: 'Opóźnienie ogółem',
     field: 'opoznienieOgolem',
     headerClass: 'grid-header grid-header-outer opoznienie-ogolem',
     cellClass: ({ data }) => ['cell', 'opoznienie-ogolem', data['id'] === 23 ? 'bottom' : ''],
@@ -79,6 +79,7 @@ export class LengthOfStayComponent {
 
       return styles;
     },
+    minWidth: 150,
   };
   readonly columnDefs: (ColDef | ColGroupDef)[] = [...LOSTableColDefs, this.delayColumn];
   readonly rowData = this.hourlyDataService.rowData;
