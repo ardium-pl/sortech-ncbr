@@ -1,23 +1,30 @@
-# Use the official rstudio/plumber base image
-FROM rstudio/plumber
+FROM rocker/r-ver:latest
 
-# Create the /app directory inside the container
+# Install OS dependencies
+RUN apt-get update -qq && apt-get install -y --no-install-recommends \
+  git-core \
+  libssl-dev \
+  libcurl4-gnutls-dev \
+  curl \
+  libsodium-dev \
+  libxml2-dev \
+  && rm -rf /var/lib/apt/lists/*
+
+# Install pak as an alternative to install.packages
+RUN Rscript -e "install.packages('pak', repos = sprintf('https://r-lib.github.io/p/pak/stable'))"
+
+# Install latest plumber from GitHub main branch
+RUN Rscript -e "pak::pkg_install('rstudio/plumber@main')"
+
+# Install other R packages
+RUN Rscript -e "pak::pkg_install(c('lubridate', 'jsonlite'))"
+
+# Setup workspace
+COPY . /app
 WORKDIR /app
 
-# Copy your R scripts into the /app directory in the container
-COPY plumber.R /app/plumber.R
-COPY router.R /app/router.R
-
-# Install required packages
-RUN R -e "install.packages(c('plumber', 'lubridate', 'jsonlite'), repos='https://cloud.r-project.org/', dependencies=TRUE)"
-
-# Expose the port the app runs on
-EXPOSE 8080
-
 # Run the API
-CMD ["Rscript", "/app/router.R"]
+ENTRYPOINT ["Rscript"]
+CMD ["router.R"]
 
-# Set the entrypoint to run a shell script
-COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
-ENTRYPOINT ["/app/entrypoint.sh"]
+EXPOSE 8080
