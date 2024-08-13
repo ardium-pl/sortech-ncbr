@@ -1,4 +1,11 @@
+library(conflicted)
 library(plumber)
+library(lubridate)
+library(jsonlite)
+
+# Resolve conflicts
+conflict_prefer("filter", "dplyr")
+conflict_prefer("lag", "dplyr")
 
 # Error handlers
 error_handler_500 <- function(req, res, err) {
@@ -12,7 +19,7 @@ error_handler_404 <- function(req, res) {
 }
 
 # Create a router
-pr <- plumb("plumber.R")
+pr <- plumber::plumb("plumber.R")
 
 # Set error handlers
 pr$setErrorHandler(error_handler_500)

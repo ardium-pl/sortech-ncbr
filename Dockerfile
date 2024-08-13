@@ -9,7 +9,7 @@ COPY plumber.R /app/plumber.R
 COPY router.R /app/router.R
 
 # Install required packages
-RUN R -e "install.packages(c('lubridate', 'jsonlite'), repos='https://cloud.r-project.org')"
+RUN R -e "install.packages(c('plumber', 'lubridate', 'jsonlite', 'conflicted'), repos='https://cloud.r-project.org/', dependencies=TRUE)"
 
 # Expose the port the app runs on
 EXPOSE 8080
