@@ -1,44 +1,22 @@
-# Use a specific Ubuntu base image
-FROM ubuntu:20.04
+# Use a minimal base image
+FROM rocker/r-ver:4.1.0
 
-# Avoid prompts from apt
+# Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
-
-# Set timezone
 ENV TZ=UTC
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    software-properties-common \
-    dirmngr \
-    apt-transport-https \
-    lsb-release \
-    ca-certificates \
+# Install system dependencies and R packages in one layer
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libcurl4-openssl-dev \
     libssl-dev \
-    libxml2-dev \
-    libsodium-dev \
-    pkg-config \
-    r-base \
-    r-base-dev \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && R -e "install.packages(c('plumber', 'lubridate'), repos='https://cloud.r-project.org/', dependencies=TRUE)"
 
-# Install R packages in separate steps
-RUN R -e "install.packages('plumber', repos='https://cloud.r-project.org/', dependencies=TRUE)"
-RUN R -e "install.packages('lubridate', repos='https://cloud.r-project.org/', dependencies=TRUE)"
-RUN R -e "install.packages('jsonlite', repos='https://cloud.r-project.org/', dependencies=TRUE)"
-
-# Create app directory
+# Create app directory and copy R scripts
 WORKDIR /app
+COPY plumber.R router.R ./
 
-# Copy R scripts
-COPY plumber.R /app/plumber.R
-COPY router.R /app/router.R
-
-# Expose port 8080
+# Expose port 8080 and run the API
 EXPOSE 8080
-
-# Run the API
 CMD ["Rscript", "router.R"]
