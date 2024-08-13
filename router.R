@@ -4,8 +4,8 @@ library(lubridate)
 library(jsonlite)
 
 # Resolve conflicts
-conflict_prefer("filter", "dplyr")
-conflict_prefer("lag", "dplyr")
+#conflict_prefer("filter", "dplyr")
+#conflict_prefer("lag", "dplyr")
 
 # Error handlers
 error_handler_500 <- function(req, res, err) {
