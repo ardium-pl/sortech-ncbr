@@ -1,16 +1,31 @@
-# Use the official R base image
-FROM r-base:latest
+# Use a specific Ubuntu base image
+FROM ubuntu:20.04
+
+# Avoid prompts from apt
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Set timezone
+ENV TZ=UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    dirmngr \
+    apt-transport-https \
+    lsb-release \
+    ca-certificates \
     libcurl4-openssl-dev \
     libssl-dev \
     libxml2-dev \
     libsodium-dev \
-    pkg-config
+    pkg-config \
+    r-base \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install R packages
-RUN R -e "install.packages(c('plumber', 'lubridate', 'jsonlite'), repos='http://cran.rstudio.com/', dependencies=TRUE)"
+RUN R -e "install.packages(c('plumber', 'lubridate', 'jsonlite'), repos='https://cloud.r-project.org/', dependencies=TRUE)"
 
 # Create app directory
 WORKDIR /app
