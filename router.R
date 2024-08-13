@@ -21,16 +21,16 @@ pr$setErrorHandler(error_handler_500)
 pr$setNotFoundHandler(error_handler_404)
 
 # Add CORS support
-pr$filter("CORS", function(req, res) {
-  res$setHeader("Access-Control-Allow-Origin", "*")
-  res$setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-  res$setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization")
+#pr$filter("CORS", function(req, res) {
+#  res$setHeader("Access-Control-Allow-Origin", "*")
+ # res$setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+  #res$setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization")
   
-  if (req$REQUEST_METHOD == "OPTIONS") {
-    res$status <- 200
-    return(list())
-  }
-})
+ # if (req$REQUEST_METHOD == "OPTIONS") {
+  #  res$status <- 200
+  #  return(list())
+  #}
+#})
 
 # Logging filter
 pr$filter("logger", function(req){
