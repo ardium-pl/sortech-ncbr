@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { CONSTANTS } from './constants';
-import { Dzien, LQparams } from './utils';
+import { LQparams } from './utils';
 import { Hour } from './interfaces/hour';
 import { Summary } from './interfaces/summaries';
 import * as MoreRounding from 'more-rounding';

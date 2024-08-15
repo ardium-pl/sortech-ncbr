@@ -1,6 +1,8 @@
+import { Godzina } from "../utils";
+
 export interface Hour {
   id: number;
-  godzina: string;
+  godzina: keyof Godzina;
   oczekiwaneWizyty: number;
   liczbaPielegniarek: number;
   wydajnoscPielegniarek: number;
