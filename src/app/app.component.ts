@@ -19,6 +19,6 @@ export class AppComponent {
   title = 'SOR';
 
   onChange(event: any) {
-    console.log(event);
+    // console.log(event);
   }
 }

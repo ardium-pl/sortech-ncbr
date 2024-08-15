@@ -9,7 +9,7 @@ import * as MoreRounding from 'more-rounding';
   providedIn: 'root',
 })
 export class HourlyDataService {
-  readonly currentDayOfWeek: keyof Dzien = 'poniedzialek';
+  readonly currentDayOfWeek = signal<number>(0);
 
   updateHours(changedHour: Hour) {
     this.rowData.update(hours => hours.map(hour => (changedHour.id === hour.id ? changedHour : hour)));
@@ -64,7 +64,7 @@ export class HourlyDataService {
     const hour = { ...hourObject };
 
     // Set oczekiwaneWizyty
-    hour.oczekiwaneWizyty = 7 * CONSTANTS.pacjentDzien * CONSTANTS.godzina[hour.godzina] * CONSTANTS.dzien[this.currentDayOfWeek];
+    hour.oczekiwaneWizyty = 7 * CONSTANTS.pacjentDzien * CONSTANTS.godzina[hour.godzina] * CONSTANTS.dzien[this.currentDayOfWeek()];
 
     return hour;
   }

@@ -1,7 +1,8 @@
-import { Component, model } from '@angular/core';
+import { Component, inject, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { provideNativeDateAdapter } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+import { HourlyDataService } from '../../hourly-data.service';
+import { MatDatepickerModule, MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
@@ -14,5 +15,17 @@ import { MatInputModule } from '@angular/material/input';
   styleUrl: './datepicker.component.scss',
 })
 export class DatepickerComponent {
+  readonly hourlyDataService = inject(HourlyDataService);
   readonly value = model<Date>();
+
+  onDateChange(event: MatDatepickerInputEvent<Date>) {
+    const pickedDate = event.value;
+
+    // Update the currentDayOfWeek with the current day
+    if (pickedDate) {
+      this.hourlyDataService.currentDayOfWeek.set(pickedDate.getDay());
+      this.hourlyDataService.applyHourCalculations(this.hourlyDataService.rowData());
+      this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
+    }
+  }
 }

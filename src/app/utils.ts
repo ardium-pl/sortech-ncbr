@@ -35,15 +35,15 @@ export interface LQparams {
 }
 
 export interface Dzien {
-  poniedzialek: number;
-  wtorek: number;
-  sroda: number;
-  czwartek: number;
-  piatek: number;
-  sobota: number;
-  niedziela: number;
+  1: number;
+  2: number;
+  3: number;
+  4: number;
+  5: number;
+  6: number;
+  0: number;
 
-  [key: string]: number;
+  [key: number]: number;
 }
 
 export interface Godzina {
