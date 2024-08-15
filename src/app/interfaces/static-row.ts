@@ -9,6 +9,4 @@ export interface StaticRow {
   lozkoObserwacja: number | null;
   lozkoOczekiwanie: number | null;
   wydajnoscPrzyjmowania: number | null;
-
-  [property: string]: string | number | null;
 }

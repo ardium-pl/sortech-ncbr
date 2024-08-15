@@ -24,6 +24,4 @@ export interface Hour {
   waskaWydajnosc: number;
   mozliwoscPokryciaZopatrzenia: string;
   opoznienieOgolem: number | string;
-
-  [property: string]: string | number;
 }

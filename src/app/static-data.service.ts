@@ -1,5 +1,4 @@
 import { Injectable, signal } from '@angular/core';
-import { CONSTANTS } from './constants';
 import { StaticRow } from './interfaces/static-row';
 
 @Injectable({
@@ -82,7 +81,6 @@ export class StaticDataService {
     rows[12] = zajetosc;
 
     this.rowData.set(rows);
-    // console.log(this.rowData()[11]);
   }
 
   readonly rowData = signal<StaticRow[]>([

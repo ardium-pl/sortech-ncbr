@@ -26,12 +26,8 @@ export class HourlyTableComponent {
     headerClass: 'grid-header grid-header-outer',
     cellDataType: 'number',
     cellClass: 'cell',
-    // wrapHeaderText: true,
-    // autoHeaderHeight: true,
     sortable: false,
     resizable: true,
-    // wrapText: true,
-    // autoHeight: true,
     minWidth: 100,
     flex: 1,
   };

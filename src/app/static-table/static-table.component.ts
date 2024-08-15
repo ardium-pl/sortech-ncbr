@@ -26,12 +26,8 @@ export class StaticTableComponent {
   readonly defaultColDef: ColDef = {
     headerClass: 'grid-header grid-header-outer',
     cellDataType: 'number',
-    // wrapHeaderText: true,
-    // autoHeaderHeight: true,
     sortable: false,
     resizable: true,
-    // wrapText: true,
-    // autoHeight: true,
     minWidth: 100,
     flex: 1,
     cellRenderer: markBottleneckAndRoundFormatter,

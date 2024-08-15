@@ -16,7 +16,6 @@ export const staticTableColDefs: (ColDef | ColGroupDef)[] = [
     ],
     colSpan: ({ data }) => (data['id'] < 8 ? 1 : 2),
     cellDataType: 'text',
-    // minWidth: 360,
   },
   {
     headerName: 'Proc. pacjentów',

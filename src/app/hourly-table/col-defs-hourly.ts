@@ -199,28 +199,6 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     rowSpan: ({ data }) => (data['id'] === 24 ? 2 : 1),
     colSpan: ({ data }) => (data['id'] < 24 ? 1 : 2),
     minWidth: 160,
-
-    // children: [
-    //   {
-    //     headerName: 'Zasób',
-    //     field: 'waskiZasob',
-    //     headerClass: 'grid-header grid-header-mid waskie-gardlo-odd',
-    //     cellDataType: 'text',
-    //     cellStyle: (params: any) => cellStylerWaskieGardloZasob(params),
-    //   },
-    //   {
-    //     headerName: 'Wyd. \n l. pacj.',
-    //     field: 'waskaWydajnosc',
-    //     headerClass: 'grid-header grid-header-mid waskie-gardlo-even',
-    //     cellRenderer: (params: any) => {
-    //       if (params.data['id'] > 23) {
-    //         return '';
-    //       } else {
-    //         return numberRoundingFormatter(params);
-    //       }
-    //     },
-    //   },
-    // ],
   },
   {
     headerName: 'Możliwość pokrycia zapotrz. okresu',
@@ -237,7 +215,5 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     ],
 
     minWidth: 160,
-    // wrapText: true,
-    // autoHeight: true,
   },
 ];

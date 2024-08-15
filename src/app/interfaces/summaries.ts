@@ -13,6 +13,4 @@ export interface Summary {
   waskiZasob: null;
   waskaWydajnosc: null;
   mozliwoscPokryciaZopatrzenia: null;
-
-  [property: string]: string | number | null;
 }
