@@ -7,10 +7,15 @@ import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideZoneChangeDetection({
+      eventCoalescing: true,
+    }),
     provideRouter(routes),
     provideAnimationsAsync(),
     provideHttpClient(),
-    { provide: MAT_DATE_LOCALE, useValue: 'pl-PL' },
+    {
+      provide: MAT_DATE_LOCALE,
+      useValue: 'pl-PL',
+    },
   ],
 };
