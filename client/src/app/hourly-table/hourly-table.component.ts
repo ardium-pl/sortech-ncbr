@@ -16,8 +16,8 @@ export class HourlyTableComponent {
   readonly hourlyDataService = inject(HourlyDataService);
 
   readonly ROW_HEIGHT = undefined;
-  readonly HEADER_HEIGHT = 70;
-  readonly GROUP_HEADER_HEIGHT = 70;
+  readonly HEADER_HEIGHT = 55;
+  readonly GROUP_HEADER_HEIGHT = 55;
 
   readonly defaultColDef: ColDef = {
     headerClass: 'grid-header grid-header-outer',
