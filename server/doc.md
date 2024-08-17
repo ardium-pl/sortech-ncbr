@@ -8,9 +8,9 @@ Rozszerzona dokumentacja serwera Express dla Systemu Obsługi SOR:
 2. Struktura projektu
 3. Konfiguracja
 4. Endpointy API
-   4.1. SOR Router
-   4.2. Personel Router
-   4.3. Leki Router
+* 4.1. SOR Router
+* 4.2. Personel Router
+* 4.3. Leki Router
 5. Modele danych
 6. Usługi (Services)
 7. Middleware
@@ -446,8 +446,8 @@ fetch('http://localhost:8080/api/hourly-data?date=2023-06-15')
 
 ### 15.1. Konwencje nazewnictwa
 
-- **Pliki**: Używaj małych liter i podkreśleń dla nazw plików, np. `stan_zasobow.js`.
-- **Zmienne i funkcje**: Stosuj camelCase, np. `getHourlyData`.
+- **Pliki**: Używaj snake_case, np. `stan_zasobow.js`.
+- **Zmienne i funkcje**: Używaj camelCase, np. `getHourlyData`.
 - **Klasy**: Używaj PascalCase, np. `StanZasobow`.
 - **Stałe**: Używaj UPPER_CASE, np. `MAX_PACJENTOW`.
 
