@@ -23,23 +23,28 @@ export class HourlyDataService {
   }
 
   fetchRowData() {
-    const sub = this.http.get<any[]>(apiUrl('/stan-zasobow'), { params: { date: this.currentDate().toISOString() } }).pipe(catchError((err, caught) => {
-      console.error(err);
-      sub.unsubscribe();
-      return caught;
-    })).subscribe(res => {
-      const mappedData = res.map((v, i): Hour => {
-        return {
-          id: i,
-          liczbaPielegniarek: v.ilosc_pielegniarek,
-          liczbaLekarzy: v.ilosc_lekarzy,
-          liczbaLozek: v.ilosc_lozek,
-          liczbaLozekObserwacja: v.ilosc_lozek_obserwacji,
-          godzina: `${i}-${i + 1}` as keyof Godzina,
-        } as any;
+    const sub = this.http
+      .get<any>(apiUrl('/hourly-data'), { params: { date: this.currentDate().toISOString() } })
+      .pipe(
+        catchError((err, caught) => {
+          console.error(err);
+          sub.unsubscribe();
+          return caught;
+        })
+      )
+      .subscribe(res => {
+        const mappedData = (res.currentDayData as any[]).map((v, i): Hour => {
+          return {
+            id: i,
+            liczbaPielegniarek: v.ilosc_pielegniarek,
+            liczbaLekarzy: v.ilosc_lekarzy,
+            liczbaLozek: v.ilosc_lozek,
+            liczbaLozekObserwacja: v.ilosc_lozek_obserwacji,
+            godzina: `${i}-${i + 1}` as keyof Godzina,
+          } as any;
+        });
+        this.applyHourCalculations(mappedData as any);
       });
-      this.applyHourCalculations(mappedData as any);
-    });
   }
 
   updateHours(changedHour: Hour) {
