@@ -1,9 +1,9 @@
 import { Injectable, signal } from '@angular/core';
+import * as MoreRounding from 'more-rounding';
 import { CONSTANTS } from './constants';
-import { Dzien, LQparams } from './utils';
 import { Hour } from './interfaces/hour';
 import { Summary } from './interfaces/summaries';
-import * as MoreRounding from 'more-rounding';
+import { LQparams } from './utils';
 
 @Injectable({
   providedIn: 'root',
