@@ -1,4 +1,4 @@
-import { Godzina } from "../utils";
+import { Godzina } from '../utils';
 
 export interface Hour {
   id: number;

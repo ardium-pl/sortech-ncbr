@@ -34,7 +34,6 @@ export interface LQparams {
   queueCapacity?: number | null;
 }
 
-
 export interface Godzina {
   '0-1': number;
   '1-2': number;
