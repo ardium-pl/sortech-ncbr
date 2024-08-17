@@ -64,7 +64,8 @@ export class HourlyDataService {
     const hour = { ...hourObject };
 
     // Set oczekiwaneWizyty
-    hour.oczekiwaneWizyty = 7 * CONSTANTS.pacjentDzien * CONSTANTS.godzina[hour.godzina] * CONSTANTS.dzien[this.currentDayOfWeek()];
+    hour.oczekiwaneWizyty =
+      7 * CONSTANTS.pacjentDzien * CONSTANTS.godzina[hour.godzina] * CONSTANTS.dzien[this.currentDayOfWeek()];
 
     return hour;
   }
