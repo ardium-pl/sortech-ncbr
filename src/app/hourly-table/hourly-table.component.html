@@ -1,0 +1,15 @@
+<ag-grid-angular
+  class="ag-theme-alpine"
+  [rowData]="rowData()"
+  [columnDefs]="columnDefs"
+  [defaultColDef]="defaultColDef"
+  [rowHeight]="ROW_HEIGHT"
+  [headerHeight]="HEADER_HEIGHT"
+  [groupHeaderHeight]="GROUP_HEADER_HEIGHT"
+  [suppressScrollOnNewData]="true"
+  [suppressRowTransform]="true"
+  [pinnedBottomRowData]="[summaryRow1(), summaryRow2()]"
+  (cellValueChanged)="onCellValueChanged($event)"
+  (gridReady)="onGridReady($event)"
+>
+</ag-grid-angular>

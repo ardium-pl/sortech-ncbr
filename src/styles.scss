@@ -1,0 +1,112 @@
+// CSS reset
+html,
+body {
+  margin: 0px;
+  height: 100%;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+
+  background-color: var(--background);
+}
+
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --grid-ofset: 30px;
+  --grid-height: 75vh;
+  --grid-width: 100%;
+
+  /* Color palettes: */
+
+  // App layout
+  --white: #f1f6f9;
+  --navy: #14274e;
+  --faded-blue: #394867;
+  --grey: #9ba4b4;
+  --background: #dfdfdf;
+
+  // Orange color palette
+  --darkest-orange: #e3a598;
+  --dark-orange: #d0b8a8;
+  --mid-orange: #dfd3c3;
+  --light-orange: #f8ede3;
+  --lightest-orange: #fbeae0;
+  --white-orange: #fdf5eb;
+
+  // Grey color palette
+  --darkest-grey: rgb(169, 169, 169);
+  --dark-grey: rgb(192, 192, 192);
+  --mid-grey: ;
+  --light-grey: rgb(211, 211, 211);
+  --lightest-grey: rgb(220, 220, 220);
+  --white-grey: rgb(208, 208, 208);
+  --light-grey-new: rgb(178, 178, 182);
+
+  // Red color palette
+  --super-dark-red: rgb(146, 26, 64);
+  --darkest-red: rgb(199, 91, 122);
+  --dark-red: rgb(217, 171, 171);
+  --mid-red: rgb(244, 217, 208);
+  --light-red: rgb(255, 199, 206);
+
+  // Green color palette
+  --super-dark-green: rgb(97, 130, 100);
+  --darkest-green: rgb(121, 172, 120);
+  --dark-green: rgb(176, 217, 177);
+  --mid-green: rgb(208, 231, 210);
+  --light-green: rgb(198, 239, 206);
+
+  // Blue color palette
+  --darkest-blue: rgb(6, 71, 131);
+  --dark-blue: rgb(26, 91, 153);
+  --mid-blue: rgb(47, 117, 181);
+  --light-blue: rgb(217, 225, 242);
+
+  // Attention drawing colors
+  --flashy-yellow: rgb(228, 245, 0);
+  --flashy-red: rgb(255, 8, 8);
+
+  // Fonts
+  --font-size: 21px;
+  --bold-column-font-size: 25px;
+
+  --summary-row-font-size-hourly: 19px;
+  --summary-row-font-size-static: 25px;
+
+  --outer-header-font-size: 25px;
+  --mid-header-font-size: 19px;
+  --inner-header-font-size: 19px;
+
+  --font-family: calibri;
+
+  // Borders
+  --standard-border: solid 4px;
+  --border-black: black;
+  --border-blue: var(--darkest-blue);
+}
+
+// Centering grid headers text
+.grid-header {
+  text-align: center;
+  white-space: pre-line;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ag-header-cell-label {
+  display: flex;
+  justify-content: center;
+}
+
+// Wrap group column headers' text manually (no auto height)
+.grid-header .ag-header-group-text {
+  white-space: pre-line;
+}
