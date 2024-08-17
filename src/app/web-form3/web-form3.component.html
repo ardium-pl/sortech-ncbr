@@ -1,0 +1,132 @@
+<div class="form-container-outer">
+  <form
+    [formGroup]="patientForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <!-- Imię i Nazwisko -->
+    <div class="double-field-holder">
+      <!-- Imię -->
+      <div class="form-field">
+        <label class="field-label">Imię</label>
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Jan"
+            formControlName="firstName"
+          />
+          @if (patientForm.hasError('required', 'firstName')) {
+            <mat-error>To pole nie może być puste.</mat-error>
+          } @else if (patientForm.hasError('nonEmptyText', 'firstName')) {
+            <mat-error>Wprowadzono nieprawidłową wartość.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <!-- Nazwisko -->
+      <div class="form-field">
+        <label class="field-label">Nazwisko</label>
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Kowalski"
+            formControlName="lastName"
+          />
+          @if (patientForm.hasError('required', 'lastName')) {
+            <mat-error>To pole nie może być puste.</mat-error>
+          } @else if (patientForm.hasError('nonEmptyText', 'lastName')) {
+            <mat-error>Wprowadzono nieprawidłową wartość.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label class="field-label">Numer PESEL</label>
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="01234567890"
+          formControlName="numberPESEL"
+        />
+        @if (patientForm.hasError('required', 'numberPESEL')) {
+          <mat-error>To pole nie może być puste.</mat-error>
+        } @else if (patientForm.hasError('pattern', 'numberPESEL')) {
+          <mat-error>Wprowadzono nieprawidłową wartość.</mat-error>
+        } @else if (patientForm.hasError('minlength', 'numberPESEL')) {
+          <mat-error>Wprowadzona wartość jest za krótka.</mat-error>
+        } @else if (patientForm.hasError('maxlength', 'numberPESEL')) {
+          <mat-error>Wprowadzona wartość jest za długa.</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- Typ pacjenta -->
+    <div class="form-field">
+      <label class="field-label">Typ pacjenta</label>
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="Pilny przypadek nieostry"
+          formControlName="patientType"
+        />
+        @if (patientForm.hasError('required', 'patientType')) {
+          <mat-error>To pole nie może być puste.</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- Data i Godzina przybycia -->
+    <div class="double-field-holder">
+      <!-- Data przybycia -->
+      <div class="form-field">
+        <label class="field-label">Data przybycia</label>
+        <mat-form-field>
+          <input
+            matInput
+            type="date"
+            placeholder="17.08.2024"
+            formControlName="arrivalDate"
+          />
+          @if (patientForm.hasError('required', 'arrivalDate')) {
+            <mat-error>To pole nie może być puste.</mat-error>
+          } @else if (patientForm.hasError('invalidDate', 'arrivalDate')) {
+            <mat-error>Wprowadzono nieprawidłową wartość.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <!-- Godzina -->
+      <div class="form-field">
+        <label class="field-label">Godzina</label>
+        <mat-form-field>
+          <input
+            matInput
+            type="time"
+            placeholder="22:43:23"
+            formControlName="arrivalHour"
+          />
+          @if (patientForm.hasError('required', 'arrivalHour')) {
+            <mat-error>To pole nie może być puste.</mat-error>
+          } @else if (patientForm.hasError('pattern', 'arrivalHour')) {
+            <mat-error>Wprowadzono nieprawidłową wartość.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="button-container">
+      <button
+        type="submit"
+        [disabled]="!patientForm.valid"
+      >
+        Zapisz
+      </button>
+    </div>
+  </form>
+
+  <!-- <p>Form value: {{ patientForm.value.firstName }}</p>
+  <p>Form - firstName hasError: {{ patientForm.hasError('required', 'firstName') }}</p>
+  <p>Form - firstName getError: {{ patientForm.getError('required', 'firstName') }}</p>
+  <p>Form valid: {{ patientForm.valid }}</p>
+  <p>Form Status: {{ patientForm.status }}</p> -->
+</div>
