@@ -2,6 +2,7 @@ import cors from "cors";
 import 'dotenv/config';
 import express from "express";
 import { clientRouter } from "./client.js";
+import { createTestConnection } from "./config/database.js";
 import { sorRouter } from "./routes/sor.js";
 import { logger } from './utils/logger.js';
 
@@ -15,7 +16,14 @@ app.use(clientRouter);
 app.use('/api/sor', sorRouter); 
 
 app.listen(port, () => {
-    logger.info(`Serwer SOR uruchomiony na porcie ${port}`);
+  logger.info(`Serwer SOR uruchomiony na porcie ${port}`);
+  
+  try {
+    createTestConnection();
+    logger.info(`Udało się połączyć z bazą danych`);
+  } catch (err) {
+    throw err;
+  }
 });
 
 export default app;

@@ -1,5 +1,5 @@
-import winston from 'winston';
 import moment from 'moment';
+import winston from 'winston';
 
 // Konfiguracja formatowania logów
 const logFormat = winston.format.printf(({level, message, timestamp}) => {
@@ -21,11 +21,12 @@ const logger = winston.createLogger({
         // Logi do pliku
         new winston.transports.File({filename: 'error.log', level: 'error'}),
         new winston.transports.File({filename: 'combined.log'})
-    ]
+  ],
+    
 });
 
 // Eksport loggera jako nazwanego eksportu
-export {logger};
+export { logger };
 
 // Funkcja loggera
 export function log(level, message, meta = {}) {

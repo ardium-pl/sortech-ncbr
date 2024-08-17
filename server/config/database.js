@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+import mysql from "mysql2/promise";
 
 // const pool = mysql.createPool({
 //     host: process.env.DB_HOST,
@@ -10,10 +10,9 @@ import mysql from 'mysql2/promise';
 //     queueLimit: 0
 // });
 
-export async function createTestConnection(){
+export async function createTestConnection() {
     return mysql.createConnection(process.env.MYSQL_URL);
 }
-
 
 export async function getConnection() {
     return await createTestConnection();
