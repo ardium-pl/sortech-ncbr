@@ -1,24 +1,19 @@
+import cors from "cors";
 import 'dotenv/config';
 import express from "express";
-import cors from "cors";
-import {sorRouter} from "./routes/sor.js";
-import {logger} from './utils/logger.js';
+import { clientRouter } from "./client.js";
+import { sorRouter } from "./routes/sor.js";
+import { logger } from './utils/logger.js';
 
 const app = express();
 const port = process.env.PORT || 8080;
 
-app.use(express.json());  // Middleware do parsowania JSON
-app.use(cors());  // Middleware do obsługi CORS
+app.use(express.json());
+app.use(cors());
 
-app.use('/api/sor', sorRouter);  // Ustawienie routera dla endpointów SOR
+app.use(clientRouter); 
+app.use('/api/sor', sorRouter); 
 
-// Middleware do obsługi błędów
-app.use((err, req, res, next) => {
-    logger.error(err.stack);
-    res.status(500).send('Coś poszło nie tak!');
-});
-
-// Nasłuchiwanie na porcie
 app.listen(port, () => {
     logger.info(`Serwer SOR uruchomiony na porcie ${port}`);
 });
