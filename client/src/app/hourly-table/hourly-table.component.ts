@@ -1,12 +1,9 @@
-import { Component, inject, computed } from '@angular/core';
-import { HourlyDataService } from '../hourly-data.service';
-import { hourlyTableColDefs } from './col-defs-hourly';
+import { Component, inject } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
+import { CellValueChangedEvent, ColDef, ColGroupDef, GridApi, GridReadyEvent } from 'ag-grid-community';
+import { HourlyDataService } from '../hourly-data.service';
 import { Hour } from '../interfaces/hour';
-import { ColDef, ColGroupDef, CellValueChangedEvent, GridApi, GridReadyEvent } from 'ag-grid-community';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-quartz.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
+import { hourlyTableColDefs } from './col-defs-hourly';
 
 @Component({
   selector: 'app-hourly-table',

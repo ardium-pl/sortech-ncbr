@@ -1,13 +1,10 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
-import { staticTableColDefs } from './col-defs-static';
-import { markBottleneckAndRoundFormatter } from '../utils';
-import { ColDef, ColGroupDef, CellValueChangedEvent, GridApi, GridReadyEvent } from 'ag-grid-community';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-quartz.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { StaticDataService } from '../static-data.service';
+import { CellValueChangedEvent, ColDef, ColGroupDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { StaticRow } from '../interfaces/static-row';
+import { StaticDataService } from '../static-data.service';
+import { markBottleneckAndRoundFormatter } from '../utils';
+import { staticTableColDefs } from './col-defs-static';
 
 @Component({
   selector: 'app-static-table',
