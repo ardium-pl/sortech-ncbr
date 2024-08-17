@@ -12,8 +12,8 @@ const port = process.env.PORT || 8080;
 app.use(express.json());
 app.use(cors());
 
-app.use(clientRouter); 
 app.use('/api/sor', sorRouter); 
+app.use(clientRouter); 
 
 app.listen(port, () => {
   logger.info(`Serwer SOR uruchomiony na porcie ${port}`);

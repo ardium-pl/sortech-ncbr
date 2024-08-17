@@ -1,15 +1,46 @@
-import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
 import * as MoreRounding from 'more-rounding';
+import { catchError } from 'rxjs';
 import { CONSTANTS } from './constants';
 import { Hour } from './interfaces/hour';
 import { Summary } from './interfaces/summaries';
-import { LQparams } from './utils';
+import { Godzina, LQparams } from './utils';
+import { apiUrl } from './utils/apiUrl';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HourlyDataService {
   readonly currentDayOfWeek = signal<number>(0);
+
+  readonly currentDate = signal<Date>(new Date(2024, 7, 7));
+
+  private readonly http = inject(HttpClient);
+
+  constructor() {
+    this.fetchRowData();
+  }
+
+  fetchRowData() {
+    const sub = this.http.get<any[]>(apiUrl('/stan-zasobow'), { params: { date: this.currentDate().toISOString() } }).pipe(catchError((err, caught) => {
+      console.error(err);
+      sub.unsubscribe();
+      return caught;
+    })).subscribe(res => {
+      const mappedData = res.map((v, i): Hour => {
+        return {
+          id: i,
+          liczbaPielegniarek: v.ilosc_pielegniarek,
+          liczbaLekarzy: v.ilosc_lekarzy,
+          liczbaLozek: v.ilosc_lozek,
+          liczbaLozekObserwacja: v.ilosc_lozek_obserwacji,
+          godzina: `${i}-${i + 1}` as keyof Godzina,
+        } as any;
+      });
+      this.applyHourCalculations(mappedData as any);
+    });
+  }
 
   updateHours(changedHour: Hour) {
     this.rowData.update(hours => hours.map(hour => (changedHour.id === hour.id ? changedHour : hour)));
@@ -72,6 +103,8 @@ export class HourlyDataService {
 
   obliczWydajnosc(hourObject: Hour) {
     const hour = { ...hourObject };
+
+    console.log(hour);
 
     // Set wydajnosci
     if (hour.id === 0) {
@@ -1091,6 +1124,4 @@ export class HourlyDataService {
       opoznienieOgolem: 4.0767,
     },
   ]);
-
-  constructor() {}
 }

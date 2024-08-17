@@ -46,9 +46,5 @@ export class HourlyTableComponent {
   onGridReady = (event: GridReadyEvent) => {
     // Store the api for later use
     this.api = event.api;
-
-    // Apply calculations
-    this.hourlyDataService.applyHourCalculations(this.rowData());
-    this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
   };
 }
