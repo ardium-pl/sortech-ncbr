@@ -104,8 +104,6 @@ export class HourlyDataService {
   obliczWydajnosc(hourObject: Hour) {
     const hour = { ...hourObject };
 
-    console.log(hour);
-
     // Set wydajnosci
     if (hour.id === 0) {
       hour.wydajnoscPielegniarek = (hour.liczbaPielegniarek * 60) / CONSTANTS.sredniCzasNaPacjenta['pielegniarka'];
