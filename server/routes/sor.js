@@ -7,9 +7,26 @@ import {
     getHourlyData,
     addStanKolejki
 } from "../services/sor.js";
+import { dataService } from "../services/dataService.js"
 import moment from 'moment';
 
 export const sorRouter = express.Router();
+
+sorRouter.get("/dane", async (req, res, next) => {
+    try {
+        const { date } = req.query;
+
+        const parsedDate = moment(date);
+        if (!parsedDate.isValid()) {
+            return res.status(400).json({ message: "Nieprawidłowy format daty" });
+        }
+
+        const data = await dataService(parsedDate);
+        res.json(data);
+    } catch (error) {
+        next(error);
+    }
+});
 
 sorRouter.get("/stan-zasobow", async (req, res, next) => {
     try {
