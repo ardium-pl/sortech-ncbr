@@ -1,4 +1,4 @@
-import { Constants } from './utils';
+import { Constants } from './utils/utils';
 
 export const CONSTANTS: Constants = {
   pacjentRok: 51000,
@@ -38,11 +38,12 @@ export const CONSTANTS: Constants = {
     '23-24': 0.025283780203656,
   },
 
+  // Jednostka - godziny
   sredniCzasNaPacjenta: {
-    triage: 5, // min
-    lozko: 4.10468250688705, // godz
-    lekarz: 43.6683856749311, // min
-    pielegniarka: 47.5353305785124, // min
-    obserwacja: 1.32, // godz
+    triage: 0.0833333333,
+    lozko: 4.1046825069,
+    lekarz: 0.7278064279,
+    pielegniarka: 0.7922555096,
+    lozkoObserwacja: 1.32,
   },
 };

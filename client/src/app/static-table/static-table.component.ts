@@ -3,7 +3,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { CellValueChangedEvent, ColDef, ColGroupDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { StaticRow } from '../interfaces/static-row';
 import { StaticDataService } from '../static-data.service';
-import { markBottleneckAndRoundFormatter } from '../utils';
+import { markBottleneckAndRoundFormatter } from '../utils/utils';
 import { staticTableColDefs } from './col-defs-static';
 
 @Component({

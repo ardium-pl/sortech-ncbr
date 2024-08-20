@@ -1,16 +1,13 @@
-export interface Summary {
+export interface SummaryBottom {
   id: number;
-  godzina: string | null;
-  oczekiwaneWizyty: number | null;
-  liczbaPielegniarek: null;
-  wydajnoscPielegniarek: number;
-  liczbaLekarzy: null;
-  wydajnoscLekarzy: number;
-  liczbaLozek: null;
-  wydajnoscLozek: number;
-  liczbaLozekObserwacja: null;
-  wydajnoscLozekObserwacja: number;
-  waskiZasob: null;
-  waskaWydajnosc: null;
-  mozliwoscPokryciaZopatrzenia: null;
+  wydajnosc: {
+    lekarz: number;
+    pielegniarka: number;
+    lozko: number;
+    lozkoObserwacja: number;
+  };
+}
+
+export interface SummaryTop extends SummaryBottom {
+  liczbaWizyt: number;
 }

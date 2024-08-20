@@ -3,9 +3,9 @@ import { inject, Injectable, signal } from '@angular/core';
 import * as MoreRounding from 'more-rounding';
 import { catchError } from 'rxjs';
 import { CONSTANTS } from './constants';
-import { Hour } from './interfaces/hour';
-import { Summary } from './interfaces/summaries';
-import { Godzina, LQparams } from './utils';
+import { Hour, kolejka, daneGodzinowe } from './interfaces/hour';
+import { SummaryBottom, SummaryTop } from './interfaces/summaries';
+import { Godzina, LQparams, zasob, SredniCzasNaPacjenta } from './utils/utils';
 import { apiUrl } from './utils/apiUrl';
 
 @Injectable({
@@ -47,124 +47,113 @@ export class HourlyDataService {
       });
   }
 
-  updateHours(changedHour: Hour) {
-    this.rowData.update(hours => hours.map(hour => (changedHour.id === hour.id ? changedHour : hour)));
-  }
-
-  applyHourCalculations(rowData: Hour[], changedRow?: Hour) {
-    let rows: Hour[];
-
+  applyHourCalculations(daneGodzinowe: daneGodzinowe[], changedRow?: daneGodzinowe) {
     if (changedRow) {
-      rows = rowData.map(row => {
-        return row.id === changedRow.id ? changedRow : row;
-      });
-    } else {
-      rows = rowData;
+      daneGodzinowe[changedRow['id']] = changedRow;
     }
 
-    // Part 1
-    let calculatedRowData = rows.map(hourObject => {
-      let hour = { ...hourObject };
-      hour = this.obliczOczekiwaneWizyty(hour);
-      hour = this.obliczWydajnosc(hour);
+    let hours: Hour[] = daneGodzinowe.map((daneGodziny, index) => {
+      // Placeholder values which will be calculated in later steps
+      let hour: Hour = {
+        ...daneGodziny,
+        wydajnosc: {
+          lekarz: 0,
+          pielegniarka: 0,
+          lozko: 0,
+          lozkoObserwacja: 0,
+        },
+        obsluga: {
+          lekarz: 0,
+          pielegniarka: 0,
+        },
+        oczekiwanie: {
+          lekarz: 0,
+          pielegniarka: 0,
+        },
+        lq: {
+          lekarz: 0,
+          pielegniarka: 0,
+        },
+        wq: {
+          lekarz: 0,
+          pielegniarka: 0,
+        },
+        kolejka: {
+          lekarz: 0,
+          pielegniarka: 0,
+        },
+        waskiZasob: '',
+        waskaWydajnosc: 0,
+        mozliwoscPokryciaZopatrzenia: '',
+        opoznienieOgolem: 0,
+      };
+
+      // Access the previous hour (if exists) - otherwise assign the first hour
+      const previousHour = index > 0 ? hours[index - 1] : hours[0];
+
+      // Obliczenia część pierwsza - dot. kalkulacji z użyciem godziny obecnej, bądź minionej
+      hour = this.obliczWydajnosc(hour, previousHour, hours[0]);
       hour = this.obliczWaskaWydajnosc(hour);
       hour = this.obliczWaskiZasob(hour);
       hour = this.obliczMozliwoscPokryciaZopatrzenia(hour);
-      hour = this.obliczObsluga(hour);
-      hour = this.obliczKolejka(hour);
-
-      this.updateHours(hour);
+      hour = this.obliczObsluga(hour, previousHour);
+      hour = this.obliczKolejka(hour, previousHour);
       return hour;
     });
 
-    // Part 2
-    calculatedRowData.forEach(hourObject => {
-      let hour = { ...hourObject };
-      hour = this.obliczOczekiwanie(hour);
+    // Obliczenia część druga - dot. kalkulacji z użyciem godziny obecnej, minionej lub przyszłej
+    hours.forEach((hour, index, hours) => {
+      // Access the next hour (if exists) - otherwise assign the first hour
+      const nextHour = index !== 23 ? hours[index + 1] : hours[0];
+
+      hour = this.obliczOczekiwanie(hour, nextHour);
       hour = this.obliczLq(hour);
       hour = this.obliczWq(hour);
       hour = this.obliczOpoznienieOgolem(hour);
-
-      this.updateHours(hour);
     });
 
     // Get min and max value of delay
-    const opoznienia: (number | string)[] = [];
-    for (let row of rows) {
-      opoznienia.push(row.opoznienieOgolem);
-    }
-    this.getExtremeValues(opoznienia);
+    this.getExtremeValues(hours);
+
+    // Assign calculated hours to the rowData & summaryRows signals
+    this.rowData.set(hours);
+    this.applySummaryCalcuationsForPinnedRows(hours);
   }
 
-  obliczOczekiwaneWizyty(hourObject: Hour) {
-    const hour = { ...hourObject };
-
-    // Set oczekiwaneWizyty
-    hour.oczekiwaneWizyty =
-      7 * CONSTANTS.pacjentDzien * CONSTANTS.godzina[hour.godzina] * CONSTANTS.dzien[this.currentDayOfWeek()];
-
-    return hour;
-  }
-
-  obliczWydajnosc(hourObject: Hour) {
-    const hour = { ...hourObject };
-
-    // Set wydajnosci
-    if (hour.id === 0) {
-      hour.wydajnoscPielegniarek = (hour.liczbaPielegniarek * 60) / CONSTANTS.sredniCzasNaPacjenta['pielegniarka'];
-
-      hour.wydajnoscLekarzy = (hour.liczbaLekarzy * 60) / CONSTANTS.sredniCzasNaPacjenta['lekarz'];
-
-      hour.wydajnoscLozek = hour.liczbaLozek / CONSTANTS.sredniCzasNaPacjenta['lozko'];
-    } else if (hour.id === 23) {
-      hour.wydajnoscPielegniarek = (this.rowData()[0].liczbaPielegniarek * 60) / CONSTANTS.sredniCzasNaPacjenta['pielegniarka'];
-
-      hour.wydajnoscLekarzy = (this.rowData()[0].liczbaLekarzy * 60) / CONSTANTS.sredniCzasNaPacjenta['lekarz'];
-
-      hour.wydajnoscLozek = this.rowData()[hour.id - 1].liczbaLozek / CONSTANTS.sredniCzasNaPacjenta['lozko'];
-    } else {
-      hour.wydajnoscPielegniarek =
-        (this.rowData()[hour.id - 1].liczbaPielegniarek * 60) / CONSTANTS.sredniCzasNaPacjenta['pielegniarka'];
-
-      hour.wydajnoscLekarzy = (this.rowData()[hour.id - 1].liczbaLekarzy * 60) / CONSTANTS.sredniCzasNaPacjenta['lekarz'];
-
-      hour.wydajnoscLozek = this.rowData()[hour.id - 1].liczbaLozek / CONSTANTS.sredniCzasNaPacjenta['lozko'];
+  obliczWydajnosc(hour: Hour, previousHour: Hour, hourZero: Hour) {
+    for (const zasob of ['lekarz', 'pielegniarka', 'lozko', 'lozkoObserwacja'] as const) {
+      let liczbaZasobow: number;
+      if (hour.id === 0) {
+        liczbaZasobow = hour.zasoby[zasob];
+      } else if (hour.id === 23 && (zasob === 'lekarz' || zasob === 'pielegniarka')) {
+        liczbaZasobow = hourZero.zasoby[zasob];
+      } else {
+        liczbaZasobow = zasob === 'lozkoObserwacja' ? hour.zasoby[zasob] : previousHour.zasoby[zasob];
+      }
+      hour.wydajnosc[zasob] = liczbaZasobow / CONSTANTS.sredniCzasNaPacjenta[zasob];
     }
 
-    hour.wydajnoscLozekObserwacja = hour.liczbaLozekObserwacja / CONSTANTS.sredniCzasNaPacjenta['obserwacja'];
+    return hour;
+  }
+
+  obliczWaskaWydajnosc(hour: Hour) {
+    hour.waskaWydajnosc = Math.min(...Object.values(hour.wydajnosc));
 
     return hour;
   }
 
-  obliczWaskaWydajnosc(hourObject: Hour) {
-    const hour = { ...hourObject };
-
-    // Set waskaWydajnosc
-    hour.waskaWydajnosc = Math.min(
-      hour.wydajnoscPielegniarek,
-      hour.wydajnoscLekarzy,
-      hour.wydajnoscLozek,
-      hour.wydajnoscLozekObserwacja
-    );
-
-    return hour;
-  }
-
-  obliczWaskiZasob(hourObject: Hour) {
-    const hour = { ...hourObject };
-
-    // Set waskiZasob
+  obliczWaskiZasob(hour: Hour) {
     switch (hour.waskaWydajnosc) {
-      case hour.wydajnoscPielegniarek:
+      case hour.wydajnosc.pielegniarka:
         hour.waskiZasob = 'Pielęgniarki';
         break;
-      case hour.wydajnoscLekarzy:
+      case hour.wydajnosc.lekarz:
         hour.waskiZasob = 'Lekarze';
         break;
-      case hour.wydajnoscLozek:
+      case hour.wydajnosc.lozko:
         hour.waskiZasob = 'Łóżka';
         break;
-      case hour.wydajnoscLozekObserwacja:
+      case hour.wydajnosc.lozkoObserwacja:
         hour.waskiZasob = 'Obs. Łóżka';
         break;
       default:
@@ -174,135 +163,79 @@ export class HourlyDataService {
     return hour;
   }
 
-  obliczMozliwoscPokryciaZopatrzenia(hourObject: Hour) {
-    const hour = { ...hourObject };
-
-    // Set mozliwoscPokryciaZopatrzenia
-    hour.mozliwoscPokryciaZopatrzenia = hour.waskaWydajnosc <= hour.oczekiwaneWizyty ? 'Niedobór wyd.' : '';
+  obliczMozliwoscPokryciaZopatrzenia(hour: Hour) {
+    hour.mozliwoscPokryciaZopatrzenia = hour.waskaWydajnosc <= hour.liczbaWizyt ? 'Niedobór wyd.' : '';
 
     return hour;
   }
 
-  obliczObsluga(hourObject: Hour) {
-    const hour = { ...hourObject };
+  obliczObsluga(hour: Hour, previousHour: Hour) {
+    const kolejka = hour.id === 0 ? this.wczorajszaKolejka() : previousHour.kolejka;
 
-    // Set obsługa
-    if (hour.id === 0) {
-      hour.obslugaPielegniarka = Math.min(
-        hour.wydajnoscPielegniarek,
-        hour.oczekiwaneWizyty + this.previousDayLastHour.kolejkaPielegniarka
-      );
-
-      hour.obslugaLekarz = Math.min(hour.wydajnoscLekarzy, hour.oczekiwaneWizyty + this.previousDayLastHour.kolejkaLekarz);
-    } else {
-      hour.obslugaPielegniarka = Math.min(
-        hour.wydajnoscPielegniarek,
-        hour.oczekiwaneWizyty + this.rowData()[hour.id - 1].kolejkaPielegniarka
-      );
-
-      hour.obslugaLekarz = Math.min(hour.wydajnoscLekarzy, hour.oczekiwaneWizyty + this.rowData()[hour.id - 1].kolejkaLekarz);
+    for (const zasob of ['lekarz', 'pielegniarka'] as const) {
+      hour.obsluga[zasob] = Math.min(hour.wydajnosc[zasob], hour.liczbaWizyt + kolejka[zasob]);
     }
 
     return hour;
   }
 
-  obliczKolejka(hourObject: Hour) {
-    const hour = { ...hourObject };
+  obliczKolejka(hour: Hour, previousHour: Hour) {
+    const kolejka = hour.id === 0 ? this.wczorajszaKolejka() : previousHour.kolejka;
 
-    // Set kolejka
-    if (hour.id === 0) {
-      hour.kolejkaPielegniarka = hour.oczekiwaneWizyty + this.previousDayLastHour.kolejkaPielegniarka - hour.obslugaPielegniarka;
-
-      hour.kolejkaLekarz = hour.oczekiwaneWizyty + this.previousDayLastHour.kolejkaLekarz - hour.obslugaLekarz;
-    } else {
-      hour.kolejkaPielegniarka =
-        hour.oczekiwaneWizyty + this.rowData()[hour.id - 1].kolejkaPielegniarka - hour.obslugaPielegniarka;
-
-      hour.kolejkaLekarz = hour.oczekiwaneWizyty + this.rowData()[hour.id - 1].kolejkaLekarz - hour.obslugaLekarz;
+    for (const zasob of ['lekarz', 'pielegniarka'] as const) {
+      hour.kolejka[zasob] = kolejka[zasob] + hour.liczbaWizyt - hour.obsluga[zasob];
     }
 
     return hour;
   }
 
-  obliczOczekiwanie(hourObject: Hour) {
-    const hour = { ...hourObject };
-
-    // Set oczekiwanie
-    if (hour.id === 23) {
-      hour.oczekiwaniePielegniarka = hour.kolejkaPielegniarka / this.rowData()[0].wydajnoscPielegniarek;
-      hour.oczekiwanieLekarz = hour.kolejkaLekarz / this.rowData()[0].wydajnoscLekarzy;
-    } else {
-      hour.oczekiwaniePielegniarka = hour.kolejkaPielegniarka / this.rowData()[hour.id + 1].wydajnoscPielegniarek;
-      hour.oczekiwanieLekarz = hour.kolejkaLekarz / this.rowData()[hour.id + 1].wydajnoscLekarzy;
+  obliczOczekiwanie(hour: Hour, nextHour: Hour) {
+    for (const zasob of ['lekarz', 'pielegniarka'] as const) {
+      hour.oczekiwanie[zasob] = hour.kolejka[zasob] / nextHour.wydajnosc[zasob];
     }
+
     return hour;
   }
 
-  obliczLq(hourObject: Hour) {
-    const hour = { ...hourObject };
+  obliczLq(hour: Hour) {
+    for (const zasob of ['lekarz', 'pielegniarka'] as const) {
+      if (hour.oczekiwanie[zasob] > 0) {
+        hour.lq[zasob] = 0;
+      } else {
+        // Calling Lq function implemented from VBA script
+        hour.lq[zasob] = this.Lq({
+          arrivalRate: hour.liczbaWizyt,
+          serviceRate: 60 / CONSTANTS.sredniCzasNaPacjenta[zasob], // Wydajnosc godzinowa 1 zasobu
+          servers: hour.zasoby[zasob],
+        });
 
-    // Set lq
-    if (hour.oczekiwaniePielegniarka > 0) {
-      hour.lqPielegniarka = 0;
-    } else {
-      // Calling Lq function implemented from VBA script
-      hour.lqPielegniarka = this.Lq({
-        arrivalRate: hour.oczekiwaneWizyty,
-        serviceRate: 60 / CONSTANTS.sredniCzasNaPacjenta['pielegniarka'], // Wydajnosc godzinowa 1 pielegniarki
-        servers: hour.liczbaPielegniarek,
-      });
-
-      if (typeof hour.lqPielegniarka === 'number') {
-        hour.lqPielegniarka *= CONSTANTS.wspolczynnikV;
-      }
-    }
-
-    if (hour.oczekiwanieLekarz > 0) {
-      hour.lqLekarz = 0;
-    } else {
-      // Calling Lq function implemented from VBA script
-      hour.lqLekarz = this.Lq({
-        arrivalRate: hour.oczekiwaneWizyty,
-        serviceRate: 60 / CONSTANTS.sredniCzasNaPacjenta['lekarz'], // Wydajnosc godzinowa 1 lekarza
-        servers: hour.liczbaLekarzy,
-      });
-
-      if (typeof hour.lqLekarz === 'number') {
-        hour.lqLekarz *= CONSTANTS.wspolczynnikV;
+        if (typeof hour.lq[zasob] === 'number') {
+          hour.lq[zasob] *= CONSTANTS.wspolczynnikV;
+        }
       }
     }
 
     return hour;
   }
 
-  obliczWq(hourObject: Hour) {
-    const hour = { ...hourObject };
-
-    // Set wq
-    if (typeof hour.lqPielegniarka === 'number') {
-      hour.wqPielegniarka = hour.lqPielegniarka / hour.oczekiwaneWizyty;
-    } else {
-      hour.wqPielegniarka = 'INVALID VALUE TYPE - STR';
-    }
-
-    if (typeof hour.lqLekarz === 'number') {
-      hour.wqLekarz = hour.lqLekarz / hour.oczekiwaneWizyty;
-    } else {
-      hour.wqLekarz = 'INVALID VALUE TYPE - STR';
+  obliczWq(hour: Hour) {
+    for (const zasob of ['lekarz', 'pielegniarka'] as const) {
+      if (typeof hour.lq[zasob] === 'number') {
+        hour.wq[zasob] = hour.lq[zasob] / hour.liczbaWizyt;
+      } else {
+        hour.wq[zasob] = 'INVALID VALUE TYPE - STR';
+      }
     }
 
     return hour;
   }
 
-  obliczOpoznienieOgolem(hourObject: Hour) {
-    const hour = { ...hourObject };
-
-    // Set opznienieOgolem
-    if (typeof hour.wqPielegniarka !== 'number' || typeof hour.wqLekarz !== 'number') {
+  obliczOpoznienieOgolem(hour: Hour) {
+    if (typeof hour.wq.pielegniarka !== 'number' || typeof hour.wq.lekarz !== 'number') {
       hour.opoznienieOgolem = 'INVALID VALUE TYPE - STR';
     } else {
       hour.opoznienieOgolem =
-        Math.max(hour.oczekiwaniePielegniarka, hour.oczekiwanieLekarz) + hour.wqPielegniarka + hour.wqLekarz;
+        Math.max(hour.oczekiwanie.pielegniarka, hour.oczekiwanie.lekarz) + hour.wq.pielegniarka + hour.wq.lekarz;
     }
 
     return hour;
@@ -376,130 +309,79 @@ export class HourlyDataService {
     console.log(calculatedLq * 0.5);
   }
 
-  applySummaryCalcuationsForPinnedRows() {
-    const summaryRow1 = { ...this.summaryRow1() };
-    const summaryRow2 = { ...this.summaryRow2() };
+  applySummaryCalcuationsForPinnedRows(hours: Hour[]) {
+    const summaryRowTop = { ...this.summaryRowTop() };
+    const summaryRowBottom = { ...this.summaryRowBottom() };
 
-    // Oblicz Wyd./dobę
-    summaryRow1.oczekiwaneWizyty = 0;
-    summaryRow1.wydajnoscPielegniarek = 0;
-    summaryRow1.wydajnoscLekarzy = 0;
-    summaryRow1.wydajnoscLozek = 0;
-    summaryRow1.wydajnoscLozekObserwacja = 0;
+    summaryRowTop.liczbaWizyt = hours.reduce((acc, hour) => {
+      return acc + hour.liczbaWizyt;
+    }, 0);
 
-    for (const n of Array(24).keys()) {
-      summaryRow1.oczekiwaneWizyty += this.rowData()[n].oczekiwaneWizyty;
-      summaryRow1.wydajnoscPielegniarek += this.rowData()[n].wydajnoscPielegniarek;
-      summaryRow1.wydajnoscLekarzy += this.rowData()[n].wydajnoscLekarzy;
-      summaryRow1.wydajnoscLozek += this.rowData()[n].wydajnoscLozek;
-      summaryRow1.wydajnoscLozekObserwacja += this.rowData()[n].wydajnoscLozekObserwacja;
+    for (const zasob of ['lekarz', 'pielegniarka', 'lozko', 'lozkoObserwacja'] as const) {
+      summaryRowTop.wydajnosc[zasob] = hours.reduce((acc, hour) => {
+        return acc + hour.wydajnosc[zasob];
+      }, 0);
+
+      summaryRowBottom.wydajnosc[zasob] = summaryRowTop.liczbaWizyt / summaryRowTop.wydajnosc[zasob];
     }
 
-    // Oblicz Śr. zajęt.
-    summaryRow2.wydajnoscPielegniarek = summaryRow1.oczekiwaneWizyty / summaryRow1.wydajnoscPielegniarek;
-    summaryRow2.wydajnoscLekarzy = summaryRow1.oczekiwaneWizyty / summaryRow1.wydajnoscLekarzy;
-    summaryRow2.wydajnoscLozek = summaryRow1.oczekiwaneWizyty / summaryRow1.wydajnoscLozek;
-    summaryRow2.wydajnoscLozekObserwacja = summaryRow1.oczekiwaneWizyty / summaryRow1.wydajnoscLozekObserwacja;
-
-    // Update main signals
-    this.summaryRow1.set(summaryRow1);
-    this.summaryRow2.set(summaryRow2);
+    // Update signals
+    this.summaryRowTop.set(summaryRowTop);
+    this.summaryRowBottom.set(summaryRowBottom);
   }
 
-  getExtremeValues(values: (number | string)[]) {
-    const numeric_values = values.map(v => {
-      return typeof v === 'string' ? 0 : v;
-    });
+  getExtremeValues(hours: Hour[]) {
+    const opoznienia: number[] = hours
+      .map(hour => (typeof hour.opoznienieOgolem === 'number' ? hour.opoznienieOgolem : NaN))
+      .filter(opoznienie => !isNaN(opoznienie));
 
-    this.minValue.set(Math.min(...numeric_values));
-    this.maxValue.set(Math.max(...numeric_values));
+    this.minValue.set(Math.min(...opoznienia));
+    this.maxValue.set(Math.max(...opoznienia));
   }
 
   readonly minValue = signal<number>(0);
   readonly maxValue = signal<number>(0);
-  readonly previousDayLastHour: Hour = {
-    id: -1,
-    godzina: '23-24',
-    oczekiwaneWizyty: 4.08,
-    liczbaPielegniarek: 4,
-    wydajnoscPielegniarek: 5.05,
-    obslugaPielegniarka: 5.0489,
-    kolejkaPielegniarka: 20.5828,
-    oczekiwaniePielegniarka: 4.0767,
-    lqPielegniarka: 0,
-    wqPielegniarka: 0,
-    liczbaLekarzy: 6,
-    wydajnoscLekarzy: 8.24,
-    obslugaLekarz: 8.244,
-    kolejkaLekarz: 7.8053,
-    oczekiwanieLekarz: 0.9468,
-    lqLekarz: 0,
-    wqLekarz: 0,
-    liczbaLozek: 50,
-    wydajnoscLozek: 12.18,
-    liczbaLozekObserwacja: 15.0,
-    wydajnoscLozekObserwacja: 11.36,
-    waskiZasob: 'Pielegn',
-    waskaWydajnosc: 5.05,
-    mozliwoscPokryciaZopatrzenia: '',
-    opoznienieOgolem: 4.0767,
-  };
-  readonly summaryRow1 = signal<Summary>({
-    id: 24,
-    godzina: 'Zapotrz./dobę',
-    oczekiwaneWizyty: 161.35,
-    liczbaPielegniarek: null,
-    wydajnoscPielegniarek: 166.61,
-    liczbaLekarzy: null,
-    wydajnoscLekarzy: 219.84,
-    liczbaLozek: null,
-    wydajnoscLozek: 292.35,
-    liczbaLozekObserwacja: null,
-    wydajnoscLozekObserwacja: 272.73,
-    waskiZasob: null,
-    waskaWydajnosc: null,
-    mozliwoscPokryciaZopatrzenia: null,
+  readonly wczorajszaKolejka = signal<kolejka>({
+    lekarz: 7.8053,
+    pielegniarka: 20.5828,
   });
-  readonly summaryRow2 = signal<Summary>({
-    id: 25,
-    godzina: null,
-    oczekiwaneWizyty: null,
-    liczbaPielegniarek: null,
-    wydajnoscPielegniarek: 0.9684,
-    liczbaLekarzy: null,
-    wydajnoscLekarzy: 0.7339,
-    liczbaLozek: null,
-    wydajnoscLozek: 0.5519,
-    liczbaLozekObserwacja: null,
-    wydajnoscLozekObserwacja: 0.5916,
-    waskiZasob: null,
-    waskaWydajnosc: null,
-    mozliwoscPokryciaZopatrzenia: null,
-  });
-
   readonly rowData = signal<Hour[]>([
     {
       id: 0,
       godzina: '0-1',
-      oczekiwaneWizyty: 3.23,
-      liczbaPielegniarek: 4,
-      wydajnoscPielegniarek: 5.05,
-      obslugaPielegniarka: 5.0489,
-      kolejkaPielegniarka: 18.7608,
-      oczekiwaniePielegniarka: 3.7158,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 6,
-      wydajnoscLekarzy: 8.24,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 2.7882,
-      oczekiwanieLekarz: 0.3382,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 3.23,
+      zasoby: {
+        lekarz: 6,
+        pielegniarka: 4,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 8.24,
+        pielegniarka: 5.05,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 5.0489,
+      },
+      oczekiwanie: {
+        lekarz: 0.3382,
+        pielegniarka: 3.7158,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 2.7882,
+        pielegniarka: 18.7608,
+      },
       waskiZasob: 'Pielegn',
       waskaWydajnosc: 5.05,
       mozliwoscPokryciaZopatrzenia: '',
@@ -508,25 +390,39 @@ export class HourlyDataService {
     {
       id: 1,
       godzina: '1-2',
-      oczekiwaneWizyty: 2.39,
-      liczbaPielegniarek: 4,
-      wydajnoscPielegniarek: 5.05,
-      obslugaPielegniarka: 5.0489,
-      kolejkaPielegniarka: 16.1045,
-      oczekiwaniePielegniarka: 3.1897,
-      lqPielegniarka: 0.0175,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 6,
-      wydajnoscLekarzy: 8.24,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 0,
-      oczekiwanieLekarz: 0,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 2.39,
+      zasoby: {
+        lekarz: 6,
+        pielegniarka: 4,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 8.24,
+        pielegniarka: 5.05,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 5.0489,
+      },
+      oczekiwanie: {
+        lekarz: 0,
+        pielegniarka: 3.1897,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0.0175,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 0,
+        pielegniarka: 16.1045,
+      },
       waskiZasob: 'Pielegn',
       waskaWydajnosc: 5.05,
       mozliwoscPokryciaZopatrzenia: '',
@@ -535,25 +431,39 @@ export class HourlyDataService {
     {
       id: 2,
       godzina: '2-3',
-      oczekiwaneWizyty: 2.14,
-      liczbaPielegniarek: 4,
-      wydajnoscPielegniarek: 5.05,
-      obslugaPielegniarka: 5.0489,
-      kolejkaPielegniarka: 13.1983,
-      oczekiwaniePielegniarka: 2.6141,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 6,
-      wydajnoscLekarzy: 8.24,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 0,
-      oczekiwanieLekarz: 0,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 2.14,
+      zasoby: {
+        lekarz: 6,
+        pielegniarka: 4,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 8.24,
+        pielegniarka: 5.05,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 5.0489,
+      },
+      oczekiwanie: {
+        lekarz: 0,
+        pielegniarka: 2.6141,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 0,
+        pielegniarka: 13.1983,
+      },
       waskiZasob: 'Pielegn',
       waskaWydajnosc: 5.05,
       mozliwoscPokryciaZopatrzenia: '',
@@ -562,25 +472,39 @@ export class HourlyDataService {
     {
       id: 3,
       godzina: '3-4',
-      oczekiwaneWizyty: 1.83,
-      liczbaPielegniarek: 4,
-      wydajnoscPielegniarek: 5.05,
-      obslugaPielegniarka: 5.0489,
-      kolejkaPielegniarka: 9.7675,
-      oczekiwaniePielegniarka: 1.976,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 8,
-      wydajnoscLekarzy: 8.24,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 0,
-      oczekiwanieLekarz: 0,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 1.83,
+      zasoby: {
+        lekarz: 8,
+        pielegniarka: 4,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 8.24,
+        pielegniarka: 5.05,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 5.0489,
+      },
+      oczekiwanie: {
+        lekarz: 0,
+        pielegniarka: 1.976,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 0,
+        pielegniarka: 9.7675,
+      },
       waskiZasob: 'Pielegn',
       waskaWydajnosc: 5.05,
       mozliwoscPokryciaZopatrzenia: '',
@@ -589,25 +513,39 @@ export class HourlyDataService {
     {
       id: 4,
       godzina: '4-5',
-      oczekiwaneWizyty: 1.7,
-      liczbaPielegniarek: 4,
-      wydajnoscPielegniarek: 5.05,
-      obslugaPielegniarka: 5.0489,
-      kolejkaPielegniarka: 6.6287,
-      oczekiwaniePielegniarka: 1.3129,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 8,
-      wydajnoscLekarzy: 10.99,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 0,
-      oczekiwanieLekarz: 0,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 1.7,
+      zasoby: {
+        lekarz: 8,
+        pielegniarka: 4,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 10.99,
+        pielegniarka: 5.05,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 5.0489,
+      },
+      oczekiwanie: {
+        lekarz: 0,
+        pielegniarka: 1.3129,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 0,
+        pielegniarka: 6.6287,
+      },
       waskiZasob: 'Pielegn',
       waskaWydajnosc: 5.05,
       mozliwoscPokryciaZopatrzenia: '',
@@ -616,25 +554,39 @@ export class HourlyDataService {
     {
       id: 5,
       godzina: '5-6',
-      oczekiwaneWizyty: 1.67,
-      liczbaPielegniarek: 4,
-      wydajnoscPielegniarek: 5.05,
-      obslugaPielegniarka: 5.0489,
-      kolejkaPielegniarka: 3.512,
-      oczekiwaniePielegniarka: 0.644,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 8,
-      wydajnoscLekarzy: 10.99,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 0,
-      oczekiwanieLekarz: 0,
-      lqLekarz: 0,
-      wqLekarz: 0.1051,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 1.67,
+      zasoby: {
+        lekarz: 8,
+        pielegniarka: 4,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 10.99,
+        pielegniarka: 5.05,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 5.0489,
+      },
+      oczekiwanie: {
+        lekarz: 0,
+        pielegniarka: 0.644,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0.1051,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 0,
+        pielegniarka: 3.512,
+      },
       waskiZasob: 'Pielegn',
       waskaWydajnosc: 5.05,
       mozliwoscPokryciaZopatrzenia: '',
@@ -643,25 +595,39 @@ export class HourlyDataService {
     {
       id: 6,
       godzina: '6-7',
-      oczekiwaneWizyty: 1.8,
-      liczbaPielegniarek: 4,
-      wydajnoscPielegniarek: 5.05,
-      obslugaPielegniarka: 5.0489,
-      kolejkaPielegniarka: 0,
-      oczekiwaniePielegniarka: 0,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 8,
-      wydajnoscLekarzy: 10.99,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 0,
-      oczekiwanieLekarz: 0,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 1.8,
+      zasoby: {
+        lekarz: 8,
+        pielegniarka: 4,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 10.99,
+        pielegniarka: 5.05,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 5.0489,
+      },
+      oczekiwanie: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
       waskiZasob: 'Pielegn',
       waskaWydajnosc: 5.05,
       mozliwoscPokryciaZopatrzenia: '',
@@ -670,25 +636,39 @@ export class HourlyDataService {
     {
       id: 7,
       godzina: '7-8',
-      oczekiwaneWizyty: 2.96,
-      liczbaPielegniarek: 7,
-      wydajnoscPielegniarek: 5.05,
-      obslugaPielegniarka: 5.0489,
-      kolejkaPielegniarka: 0,
-      oczekiwaniePielegniarka: 0,
-      lqPielegniarka: 0.1907,
-      wqPielegniarka: 0.0337,
-      liczbaLekarzy: 8,
-      wydajnoscLekarzy: 10.99,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 0,
-      oczekiwanieLekarz: 0,
-      lqLekarz: 0.0361,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 2.96,
+      zasoby: {
+        lekarz: 8,
+        pielegniarka: 7,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 10.99,
+        pielegniarka: 5.05,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 5.0489,
+      },
+      oczekiwanie: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      lq: {
+        lekarz: 0.0361,
+        pielegniarka: 0.1907,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0.0337,
+      },
+      kolejka: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
       waskiZasob: 'Pielegn',
       waskaWydajnosc: 5.05,
       mozliwoscPokryciaZopatrzenia: '',
@@ -697,25 +677,39 @@ export class HourlyDataService {
     {
       id: 8,
       godzina: '8-9',
-      oczekiwaneWizyty: 5.66,
-      liczbaPielegniarek: 7,
-      wydajnoscPielegniarek: 8.84,
-      obslugaPielegniarka: 8.8355,
-      kolejkaPielegniarka: 5.6587,
-      oczekiwaniePielegniarka: 0.6404,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 8,
-      wydajnoscLekarzy: 10.99,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 0,
-      oczekiwanieLekarz: 0,
-      lqLekarz: 1.47,
-      wqLekarz: 0.1589,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 5.66,
+      zasoby: {
+        lekarz: 8,
+        pielegniarka: 7,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 10.99,
+        pielegniarka: 8.84,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 8.8355,
+      },
+      oczekiwanie: {
+        lekarz: 0,
+        pielegniarka: 0.6404,
+      },
+      lq: {
+        lekarz: 1.47,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0.1589,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 0,
+        pielegniarka: 5.6587,
+      },
       waskiZasob: 'Pielegn',
       waskaWydajnosc: 8.84,
       mozliwoscPokryciaZopatrzenia: '',
@@ -724,25 +718,39 @@ export class HourlyDataService {
     {
       id: 9,
       godzina: '9-10',
-      oczekiwaneWizyty: 9.25,
-      liczbaPielegniarek: 7,
-      wydajnoscPielegniarek: 8.84,
-      obslugaPielegniarka: 8.8355,
-      kolejkaPielegniarka: 0.4171,
-      oczekiwaniePielegniarka: 0.0472,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 8,
-      wydajnoscLekarzy: 10.99,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 0,
-      oczekiwanieLekarz: 0,
-      lqLekarz: 0,
-      wqLekarz: 0.1051,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 9.25,
+      zasoby: {
+        lekarz: 8,
+        pielegniarka: 7,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 10.99,
+        pielegniarka: 8.84,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 8.8355,
+      },
+      oczekiwanie: {
+        lekarz: 0,
+        pielegniarka: 0.0472,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0.1051,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 0,
+        pielegniarka: 0.4171,
+      },
       waskiZasob: 'Pielegn',
       waskaWydajnosc: 8.84,
       mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
@@ -751,25 +759,39 @@ export class HourlyDataService {
     {
       id: 10,
       godzina: '10-11',
-      oczekiwaneWizyty: 12.15,
-      liczbaPielegniarek: 7,
-      wydajnoscPielegniarek: 8.84,
-      obslugaPielegniarka: 8.8355,
-      kolejkaPielegniarka: 3.7287,
-      oczekiwaniePielegniarka: 0.422,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 8,
-      wydajnoscLekarzy: 10.99,
-      obslugaLekarz: 10.9919,
-      kolejkaLekarz: 1.553,
-      oczekiwanieLekarz: 0.1413,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 12.15,
+      zasoby: {
+        lekarz: 8,
+        pielegniarka: 7,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 10.99,
+        pielegniarka: 8.84,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 10.9919,
+        pielegniarka: 8.8355,
+      },
+      oczekiwanie: {
+        lekarz: 0.1413,
+        pielegniarka: 0.422,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 1.553,
+        pielegniarka: 3.7287,
+      },
       waskiZasob: 'Pielegn',
       waskaWydajnosc: 8.84,
       mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
@@ -778,25 +800,39 @@ export class HourlyDataService {
     {
       id: 11,
       godzina: '11-12',
-      oczekiwaneWizyty: 13.25,
-      liczbaPielegniarek: 7,
-      wydajnoscPielegniarek: 8.84,
-      obslugaPielegniarka: 8.8355,
-      kolejkaPielegniarka: 8.1473,
-      oczekiwaniePielegniarka: 0.9221,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 6,
-      wydajnoscLekarzy: 10.99,
-      obslugaLekarz: 10.9919,
-      kolejkaLekarz: 4.4175,
-      oczekiwanieLekarz: 0.4015,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 13.25,
+      zasoby: {
+        lekarz: 6,
+        pielegniarka: 7,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 10.99,
+        pielegniarka: 8.84,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 10.9919,
+        pielegniarka: 8.8355,
+      },
+      oczekiwanie: {
+        lekarz: 0.4015,
+        pielegniarka: 0.9221,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 4.4175,
+        pielegniarka: 8.1473,
+      },
       waskiZasob: 'Pielegn',
       waskaWydajnosc: 8.84,
       mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
@@ -805,25 +841,39 @@ export class HourlyDataService {
     {
       id: 12,
       godzina: '12-13',
-      oczekiwaneWizyty: 12.25,
-      liczbaPielegniarek: 7,
-      wydajnoscPielegniarek: 8.84,
-      obslugaPielegniarka: 8.8355,
-      kolejkaPielegniarka: 11.5576,
-      oczekiwaniePielegniarka: 1.3081,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 6,
-      wydajnoscLekarzy: 8.24,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 7.4194,
-      oczekiwanieLekarz: 0.9006,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 12.25,
+      zasoby: {
+        lekarz: 6,
+        pielegniarka: 7,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 8.24,
+        pielegniarka: 8.84,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 8.8355,
+      },
+      oczekiwanie: {
+        lekarz: 0.9006,
+        pielegniarka: 1.3081,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 7.4194,
+        pielegniarka: 11.5576,
+      },
       waskiZasob: 'Lekarze',
       waskaWydajnosc: 8.24,
       mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
@@ -832,25 +882,39 @@ export class HourlyDataService {
     {
       id: 13,
       godzina: '13-14',
-      oczekiwaneWizyty: 10.52,
-      liczbaPielegniarek: 7,
-      wydajnoscPielegniarek: 8.84,
-      obslugaPielegniarka: 8.8355,
-      kolejkaPielegniarka: 13.7333,
-      oczekiwaniePielegniarka: 1.4982,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 6,
-      wydajnoscLekarzy: 8.24,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 9.696,
-      oczekiwanieLekarz: 1.1755,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 10.52,
+      zasoby: {
+        lekarz: 6,
+        pielegniarka: 7,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 8.24,
+        pielegniarka: 8.84,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 8.8355,
+      },
+      oczekiwanie: {
+        lekarz: 1.1755,
+        pielegniarka: 1.4982,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 9.696,
+        pielegniarka: 13.7333,
+      },
       waskiZasob: 'Lekarze',
       waskaWydajnosc: 8.24,
       mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
@@ -859,25 +923,39 @@ export class HourlyDataService {
     {
       id: 14,
       godzina: '14-15',
-      oczekiwaneWizyty: 9.44,
-      liczbaPielegniarek: 7,
-      wydajnoscPielegniarek: 8.84,
-      obslugaPielegniarka: 8.8355,
-      kolejkaPielegniarka: 13.8961,
-      oczekiwaniePielegniarka: 1.5664,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 6,
-      wydajnoscLekarzy: 8.24,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 10.8845,
-      oczekiwanieLekarz: 1.32,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 9.44,
+      zasoby: {
+        lekarz: 6,
+        pielegniarka: 7,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 8.24,
+        pielegniarka: 8.84,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 8.8355,
+      },
+      oczekiwanie: {
+        lekarz: 1.32,
+        pielegniarka: 1.5664,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 10.8845,
+        pielegniarka: 13.8961,
+      },
       waskiZasob: 'Lekarze',
       waskaWydajnosc: 8.24,
       mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
@@ -886,25 +964,39 @@ export class HourlyDataService {
     {
       id: 15,
       godzina: '15-16',
-      oczekiwaneWizyty: 9.73,
-      liczbaPielegniarek: 7,
-      wydajnoscPielegniarek: 8.84,
-      obslugaPielegniarka: 8.8355,
-      kolejkaPielegniarka: 14.7323,
-      oczekiwaniePielegniarka: 1.674,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 6,
-      wydajnoscLekarzy: 8.24,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 12.3688,
-      oczekiwanieLekarz: 1.5004,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 9.73,
+      zasoby: {
+        lekarz: 6,
+        pielegniarka: 7,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 8.24,
+        pielegniarka: 8.84,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 8.8355,
+      },
+      oczekiwanie: {
+        lekarz: 1.5004,
+        pielegniarka: 1.674,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 12.3688,
+        pielegniarka: 14.7323,
+      },
       waskiZasob: 'Lekarze',
       waskaWydajnosc: 8.24,
       mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
@@ -913,25 +1005,39 @@ export class HourlyDataService {
     {
       id: 16,
       godzina: '16-17',
-      oczekiwaneWizyty: 10.29,
-      liczbaPielegniarek: 7,
-      wydajnoscPielegniarek: 8.84,
-      obslugaPielegniarka: 8.8355,
-      kolejkaPielegniarka: 16.1745,
-      oczekiwaniePielegniarka: 1.83,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 6,
-      wydajnoscLekarzy: 8.24,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 14.4154,
-      oczekiwanieLekarz: 1.7486,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 10.29,
+      zasoby: {
+        lekarz: 6,
+        pielegniarka: 7,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 8.24,
+        pielegniarka: 8.84,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 8.8355,
+      },
+      oczekiwanie: {
+        lekarz: 1.7486,
+        pielegniarka: 1.83,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 14.4154,
+        pielegniarka: 16.1745,
+      },
       waskiZasob: 'Lekarze',
       waskaWydajnosc: 8.24,
       mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
@@ -940,25 +1046,39 @@ export class HourlyDataService {
     {
       id: 17,
       godzina: '17-18',
-      oczekiwaneWizyty: 10.1,
-      liczbaPielegniarek: 7,
-      wydajnoscPielegniarek: 8.84,
-      obslugaPielegniarka: 8.8355,
-      kolejkaPielegniarka: 17.4538,
-      oczekiwaniePielegniarka: 1.9754,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 6,
-      wydajnoscLekarzy: 8.24,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 16.2735,
-      oczekiwanieLekarz: 1.974,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 10.1,
+      zasoby: {
+        lekarz: 6,
+        pielegniarka: 7,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 8.24,
+        pielegniarka: 8.84,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 8.8355,
+      },
+      oczekiwanie: {
+        lekarz: 1.974,
+        pielegniarka: 1.9754,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 16.2735,
+        pielegniarka: 17.4538,
+      },
       waskiZasob: 'Lekarze',
       waskaWydajnosc: 8.24,
       mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
@@ -967,25 +1087,39 @@ export class HourlyDataService {
     {
       id: 18,
       godzina: '18-19',
-      oczekiwaneWizyty: 9.34,
-      liczbaPielegniarek: 7,
-      wydajnoscPielegniarek: 8.84,
-      obslugaPielegniarka: 8.8355,
-      kolejkaPielegniarka: 17.5142,
-      oczekiwaniePielegniarka: 2.0302,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 6,
-      wydajnoscLekarzy: 8.24,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 17.3654,
-      oczekiwanieLekarz: 2.1064,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 9.34,
+      zasoby: {
+        lekarz: 6,
+        pielegniarka: 7,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 8.24,
+        pielegniarka: 8.84,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 8.8355,
+      },
+      oczekiwanie: {
+        lekarz: 2.1064,
+        pielegniarka: 2.0302,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 17.3654,
+        pielegniarka: 17.5142,
+      },
       waskiZasob: 'Lekarze',
       waskaWydajnosc: 8.24,
       mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
@@ -994,25 +1128,39 @@ export class HourlyDataService {
     {
       id: 19,
       godzina: '19-20',
-      oczekiwaneWizyty: 8.57,
-      liczbaPielegniarek: 4,
-      wydajnoscPielegniarek: 8.84,
-      obslugaPielegniarka: 8.8355,
-      kolejkaPielegniarka: 17.6841,
-      oczekiwaniePielegniarka: 2.2034,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 6,
-      wydajnoscLekarzy: 8.24,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 17.0526,
-      oczekiwanieLekarz: 2.0685,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 8.57,
+      zasoby: {
+        lekarz: 6,
+        pielegniarka: 4,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 8.24,
+        pielegniarka: 8.84,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 8.8355,
+      },
+      oczekiwanie: {
+        lekarz: 2.0685,
+        pielegniarka: 2.2034,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 17.0526,
+        pielegniarka: 17.6841,
+      },
       waskiZasob: 'Lekarze',
       waskaWydajnosc: 8.24,
       mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
@@ -1021,25 +1169,39 @@ export class HourlyDataService {
     {
       id: 20,
       godzina: '20-21',
-      oczekiwaneWizyty: 7.61,
-      liczbaPielegniarek: 4,
-      wydajnoscPielegniarek: 5.05,
-      obslugaPielegniarka: 5.0489,
-      kolejkaPielegniarka: 21.8433,
-      oczekiwaniePielegniarka: 2.7803,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 6,
-      wydajnoscLekarzy: 8.24,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 17.6142,
-      oczekiwanieLekarz: 2.138,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 7.61,
+      zasoby: {
+        lekarz: 6,
+        pielegniarka: 4,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 8.24,
+        pielegniarka: 5.05,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 5.0489,
+      },
+      oczekiwanie: {
+        lekarz: 2.138,
+        pielegniarka: 2.7803,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 17.6142,
+        pielegniarka: 21.8433,
+      },
       waskiZasob: 'Pielegn',
       waskaWydajnosc: 5.05,
       mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
@@ -1048,25 +1210,39 @@ export class HourlyDataService {
     {
       id: 21,
       godzina: '21-22',
-      oczekiwaneWizyty: 6.33,
-      liczbaPielegniarek: 4,
-      wydajnoscPielegniarek: 5.05,
-      obslugaPielegniarka: 5.0489,
-      kolejkaPielegniarka: 21.2534,
-      oczekiwaniePielegniarka: 2.6702,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 6,
-      wydajnoscLekarzy: 8.24,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 16.9768,
-      oczekiwanieLekarz: 2.06,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 6.33,
+      zasoby: {
+        lekarz: 6,
+        pielegniarka: 4,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 8.24,
+        pielegniarka: 5.05,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 5.0489,
+      },
+      oczekiwanie: {
+        lekarz: 2.06,
+        pielegniarka: 2.6702,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 16.9768,
+        pielegniarka: 21.2534,
+      },
       waskiZasob: 'Pielegn',
       waskaWydajnosc: 5.05,
       mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
@@ -1075,25 +1251,39 @@ export class HourlyDataService {
     {
       id: 22,
       godzina: '22-23',
-      oczekiwaneWizyty: 5.08,
-      liczbaPielegniarek: 4,
-      wydajnoscPielegniarek: 5.05,
-      obslugaPielegniarka: 5.0489,
-      kolejkaPielegniarka: 21.523,
-      oczekiwaniePielegniarka: 2.714,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 6,
-      wydajnoscLekarzy: 8.24,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 15.1539,
-      oczekiwanieLekarz: 1.836,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 5.08,
+      zasoby: {
+        lekarz: 6,
+        pielegniarka: 4,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 8.24,
+        pielegniarka: 5.05,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 5.0489,
+      },
+      oczekiwanie: {
+        lekarz: 1.836,
+        pielegniarka: 2.714,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 15.1539,
+        pielegniarka: 21.523,
+      },
       waskiZasob: 'Pielegn',
       waskaWydajnosc: 5.05,
       mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
@@ -1102,29 +1292,62 @@ export class HourlyDataService {
     {
       id: 23,
       godzina: '23-24',
-      oczekiwaneWizyty: 4.08,
-      liczbaPielegniarek: 4,
-      wydajnoscPielegniarek: 5.05,
-      obslugaPielegniarka: 5.0489,
-      kolejkaPielegniarka: 20.5828,
-      oczekiwaniePielegniarka: 4.0767,
-      lqPielegniarka: 0,
-      wqPielegniarka: 0,
-      liczbaLekarzy: 6,
-      wydajnoscLekarzy: 8.24,
-      obslugaLekarz: 8.244,
-      kolejkaLekarz: 7.8053,
-      oczekiwanieLekarz: 0.9468,
-      lqLekarz: 0,
-      wqLekarz: 0,
-      liczbaLozek: 50,
-      wydajnoscLozek: 12.18,
-      liczbaLozekObserwacja: 15.0,
-      wydajnoscLozekObserwacja: 11.36,
+      liczbaWizyt: 4.08,
+      zasoby: {
+        lekarz: 6,
+        pielegniarka: 4,
+        lozko: 50,
+        lozkoObserwacja: 15.0,
+      },
+      wydajnosc: {
+        lekarz: 8.24,
+        pielegniarka: 5.05,
+        lozko: 12.18,
+        lozkoObserwacja: 11.36,
+      },
+      obsluga: {
+        lekarz: 8.244,
+        pielegniarka: 5.0489,
+      },
+      oczekiwanie: {
+        lekarz: 0.9468,
+        pielegniarka: 4.0767,
+      },
+      lq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      wq: {
+        lekarz: 0,
+        pielegniarka: 0,
+      },
+      kolejka: {
+        lekarz: 7.8053,
+        pielegniarka: 20.5828,
+      },
       waskiZasob: 'Pielegn',
       waskaWydajnosc: 5.05,
       mozliwoscPokryciaZopatrzenia: '',
       opoznienieOgolem: 4.0767,
     },
   ]);
+  readonly summaryRowTop = signal<SummaryTop>({
+    id: 24,
+    liczbaWizyt: 0,
+    wydajnosc: {
+      lekarz: 0,
+      pielegniarka: 0,
+      lozko: 0,
+      lozkoObserwacja: 0,
+    },
+  });
+  readonly summaryRowBottom = signal<SummaryBottom>({
+    id: 25,
+    wydajnosc: {
+      lekarz: 0,
+      pielegniarka: 0,
+      lozko: 0,
+      lozkoObserwacja: 0,
+    },
+  });
 }

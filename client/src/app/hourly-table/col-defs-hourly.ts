@@ -1,5 +1,5 @@
 import { ColDef, ColGroupDef, ICellRendererParams } from 'ag-grid-community';
-import { numberRoundingFormatter } from '../utils';
+import { numberRoundingFormatter } from '../utils/utils';
 
 function cellRendererEditable({ data, value }: ICellRendererParams) {
   if (data['id'] === 24) return 'Wyd./dobę';

@@ -3,7 +3,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { CellValueChangedEvent, ColDef, ColGroupDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { HourlyDataService } from '../hourly-data.service';
 import { Hour } from '../interfaces/hour';
-import { numberRoundingFormatter } from '../utils';
+import { numberRoundingFormatter } from '../utils/utils';
 import { LOSTableColDefs } from './col-defs-los';
 
 const COLOR_MAP = [
@@ -79,12 +79,14 @@ export class LengthOfStayComponent {
     let changedHour: Hour = event.data;
     // Apply calculations & update main signal
     this.hourlyDataService.applyHourCalculations(this.rowData(), changedHour);
-    this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
   }
 
   private api!: GridApi;
   onGridReady = (event: GridReadyEvent) => {
     // Store the api for later use
     this.api = event.api;
+
+    // Apply calculations
+    this.hourlyDataService.applyHourCalculations(this.rowData());
   };
 }

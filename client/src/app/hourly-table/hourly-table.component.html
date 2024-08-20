@@ -8,7 +8,7 @@
   [groupHeaderHeight]="GROUP_HEADER_HEIGHT"
   [suppressScrollOnNewData]="true"
   [suppressRowTransform]="true"
-  [pinnedBottomRowData]="[summaryRow1(), summaryRow2()]"
+  [pinnedBottomRowData]="[summaryRowTop(), summaryRowBottom()]"
   (cellValueChanged)="onCellValueChanged($event)"
   (gridReady)="onGridReady($event)"
 >

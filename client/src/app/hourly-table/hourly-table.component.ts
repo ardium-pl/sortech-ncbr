@@ -31,20 +31,22 @@ export class HourlyTableComponent {
 
   readonly columnDefs: (ColDef | ColGroupDef)[] = hourlyTableColDefs;
   readonly rowData = this.hourlyDataService.rowData;
-  readonly summaryRow1 = this.hourlyDataService.summaryRow1;
-  readonly summaryRow2 = this.hourlyDataService.summaryRow2;
+  readonly summaryRowTop = this.hourlyDataService.summaryRowTop;
+  readonly summaryRowBottom = this.hourlyDataService.summaryRowBottom;
 
   onCellValueChanged(event: CellValueChangedEvent) {
     // Get the changed row (=hour)
     let changedHour: Hour = event.data;
     // Apply calculations & update main signal
     this.hourlyDataService.applyHourCalculations(this.rowData(), changedHour);
-    this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
   }
 
   private api!: GridApi;
   onGridReady = (event: GridReadyEvent) => {
     // Store the api for later use
     this.api = event.api;
+
+    // Apply calculations
+    this.hourlyDataService.applyHourCalculations(this.rowData());
   };
 }
