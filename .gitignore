@@ -1,0 +1,10 @@
+#the standard stuff 
+node_modules/
+build/
+*.log
+.env
+
+#ignore the main SOR app in version controll
+client/
+server/
+.angular/

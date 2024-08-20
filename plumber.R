@@ -7,17 +7,29 @@ library(jsonlite)
 #* @param future_dates The JSON payload containing the dates for which predictions will be made
 #* @post /predict_n
 function(train_set, future_dates) {
+  cat("Received request at /predict_n endpoint\n")
+  
   # Parse JSON payload
+  cat("Parsing train_set and future_dates JSON payloads...\n")
   ts_model <- as.data.frame(train_set)
   ts_future <- as.data.frame(future_dates)
   
+  # Log the input data
+  cat("train_set:\n")
+  print(ts_model)
+  cat("future_dates:\n")
+  print(ts_future)
+  
   # Convert to proper date format
+  cat("Converting date formats...\n")
   ts_model$Data <- lubridate::ymd(ts_model$Data)
   ts_future$Data <- lubridate::ymd(ts_future$Data)
   
+  # Initialize n column in future dates
   ts_future$n <- NA
   
   # Add new columns - ts_model
+  cat("Adding new columns to train set...\n")
   ts <- ts_model
   ts$wday <- lubridate::wday(ts$Data, week_start = 1)
   ts$month_val <- lubridate::month(ts$Data) # Renaming to avoid conflict
@@ -44,9 +56,11 @@ function(train_set, future_dates) {
   ts$w6 <- ifelse(ts$wday == 6, 1, 0)
   ts$w7 <- ifelse(ts$wday == 7, 1, 0)
   
+  cat("Creating linear model...\n")
   # Create linear model
   model <- lm(n ~ m1 + m2 + m7 + m9 + w1 + w2 + w3 + w4 + w5, data=ts)
   
+  cat("Adding new columns to future dates set...\n")
   # Add new columns (dummy variables) - ts_future
   ts <- ts_future
   ts$wday <- lubridate::wday(ts$Data, week_start = 1)
@@ -64,12 +78,19 @@ function(train_set, future_dates) {
   ts$w4 <- ifelse(ts$wday == 4, 1, 0)
   ts$w5 <- ifelse(ts$wday == 5, 1, 0)
   
+  cat("Calculating predictions...\n")
   # Calculate predictions
   n_pred <- unname(predict(model, ts[, c("m1", "m2", "m7", "m9", "w1", "w2", "w3", "w4", "w5")]))
   
+  # Log the predictions
+  cat("Predictions:\n")
+  print(n_pred)
+  
   # Create response body
+  cat("Creating response body...\n")
   predictions_df <- data.frame(Data = ts$Data, n_pred = n_pred)
   
   # Return result as JSON
-  predictions_df
+  cat("Returning predictions as JSON...\n")
+  return(predictions_df)
 }
