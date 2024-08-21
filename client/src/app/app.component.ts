@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterOutlet } from '@angular/router';
-import { DatepickerComponent } from './components/datepicker/datepicker.component';
+import { DatepickerComponent } from './datepicker/datepicker.component';
 import { HourlyTableComponent } from './hourly-table/hourly-table.component';
 import { LengthOfStayComponent } from './length-of-stay/length-of-stay.component';
 import { StaticTableComponent } from './static-table/static-table.component';
@@ -14,7 +14,7 @@ import { StaticTableComponent } from './static-table/static-table.component';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  readonly selectedTabIndex = 1;
+  readonly selectedTabIndex = 2;
   title = 'SOR';
 
   onChange(event: any) {

@@ -25,7 +25,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
   },
   {
     headerName: 'Oczek. \n l. wizyt',
-    field: 'oczekiwaneWizyty',
+    field: 'liczbaWizyt',
     headerClass: 'grid-header grid-header-outer oczekiwane-wizyty',
     cellRenderer: (params: any) => {
       if (params.data['id'] === 25) {
@@ -49,7 +49,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     children: [
       {
         headerName: 'Liczba Pielęgn.',
-        field: 'liczbaPielegniarek',
+        field: 'zasoby.pielegniarka',
         headerClass: 'grid-header grid-header-mid pielegniarki liczba',
         editable: ({ data }) => data['id'] < 24,
         cellRenderer: cellRendererEditable,
@@ -64,7 +64,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       },
       {
         headerName: 'Wyd. \n l. pacj.',
-        field: 'wydajnoscPielegniarek',
+        field: 'wydajnosc.pielegniarka',
         headerClass: 'grid-header grid-header-mid pielegniarki wydajnosc',
         cellRenderer: numberRoundingFormatter,
         cellClass: ({ data }) => [
@@ -84,7 +84,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     children: [
       {
         headerName: 'Liczba Lekarzy',
-        field: 'liczbaLekarzy',
+        field: 'zasoby.lekarz',
         headerClass: 'grid-header grid-header-mid lekarze liczba',
         editable: ({ data }) => data['id'] < 24,
         cellRenderer: cellRendererEditable,
@@ -99,7 +99,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       },
       {
         headerName: 'Wyd. \n l. pacj.',
-        field: 'wydajnoscLekarzy',
+        field: 'wydajnosc.lekarz',
         headerClass: 'grid-header grid-header-mid lekarze wydajnosc',
         cellRenderer: numberRoundingFormatter,
         cellClass: ({ data }) => [
@@ -119,7 +119,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     children: [
       {
         headerName: 'Liczba Łóżek',
-        field: 'liczbaLozek',
+        field: 'zasoby.lozko',
         headerClass: 'grid-header grid-header-mid lozka liczba',
         editable: ({ data }) => data['id'] < 24,
         cellRenderer: cellRendererEditable,
@@ -134,7 +134,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       },
       {
         headerName: 'Wyd. \n l. pacj.',
-        field: 'wydajnoscLozek',
+        field: 'wydajnosc.lozko',
         headerClass: 'grid-header grid-header-mid lozka wydajnosc',
         cellRenderer: numberRoundingFormatter,
         cellClass: ({ data }) => [
@@ -154,7 +154,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     children: [
       {
         headerName: 'Liczba Łóżek',
-        field: 'liczbaLozekObserwacja',
+        field: 'zasoby.lozkoObserwacja',
         headerClass: 'grid-header grid-header-mid obserwacja liczba',
         editable: ({ data }) => data['id'] < 24,
         cellRenderer: cellRendererEditable,
@@ -169,7 +169,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       },
       {
         headerName: 'Wyd. \n l. pacj.',
-        field: 'wydajnoscLozekObserwacja',
+        field: 'wydajnosc.lozkoObserwacja',
         headerClass: 'grid-header grid-header-mid obserwacja wydajnosc',
         cellRenderer: numberRoundingFormatter,
         cellClass: ({ data }) => [

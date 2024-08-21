@@ -36,7 +36,7 @@ export class HourlyTableComponent {
 
   onCellValueChanged(event: CellValueChangedEvent) {
     // Get the changed row (=hour)
-    let changedHour: Hour = event.data;
+    const changedHour: Hour = event.data;
     // Apply calculations & update main signal
     this.hourlyDataService.applyHourCalculations(this.rowData(), changedHour);
   }

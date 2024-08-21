@@ -4,7 +4,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { HourlyDataService } from '../../hourly-data.service';
+import { HourlyDataService } from '../hourly-data.service';
 
 @Component({
   selector: 'app-datepicker',
@@ -24,7 +24,7 @@ export class DatepickerComponent {
     // Update the currentDayOfWeek with the current day
     if (pickedDate) {
       this.hourlyDataService.currentDayOfWeek.set(pickedDate.getDay());
-      this.hourlyDataService.applySummaryCalcuationsForPinnedRows();
+      this.hourlyDataService.applyHourCalculations(this.hourlyDataService.rowData());
     }
   }
 }

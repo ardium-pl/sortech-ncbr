@@ -11,7 +11,7 @@ export const LOSTableColDefs: (ColDef | ColGroupDef)[] = [
   },
   {
     headerName: 'Oczek. \n l. wizyt',
-    field: 'oczekiwaneWizyty',
+    field: 'liczbaWizyt',
     headerClass: 'grid-header grid-header-outer oczekiwane-wizyty',
     cellClass: ({ data }) => ['cell', 'oczekiwane-wizyty', data['id'] === 23 ? 'bottom' : ''],
     minWidth: 130,
@@ -22,14 +22,14 @@ export const LOSTableColDefs: (ColDef | ColGroupDef)[] = [
     children: [
       {
         headerName: 'Liczba Pielęgn.',
-        field: 'liczbaPielegniarek',
+        field: 'zasoby.pielegniarka',
         headerClass: 'grid-header grid-header-mid pielegniarki liczba',
         editable: true,
         cellClass: ({ data }) => ['cell', 'pielegniarki', 'liczba', data['id'] === 23 ? 'bottom' : ''],
       },
       {
         headerName: 'Wyd. \n l. pacj.',
-        field: 'wydajnoscPielegniarek',
+        field: 'wydajnosc.pielegniarka',
         headerClass: 'grid-header grid-header-mid pielegniarki wydajnosc',
         cellClass: ({ data }) => ['cell', 'pielegniarki', 'wydajnosc', data['id'] === 23 ? 'bottom' : ''],
       },
@@ -41,14 +41,14 @@ export const LOSTableColDefs: (ColDef | ColGroupDef)[] = [
     children: [
       {
         headerName: 'Liczba Lekarzy',
-        field: 'liczbaLekarzy',
+        field: 'zasoby.lekarz',
         headerClass: 'grid-header grid-header-mid lekarze liczba',
         editable: true,
         cellClass: ({ data }) => ['cell', 'lekarze', 'liczba', data['id'] === 23 ? 'bottom' : ''],
       },
       {
         headerName: 'Wyd. \n l. pacj.',
-        field: 'wydajnoscLekarzy',
+        field: 'wydajnosc.lekarz',
         headerClass: 'grid-header grid-header-mid lekarze wydajnosc',
         cellClass: ({ data }) => ['cell', 'lekarze', 'wydajnosc', data['id'] === 23 ? 'bottom' : ''],
       },
@@ -64,19 +64,19 @@ export const LOSTableColDefs: (ColDef | ColGroupDef)[] = [
         children: [
           {
             headerName: 'obsługa',
-            field: 'obslugaPielegniarka',
+            field: 'obsluga.pielegniarka',
             headerClass: 'grid-header grid-header-inner pielegniarka obsluga',
             cellClass: ({ data }) => ['cell', 'pielegiarka', 'obsluga', data['id'] === 23 ? 'bottom' : ''],
           },
           {
             headerName: 'kolejka',
-            field: 'kolejkaPielegniarka',
+            field: 'kolejka.pielegniarka',
             headerClass: 'grid-header grid-header-inner pielegniarka kolejka',
             cellClass: ({ data }) => ['cell', 'pielegiarka', 'kolejka', data['id'] === 23 ? 'bottom' : ''],
           },
           {
             headerName: 'oczekiw.',
-            field: 'oczekiwaniePielegniarka',
+            field: 'oczekiwanie.pielegniarka',
             headerClass: 'grid-header grid-header-inner pielegniarka oczekiwanie',
             cellClass: ({ data }) => ['cell', 'pielegiarka', 'oczekiwanie', data['id'] === 23 ? 'bottom' : ''],
           },
@@ -88,19 +88,19 @@ export const LOSTableColDefs: (ColDef | ColGroupDef)[] = [
         children: [
           {
             headerName: 'obsługa',
-            field: 'obslugaLekarz',
+            field: 'obsluga.lekarz',
             headerClass: 'grid-header grid-header-inner lekarz obsluga',
             cellClass: ({ data }) => ['cell', 'lekarz', 'obsluga', data['id'] === 23 ? 'bottom' : ''],
           },
           {
             headerName: 'kolejka',
-            field: 'kolejkaLekarz',
+            field: 'kolejka.lekarz',
             headerClass: 'grid-header grid-header-inner lekarz kolejka',
             cellClass: ({ data }) => ['cell', 'lekarz', 'kolejka', data['id'] === 23 ? 'bottom' : ''],
           },
           {
             headerName: 'oczekiw.',
-            field: 'oczekiwanieLekarz',
+            field: 'oczekiwanie.lekarz',
             headerClass: 'grid-header grid-header-inner lekarz oczekiwanie',
             cellClass: ({ data }) => ['cell', 'lekarz', 'oczekiwanie', data['id'] === 23 ? 'bottom' : ''],
           },
@@ -118,13 +118,13 @@ export const LOSTableColDefs: (ColDef | ColGroupDef)[] = [
         children: [
           {
             headerName: 'Lq',
-            field: 'lqPielegniarka',
+            field: 'lq.pielegniarka',
             headerClass: 'grid-header grid-header-inner pielegniarka lq',
             cellClass: ({ data }) => ['cell', 'pielegniarka', 'lq', data['id'] === 23 ? 'bottom' : ''],
           },
           {
             headerName: 'Wq',
-            field: 'wqPielegniarka',
+            field: 'wq.pielegniarka',
             headerClass: 'grid-header grid-header-inner pielegniarka wq',
             cellClass: ({ data }) => ['cell', 'pielegniarka', 'wq', data['id'] === 23 ? 'bottom' : ''],
           },
@@ -136,13 +136,13 @@ export const LOSTableColDefs: (ColDef | ColGroupDef)[] = [
         children: [
           {
             headerName: 'Lq',
-            field: 'lqLekarz',
+            field: 'lq.lekarz',
             headerClass: 'grid-header grid-header-inner lekarz lq',
             cellClass: ({ data }) => ['cell', 'lekarz', 'lq', data['id'] === 23 ? 'bottom' : ''],
           },
           {
             headerName: 'Wq',
-            field: 'wqLekarz',
+            field: 'wq.lekarz',
             headerClass: 'grid-header grid-header-inner lekarz wq',
             cellClass: ({ data }) => ['cell', 'pielegniarka', 'wq', data['id'] === 23 ? 'bottom' : ''],
           },
