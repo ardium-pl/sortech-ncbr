@@ -112,7 +112,6 @@ export class HourlyDataService {
       this.obliczOpoznienieOgolem(hour);
     }
 
-    // Get min and max value of delay
     this.getExtremeValues(hours);
 
     // Assign calculated hours to the rowData & summaryRows signals
@@ -138,6 +137,20 @@ export class HourlyDataService {
     }
   }
 
+  //  obliczWydajnosc(hour: Hour, previousHour: Hour, hourZero: Hour) {
+  //   const zasobSources = {
+  //     lekarz: hour.id === 0 ? hour.zasoby.lekarz : hour.id === 23 ? hourZero.zasoby.lekarz : previousHour.zasoby.lekarz,
+  //     pielegniarka: hour.id === 0 ? hour.zasoby.pielegniarka : hour.id === 23 ? hourZero.zasoby.pielegniarka : previousHour.zasoby.pielegniarka,
+  //     lozko: hour.id === 0 ? hour.zasoby.lozko : previousHour.zasoby.lozko,
+  //     lozkoObserwacja: hour.zasoby.lozkoObserwacja, // always from the current hour
+  //   };
+  
+  //   for (const zasob of ['lekarz', 'pielegniarka', 'lozko', 'lozkoObserwacja'] as const) {
+  //     hour.wydajnosc[zasob] = zasobSources[zasob] / CONSTANTS.sredniCzasNaPacjenta[zasob];
+  //   }
+  // }
+  
+
   obliczWaskaWydajnosc(hour: Hour) {
     hour.waskaWydajnosc = Math.min(...Object.values(hour.wydajnosc));
   }
@@ -160,6 +173,18 @@ export class HourlyDataService {
         hour.waskiZasob = 'Demand';
     }
   }
+
+  //  obliczWaskiZasob(hour: Hour) {
+  //   const zasobMap = {
+  //     [hour.wydajnosc.pielegniarka]: 'Pielęgniarki',
+  //     [hour.wydajnosc.lekarz]: 'Lekarze',
+  //     [hour.wydajnosc.lozko]: 'Łóżka',
+  //     [hour.wydajnosc.lozkoObserwacja]: 'Obs. Łóżka',
+  //   };
+  
+  //   hour.waskiZasob = zasobMap[hour.waskaWydajnosc] || 'Demand';
+  // }
+  
 
   obliczMozliwoscPokryciaZopatrzenia(hour: Hour) {
     hour.mozliwoscPokryciaZopatrzenia = hour.waskaWydajnosc <= hour.liczbaWizyt ? 'Niedobór wyd.' : '';
