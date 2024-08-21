@@ -1,7 +1,7 @@
 import moment from 'moment';
 import {getConnection} from '../config/database.js';
 import axios from "axios";
-import { response } from 'express';
+import { defaultValues, doctorData, nurseData } from './defaultValues.js';
 
 const connection = await getConnection();
 
@@ -20,10 +20,9 @@ export async function dataService(queryDate){
                 forecastNs.push(record.n);
             })
 
-
-            const forecast = forecastPatients(forecastDates, forecastNs, queryDate)
-            
-            return forecast;
+            const forecast = await forecastPatients(forecastDates, forecastNs, queryDate)
+            const res = await parseForecast(forecast, queryDate);
+            return res;
         }
         else{
             console.log("Query date is not in the future.");
@@ -31,6 +30,7 @@ export async function dataService(queryDate){
         }
     } catch (error) {
         console.log("An error occurs in the structure");
+        return null;
     }
 }
 
@@ -51,106 +51,73 @@ async function getPatientsData(){
     return patientData;
 }
 
-async function forecastPatients(forecastDates, forecastNs, queryDate){
+async function forecastPatients(forecastDates, forecastNs, queryDate) {
+    try {
+        const response = await axios.post(process.env.R_URL, {
+            train_set: {
+                Data: forecastDates,
+                n: forecastNs
+            },
+            future_dates: {
+                Data: [queryDate.format('YYYY-MM-DD')]
+            }
+        });
+        
+        const predictedN = response.data[0].n_pred;
 
-    const body = {
-        trainSet:{
-            Data: forecastDates,
-            n: forecastNs
-        },
-        future_dates: {
-            Data:[queryDate.format('YYYY-MM-DD')]
+        if (!predictedN) {
+            throw new Error(`Error occurred with the forecast data`);
         }
+
+        return predictedN;
+
+    } catch (error) {
+        console.error(error);
+        throw error;  
     }
-
-    console.log(body);
-
-    axios.post(process.env.R_URL, body)
-    .then(function(response) {
-        console.log(response.data);
-        return response;
-    })
-    .catch(function (error){
-        console.log(error);
-    })
 }
 
+async function parseForecast(forecast, queryDate) {
+    const patientDistribution = getPatientDistribution(forecast, queryDate);
 
-// {
-//     "daneGodzinowe": [
-//       {
-//         "hour": "0-1",
-//         "liczbaPacjentow": 10,
-//         "zasoby": {
-//           "liczbaLekarzy": 3,
-//           "liczbaPielegniarek": 5,
-//           "liczbaLozek": 50,
-//           "liczbaLozekObserwacyjnych": 50
-//         },
-//         "statystykaChorych": {
-//           "triage": 1,
-//           "resuscytacja": 0.01,
-//           "stanZagrozeniaZycia": 0.02,
-//           "pilnyPrzypadekOstry": 0.03,
-//           "pilnyPrzypadekNieostry": 0.4,
-//           "niepilny": 0.5,
-//           "obserwacja": 0.04
-//         },
-//         "czasZasobuNaPacjenta": [
-//           {
-//             "rodzajPacjenta": "Triage",
-//             "lekarz": 0,
-//             "pielegniarka": 15,
-//             "lozko": 0,
-//             "lozkoObserwacyjne": 0
-//           },
-//           {
-//             "rodzajPacjenta": "Resuscytacja",
-//             "lekarz": 0,
-//             "pielegniarka": 15,
-//             "lozko": 0,
-//             "lozkoObserwacyjne": 0
-//           },
-//           {
-//             "rodzajPacjenta": "Stan zagrożenia życia",
-//             "lekarz": 0,
-//             "pielegniarka": 15,
-//             "lozko": 0,
-//             "lozkoObserwacyjne": 0
-//           },
-//           {
-//             "rodzajPacjenta": "Pilny przypadek ostry",
-//             "lekarz": 0,
-//             "pielegniarka": 15,
-//             "lozko": 0,
-//             "lozkoObserwacyjne": 0
-//           },
-//           {
-//             "rodzajPacjenta": "Pilny przypadek nieostry",
-//             "lekarz": 0,
-//             "pielegniarka": 15,
-//             "lozko": 0,
-//             "lozkoObserwacyjne": 0
-//           },
-//           {
-//             "rodzajPacjenta": "Niepilny",
-//             "lekarz": 0,
-//             "pielegniarka": 15,
-//             "lozko": 0,
-//             "lozkoObserwacyjne": 0
-//           },
-//           {
-//             "rodzajPacjenta": "Obserwacja",
-//             "lekarz": 0,
-//             "pielegniarka": 15,
-//             "lozko": 0,
-//             "lozkoObserwacyjne": 0
-//           }
-//         ]
-//       }
-//     ],
-//     "kolejka": {
-//       "lekarz": 55,
-//       "pielegniarka": 22
-//     }
-//   }
+    const daneGodzinowe = Array.from({ length: 24 }, (_, i) => ({
+        hour: `${i}-${i + 1}`,
+        liczbaPacjentow: patientDistribution[i],
+        zasoby: getResources(i),
+        statystykaChorych: defaultValues.statystykaChorych,
+        czasZasobuNaPacjenta: defaultValues.czasZasobuNaPacjenta,
+    }));
+
+    console.log('Godzinówka:')
+    console.log(daneGodzinowe);
+
+    return {
+        daneGodzinowe,
+        kolejka: {
+            lekarz: 55,
+            pielegniarka: 22
+        }
+    };
+}
+
+function getPatientDistribution(forecast, queryDate) {
+    queryDate = queryDate.format('dddd').trim();   
+    const distributionArray = defaultValues.distribution[queryDate];
+    const distributionSum = distributionArray.reduce((acc, curr) => acc + curr, 0);
+    
+    return distributionArray.map(distributor => distributor / distributionSum * forecast);
+}
+
+function getResources(hourIndex) {
+    const getCount = (hourIndex, data) =>
+        hourIndex > data.rushHoursStart && hourIndex < data.rushHoursEnd
+            ? data.rushHourHeadCount
+            : data.normalHeadCount;
+
+    return {
+        liczbaLekarzy: getCount(hourIndex, doctorData),
+        liczbaPielegniarek: getCount(hourIndex, nurseData),
+        liczbaLozek: defaultValues.liczbaLozek,
+        liczbaLozekObserwacyjnych: defaultValues.liczbaLozekObserwacyjnych
+    };
+}
