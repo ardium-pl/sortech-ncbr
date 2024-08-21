@@ -29,7 +29,7 @@ export async function dataService(queryDate){
             return null; 
         }
     } catch (error) {
-        console.log("An error occurs in the structure");
+        console.log("An error occured in the data service");
         return null;
     }
 }
@@ -87,9 +87,6 @@ async function parseForecast(forecast, queryDate) {
         statystykaChorych: defaultValues.statystykaChorych,
         czasZasobuNaPacjenta: defaultValues.czasZasobuNaPacjenta,
     }));
-
-    console.log('Godzinówka:')
-    console.log(daneGodzinowe);
 
     return {
         daneGodzinowe,
