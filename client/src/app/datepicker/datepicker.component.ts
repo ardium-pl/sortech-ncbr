@@ -21,10 +21,22 @@ export class DatepickerComponent {
   onDateChange(event: MatDatepickerInputEvent<Date>) {
     const pickedDate = event.value;
 
-    // Update the currentDayOfWeek with the current day
     if (pickedDate) {
-      this.hourlyDataService.currentDayOfWeek.set(pickedDate.getDay());
-      this.hourlyDataService.applyHourCalculations(this.hourlyDataService.rowData());
+      const currentDate = new Date();
+
+      // console.log(`📆 Picked date: `, pickedDate.toISOString());
+      // console.log(`📆 Current date: `, currentDate.toISOString());
+      console.log(`⚙️ Fetching table data ...`);
+
+      if (pickedDate.setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) {
+        // Update the currentDayOfWeek with the current day
+        this.hourlyDataService.currentDayOfWeek.set(pickedDate.getDay());
+
+        // Fetch table data from a database for a chosen day
+        this.hourlyDataService.fetchRowData(pickedDate.toISOString());
+      } else {
+        console.log(`❌ Chosen a date from the future, fetching table data stopeed.`);
+      }
     }
   }
 }
