@@ -8,9 +8,11 @@ Rozszerzona dokumentacja serwera Express dla Systemu Obsługi SOR:
 2. Struktura projektu
 3. Konfiguracja
 4. Endpointy API
-* 4.1. SOR Router
-* 4.2. Personel Router
-* 4.3. Leki Router
+
+- 4.1. SOR Router
+- 4.2. Personel Router
+- 4.3. Leki Router
+
 5. Modele danych
 6. Usługi (Services)
 7. Middleware
@@ -37,7 +39,7 @@ projekt-sor/
 │
 ├── config/
 │   └── database.js
-│   
+│
 │
 ├── middleware/
 │   └── validation.js
@@ -72,7 +74,7 @@ Projekt używa MySQL jako bazy danych. Połączenie jest konfigurowane za pomoc�
 
 ```javascript
 export async function createTCPConnection() {
-    return mysql.createConnection(process.env.MYSQL_URL);
+  return mysql.createConnection(process.env.MYSQL_URL);
 }
 ```
 
@@ -93,12 +95,15 @@ Oczywiście, dostosujmy dokumentację do faktycznych endpointów w naszym kodzie
 ### 4.1. SOR Router (routes/sor.js)
 
 #### GET /api/stan-zasobow
+
 Endpoint ten zwraca stan zasobów dla określonego dnia.
 
 **Parametry zapytania:**
+
 - `date` (wymagane): Data w formacie YYYY-MM-DD, dla której mają zostać pobrane dane.
 
 **Przykładowa odpowiedź:**
+
 ```json
 [
   {
@@ -122,12 +127,15 @@ Endpoint ten zwraca stan zasobów dla określonego dnia.
 ```
 
 #### GET /api/pacjenci
+
 Endpoint ten zwraca listę pacjentów przyjętych w określonym dniu wraz z informacjami o ich typie.
 
 **Parametry zapytania:**
+
 - `date` (wymagane): Data w formacie YYYY-MM-DD, dla której mają zostać pobrani pacjenci.
 
 **Przykładowa odpowiedź:**
+
 ```json
 [
   {
@@ -155,9 +163,11 @@ Endpoint ten zwraca listę pacjentów przyjętych w określonym dniu wraz z info
 ```
 
 #### POST /api/stan-zasobow
+
 Endpoint ten służy do dodawania nowego stanu zasobów.
 
 **Przykładowe body żądania:**
+
 ```json
 {
   "ostatnia_aktualizacja": "2023-06-15 12:00:00",
@@ -169,6 +179,7 @@ Endpoint ten służy do dodawania nowego stanu zasobów.
 ```
 
 **Odpowiedź:**
+
 ```json
 {
   "message": "Stan zasobów dodany",
@@ -177,9 +188,11 @@ Endpoint ten służy do dodawania nowego stanu zasobów.
 ```
 
 #### POST /api/pacjenci
+
 Endpoint ten służy do dodawania nowego pacjenta.
 
 **Przykładowe body żądania:**
+
 ```json
 {
   "data_przyjecia": "2023-06-15 13:45:00",
@@ -188,6 +201,7 @@ Endpoint ten służy do dodawania nowego pacjenta.
 ```
 
 **Odpowiedź:**
+
 ```json
 {
   "message": "Pacjent dodany",
@@ -196,12 +210,15 @@ Endpoint ten służy do dodawania nowego pacjenta.
 ```
 
 #### GET /api/hourly-data
+
 Endpoint ten zwraca dane godzinowe o stanie zasobów dla wybranego dnia oraz dane z ostatniej godziny poprzedniego dnia.
 
 **Parametry zapytania:**
+
 - `date` (wymagane): Data w formacie YYYY-MM-DD, dla której mają zostać pobrane dane.
 
 **Przykładowa odpowiedź:**
+
 ```json
 {
   "currentDayData": [
@@ -211,7 +228,7 @@ Endpoint ten zwraca dane godzinowe o stanie zasobów dla wybranego dnia oraz dan
       "avg_ilosc_pielegniarek": 10,
       "avg_ilosc_lozek": 20,
       "avg_ilosc_lozek_obserwacji": 5
-    },
+    }
     // ... dane dla kolejnych godzin
   ],
   "prevDayLastHourData": {
@@ -226,9 +243,11 @@ Endpoint ten zwraca dane godzinowe o stanie zasobów dla wybranego dnia oraz dan
 ```
 
 #### POST /api/stan-kolejki
+
 Endpoint ten służy do dodawania lub aktualizowania stanu kolejki dla danego dnia.
 
 **Przykładowe body żądania:**
+
 ```json
 {
   "data": "2023-06-15",
@@ -238,6 +257,7 @@ Endpoint ten służy do dodawania lub aktualizowania stanu kolejki dla danego dn
 ```
 
 **Odpowiedź:**
+
 ```json
 {
   "message": "Stan kolejki dodany/zaktualizowany",
@@ -246,6 +266,7 @@ Endpoint ten służy do dodawania lub aktualizowania stanu kolejki dla danego dn
 ```
 
 Ta zaktualizowana dokumentacja odzwierciedla faktyczne endpointy zdefiniowane w kodzie `routes/sor.js`. Zawiera ona opisy wszystkich dostępnych endpointów, ich parametrów, przykładowych żądań i odpowiedzi.
+
 ## 5. Modele danych
 
 Aplikacja używa następujących tabel w bazie danych:
@@ -318,8 +339,8 @@ W głównym pliku `index.js` zdefiniowany jest middleware do obsługi błędów:
 
 ```javascript
 app.use((err, req, res, next) => {
-    logger.error(err.stack);
-    res.status(500).send('Coś poszło nie tak!');
+  logger.error(err.stack);
+  res.status(500).send('Coś poszło nie tak!');
 });
 ```
 
@@ -391,11 +412,13 @@ Poniżej przedstawiamy przykłady użycia głównych endpointów API za pomocą 
 ### 14.1. Pobieranie stanu zasobów
 
 #### cURL:
+
 ```bash
 curl -X GET "http://localhost:8080/api/stan-zasobow?date=2023-06-15"
 ```
 
 #### JavaScript (fetch):
+
 ```javascript
 fetch('http://localhost:8080/api/stan-zasobow?date=2023-06-15')
   .then(response => response.json())
@@ -406,11 +429,13 @@ fetch('http://localhost:8080/api/stan-zasobow?date=2023-06-15')
 ### 14.2. Dodawanie nowego pacjenta
 
 #### cURL:
+
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{"data_przyjecia": "2023-06-15 13:45:00", "typ": 1}' http://localhost:8080/api/pacjenci
 ```
 
 #### JavaScript (fetch):
+
 ```javascript
 fetch('http://localhost:8080/api/pacjenci', {
   method: 'POST',
@@ -418,23 +443,25 @@ fetch('http://localhost:8080/api/pacjenci', {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    data_przyjecia: "2023-06-15 13:45:00",
-    typ: 1
+    data_przyjecia: '2023-06-15 13:45:00',
+    typ: 1,
   }),
 })
-.then(response => response.json())
-.then(data => console.log(data))
-.catch((error) => console.error('Error:', error));
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
 ```
 
 ### 14.3. Pobieranie danych godzinowych
 
 #### cURL:
+
 ```bash
 curl -X GET "http://localhost:8080/api/hourly-data?date=2023-06-15"
 ```
 
 #### JavaScript (fetch):
+
 ```javascript
 fetch('http://localhost:8080/api/hourly-data?date=2023-06-15')
   .then(response => response.json())
