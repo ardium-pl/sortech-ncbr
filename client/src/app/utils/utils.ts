@@ -27,8 +27,6 @@ export function markBottleneckAndRoundFormatter({ data, value }: ICellRendererPa
   return value;
 }
 
-export type zasob = 'lekarz' | 'pielegniarka' | 'lozko' | 'lozkoObserwacja';
-
 export interface LQparams {
   arrivalRate: number;
   serviceRate: number;

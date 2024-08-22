@@ -22,21 +22,13 @@ export class DatepickerComponent {
     const pickedDate = event.value;
 
     if (pickedDate) {
-      const currentDate = new Date();
-
-      // console.log(`📆 Picked date: `, pickedDate.toISOString());
-      // console.log(`📆 Current date: `, currentDate.toISOString());
       console.log(`⚙️ Fetching table data ...`);
 
-      if (pickedDate.setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) {
-        // Update the currentDayOfWeek with the current day
-        this.hourlyDataService.currentDayOfWeek.set(pickedDate.getDay());
+      // Update the currentDayOfWeek
+      this.hourlyDataService.currentDayOfWeek.set(pickedDate.getDay());
 
-        // Fetch table data from a database for a chosen day
-        this.hourlyDataService.fetchRowData(pickedDate.toISOString());
-      } else {
-        console.log(`❌ Chosen a date from the future, fetching table data stopeed.`);
-      }
+      // Fetch table data from a database for a chosen day
+      this.hourlyDataService.fetchRowData(pickedDate.toISOString());
     }
   }
 }

@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import * as MoreRounding from 'more-rounding';
-import { catchError } from 'rxjs';
 import { CONSTANTS } from './constants';
 import { Hour, kolejka, daneGodzinowe } from './interfaces/hour';
+import { LekarzLubPielegniarka, Zasoby } from './interfaces/zasoby';
 import { SummaryBottom, SummaryTop } from './interfaces/summaries';
-import { Godzina, LQparams, zasob, SredniCzasNaPacjenta } from './utils/utils';
+import { Godzina, LQparams, SredniCzasNaPacjenta } from './utils/utils';
 import {
   defaultRowData,
   defaultSummaryRowBottom,
@@ -29,43 +29,86 @@ export class HourlyDataService {
   // }
 
   fetchRowData(date: string) {
-    const sub = this.http
-      .get<any>(apiUrl('/hourly-data'), { params: { date: date } })
-      .pipe(
-        catchError((err, caught) => {
-          console.error(err);
-          sub.unsubscribe();
-          return caught;
-        })
-      )
-      .subscribe(res => {
-        // construct & format rowData (=daneGodzinowe)
-        const mappedData = (res.currentDayData as any[]).map((v, i): daneGodzinowe => {
-          return {
-            id: i,
-            godzina: `${i}-${i + 1}` as keyof Godzina,
-            liczbaWizyt: res.patientsPerHourData[i].liczba_pacjentow,
-            zasoby: {
-              pielegniarka: v.ilosc_pielegniarek,
-              lekarz: v.ilosc_lekarzy,
-              lozko: v.ilosc_lozek,
-              lozkoObserwacja: v.ilosc_lozek_obserwacji,
-            },
-          };
-        });
+    const sub = this.http.get<any>(apiUrl('/hourly-data'), { params: { date: date } }).subscribe({
+      next: res => {
+        console.log('✅ Response received sucessfully, response body: ', res);
+        try {
+          // construct & format rowData (=daneGodzinowe)
+          const mappedData = (res.daneGodzinowe as any[]).map((v, i): daneGodzinowe => {
+            return {
+              id: i,
+              godzina: v.hour,
+              liczbaWizyt: v.liczbaPacjentow,
+              zasoby: {
+                pielegniarka: v.zasoby.liczbaPielegniarek,
+                lekarz: v.zasoby.liczbaLekarzy,
+                lozko: v.zasoby.liczbaLozek,
+                lozkoObserwacja: v.zasoby.liczbaLozekObserwacyjnych,
+              },
+            };
+          });
 
-        // Log response for inspection
-        console.log('✉️ Response body: \n', res);
+          // set wczorajszaKolejka
+          this.wczorajszaKolejka.set({
+            lekarz: res.kolejka.lekarz,
+            pielegniarka: res.kolejka.pielegniarka,
+          });
 
-        // set wczorajszaKolejka
-        this.wczorajszaKolejka.set({
-          lekarz: res.prevDayLastHourData.kolejka_lekarz,
-          pielegniarka: res.prevDayLastHourData.kolejka_pielegniarka,
-        });
+          // set rowData
+          this.applyHourCalculations(mappedData);
+          console.log('✅ Successfully initialized table data!');
+        } catch (err) {
+          console.log('❌ An error occured during initializing table data from the response body, error message: ', err, '❌');
+        }
+      },
+      error: err => {
+        console.log('❌ Error performing the http request, error message: ', err, '❌');
+        sub.unsubscribe();
+        console.log('⚙️ Subscription terminanated by unsubscribing.');
+      },
+    });
+  }
 
-        // set rowData
-        this.applyHourCalculations(mappedData);
-      });
+  // This function will be removed
+  fetchRowDataOld(date: string) {
+    const sub = this.http.get<any>(apiUrl('/hourly-data'), { params: { date: date } }).subscribe({
+      next: res => {
+        console.log('✅ Response received sucessfully, resonse body: ', res);
+        try {
+          // construct & format rowData (=daneGodzinowe)
+          const mappedData = (res.currentDayData as any[]).map((v, i): daneGodzinowe => {
+            return {
+              id: i,
+              godzina: `${i}-${i + 1}` as keyof Godzina,
+              liczbaWizyt: res.patientsPerHourData[i].liczba_pacjentow,
+              zasoby: {
+                pielegniarka: v.ilosc_pielegniarek,
+                lekarz: v.ilosc_lekarzy,
+                lozko: v.ilosc_lozek,
+                lozkoObserwacja: v.ilosc_lozek_obserwacji,
+              },
+            };
+          });
+
+          // set wczorajszaKolejka
+          this.wczorajszaKolejka.set({
+            lekarz: res.prevDayLastHourData.kolejka_lekarz,
+            pielegniarka: res.prevDayLastHourData.kolejka_pielegniarka,
+          });
+
+          // set rowData
+          this.applyHourCalculations(mappedData);
+          console.log('✅ Successfully initialized table data!');
+        } catch (err) {
+          console.log('❌ An error occured during initializing table data from the response body, error message: ', err, '❌');
+        }
+      },
+      error: err => {
+        console.log('❌ Error performing the http request, error message: ', err, '❌');
+        sub.unsubscribe();
+        console.log('⚙️ Subscription terminanated by unsubscribing.');
+      },
+    });
   }
 
   applyHourCalculations(daneGodzinowe: daneGodzinowe[], changedRow?: daneGodzinowe) {
@@ -141,12 +184,13 @@ export class HourlyDataService {
     this.applySummaryCalcuationsForPinnedRows(hours);
   }
 
+  // Jeśli oblicznia odnośnie przyszłej oczekiwanej liczby pacjentów wykonywane będą na backendzie to poniższą funkcje można usunąć
   obliczOczekiwaneWizyty(hour: Hour) {
     hour.liczbaWizyt = 7 * CONSTANTS.pacjentDzien * CONSTANTS.godzina[hour.godzina] * CONSTANTS.dzien[this.currentDayOfWeek()];
   }
 
   obliczWydajnosc(hour: Hour, previousHour: Hour, hourZero: Hour) {
-    for (const zasob of ['lekarz', 'pielegniarka', 'lozko', 'lozkoObserwacja'] as const) {
+    for (const zasob of Object.values(Zasoby)) {
       let liczbaZasobow: number;
       if (hour.id === 0) {
         liczbaZasobow = hour.zasoby[zasob];
@@ -189,7 +233,7 @@ export class HourlyDataService {
   obliczObsluga(hour: Hour, previousHour: Hour) {
     const kolejka = hour.id === 0 ? this.wczorajszaKolejka() : previousHour.kolejka;
 
-    for (const zasob of ['lekarz', 'pielegniarka'] as const) {
+    for (const zasob of Object.values(LekarzLubPielegniarka)) {
       hour.obsluga[zasob] = Math.min(hour.wydajnosc[zasob], hour.liczbaWizyt + kolejka[zasob]);
     }
   }
@@ -197,19 +241,19 @@ export class HourlyDataService {
   obliczKolejka(hour: Hour, previousHour: Hour) {
     const kolejka = hour.id === 0 ? this.wczorajszaKolejka() : previousHour.kolejka;
 
-    for (const zasob of ['lekarz', 'pielegniarka'] as const) {
+    for (const zasob of Object.values(LekarzLubPielegniarka)) {
       hour.kolejka[zasob] = kolejka[zasob] + hour.liczbaWizyt - hour.obsluga[zasob];
     }
   }
 
   obliczOczekiwanie(hour: Hour, nextHour: Hour) {
-    for (const zasob of ['lekarz', 'pielegniarka'] as const) {
+    for (const zasob of Object.values(LekarzLubPielegniarka)) {
       hour.oczekiwanie[zasob] = hour.kolejka[zasob] / nextHour.wydajnosc[zasob];
     }
   }
 
   obliczLq(hour: Hour) {
-    for (const zasob of ['lekarz', 'pielegniarka'] as const) {
+    for (const zasob of Object.values(LekarzLubPielegniarka)) {
       if (hour.oczekiwanie[zasob] > 0) {
         hour.lq[zasob] = 0;
       } else {
@@ -228,7 +272,7 @@ export class HourlyDataService {
   }
 
   obliczWq(hour: Hour) {
-    for (const zasob of ['lekarz', 'pielegniarka'] as const) {
+    for (const zasob of Object.values(LekarzLubPielegniarka)) {
       if (typeof hour.lq[zasob] === 'number') {
         hour.wq[zasob] = (hour.lq[zasob] as number) / hour.liczbaWizyt;
       } else {
@@ -318,7 +362,7 @@ export class HourlyDataService {
 
     summaryRowTop.liczbaWizyt = hours.reduce((acc, hour) => acc + hour.liczbaWizyt, 0);
 
-    for (const zasob of ['lekarz', 'pielegniarka', 'lozko', 'lozkoObserwacja'] as const) {
+    for (const zasob of Object.values(Zasoby)) {
       summaryRowTop.wydajnosc[zasob] = hours.reduce((acc, hour) => acc + hour.wydajnosc[zasob], 0);
 
       summaryRowBottom.wydajnosc[zasob] = summaryRowTop.liczbaWizyt / summaryRowTop.wydajnosc[zasob];
