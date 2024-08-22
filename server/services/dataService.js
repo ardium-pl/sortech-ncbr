@@ -1,6 +1,6 @@
+import axios from 'axios';
 import moment from 'moment';
 import { getConnection } from '../config/database.js';
-import axios from 'axios';
 import { defaultValues, doctorData, nurseData } from './defaultValues.js';
 
 const connection = await getConnection();

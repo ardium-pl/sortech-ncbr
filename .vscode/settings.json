@@ -14,5 +14,39 @@
       "username": "root",
       "password": "GuCzEHhsOsJRneLwndCtvvOcVVQkoffk"
     }
+  ],
+  "restoreTerminals.terminals": [
+    {
+      "splitTerminals": [
+        {
+          "name": "ng",
+          "commands": ["cd client"]
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "ng serve",
+          "commands": ["cd client", "ng serve"]
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "server",
+          "commands": ["cd server"]
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "nodemon",
+          "commands": ["npm run server"]
+        }
+      ]
+    }
   ]
 }
