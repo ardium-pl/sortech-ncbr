@@ -26,9 +26,14 @@ export class DatepickerComponent {
 
       // Update the currentDayOfWeek
       this.hourlyDataService.currentDayOfWeek.set(pickedDate.getDay());
+      
+      // Manually adjust the timezone to GMT +2.00 and build the ISO string
+      const timezoneOffset = 2 * 60; // GMT +2.00 in minutes
+      const adjustedISODate = new Date(pickedDate.getTime() - pickedDate.getTimezoneOffset() * 60000 + timezoneOffset * 60000)
+        .toISOString()
+        .replace('Z', '+02:00');
 
-      // Fetch table data from a database for a chosen day
-      this.hourlyDataService.fetchRowData(pickedDate.toISOString());
+      this.hourlyDataService.fetchRowData(adjustedISODate);
     }
   }
 }
