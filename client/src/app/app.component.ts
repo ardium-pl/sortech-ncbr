@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, inject } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterOutlet } from '@angular/router';
 import { DatepickerComponent } from './components/datepicker/datepicker.component';
 import { HourlyTableComponent } from './hourly-table/hourly-table.component';
 import { LengthOfStayComponent } from './length-of-stay/length-of-stay.component';
 import { StaticTableComponent } from './static-table/static-table.component';
+import { apiUrl } from './utils/apiUrl';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +19,11 @@ export class AppComponent {
   readonly selectedTabIndex = 1;
   title = 'SOR';
 
-  onChange(event: any) {
-    // console.log(event);
+  private _http = (inject(HttpClient))
+
+  onChange(date: Date) {
+    this._http.get(apiUrl('/dane'), { params: { date: date.toISOString() } }).subscribe(v => {
+      console.log(v);
+    })
   }
 }

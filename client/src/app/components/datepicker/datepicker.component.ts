@@ -16,7 +16,7 @@ import { HourlyDataService } from '../../hourly-data.service';
 })
 export class DatepickerComponent {
   readonly hourlyDataService = inject(HourlyDataService);
-  readonly value = model<Date>();
+  readonly value = model<Date>(new Date());
 
   onDateChange(event: MatDatepickerInputEvent<Date>) {
     const pickedDate = event.value;

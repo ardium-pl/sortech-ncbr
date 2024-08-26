@@ -1,5 +1,5 @@
-import { getConnection } from '../config/database.js';
 import moment from 'moment';
+import { getConnection } from '../config/database.js';
 
 const connection = await getConnection();
 

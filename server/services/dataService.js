@@ -24,8 +24,9 @@ export async function dataService(queryDate) {
       const res = await parseForecast(forecast, queryDate);
       return res;
     } else {
-      console.log('Query date is not in the future.');
-      return null;
+      
+
+      return daneZasobu;
     }
   } catch (error) {
     console.log('An error occured in the data service');

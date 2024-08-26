@@ -1,14 +1,14 @@
 import express from 'express';
-import {
-  getStanZasobow,
-  getPacjenci,
-  insertStanZasobow,
-  insertPacjent,
-  getHourlyData,
-  addStanKolejki,
-} from '../services/sor.js';
-import { dataService } from '../services/dataService.js';
 import moment from 'moment';
+import { dataService } from '../services/dataService.js';
+import {
+  addStanKolejki,
+  getHourlyData,
+  getPacjenci,
+  getStanZasobow,
+  insertPacjent,
+  insertStanZasobow,
+} from '../services/sor.js';
 
 export const sorRouter = express.Router();
 
