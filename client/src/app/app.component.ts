@@ -14,7 +14,7 @@ import { StaticTableComponent } from './static-table/static-table.component';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  readonly selectedTabIndex = 1;
+  readonly selectedTabIndex = 0;
   title = 'SOR';
 
   onChange(event: any) {

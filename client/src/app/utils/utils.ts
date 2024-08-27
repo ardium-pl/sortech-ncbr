@@ -11,22 +11,6 @@ export function numberRoundingFormatter({ value }: ICellRendererParams) {
   }
 }
 
-export function markBottleneckAndRoundFormatter({ data, value }: ICellRendererParams) {
-  if (data['id'] === 11 && value === 777) {
-    return '***';
-  }
-
-  if (value === null) {
-    return '';
-  }
-
-  if (!isNaN(Number(value))) {
-    return `${MoreRounding.roundToPrecision(value, DECIMAL_PLACES)}`;
-  }
-
-  return value;
-}
-
 export interface LQparams {
   arrivalRate: number;
   serviceRate: number;

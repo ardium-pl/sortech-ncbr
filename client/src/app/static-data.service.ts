@@ -1,5 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { StaticRow } from './interfaces/static-row';
+import { WaskieGardlo, ZasobyITriage } from './interfaces/zasoby';
 
 @Injectable({
   providedIn: 'root',
@@ -23,8 +24,7 @@ export class StaticDataService {
     let liczbaZasobow = rows[8];
     let meanTimePerPatient = rows[9];
     let wydajnoscZasobu = rows[10];
-    let waskieGardo = rows[11];
-    let zajetosc = rows[12];
+    let zajetosc = rows[11];
 
     const fields = [
       'triage',
@@ -52,7 +52,7 @@ export class StaticDataService {
     wydajnoscZasobu.lozkoOczekiwanie = liczbaZasobow.lozkoOczekiwanie! / meanTimePerPatient.lozkoOczekiwanie!;
     wydajnoscZasobu.wydajnoscPrzyjmowania = rows[7].wydajnoscPrzyjmowania! / rows[7].procPacjentow!;
 
-    // Wskaż wąskie gardło
+    // Oznacz wąskie gardło(a)
     const minWydajnosci = Math.min(
       wydajnoscZasobu.triage!,
       wydajnoscZasobu.lozko!,
@@ -63,11 +63,17 @@ export class StaticDataService {
 
     const przyjeciePacjentow = rows[7].procPacjentow! * minWydajnosci;
 
-    fields.slice(0, 5).forEach(field => {
-      waskieGardo[field] = wydajnoscZasobu[field] === minWydajnosci ? 777 : null;
+    this.waskieGardlo.update(waskieGardo => {
+      for (let zasob of Object.values(ZasobyITriage)) {
+        waskieGardo[zasob] = wydajnoscZasobu[zasob] === minWydajnosci;
+      }
+      waskieGardo['lozkoOczekiwanie'] = wydajnoscZasobu['lozkoOczekiwanie']! < minWydajnosci;
+      waskieGardo['wydajnoscPrzyjmowania'] = rows[7]['wydajnoscPrzyjmowania']! < przyjeciePacjentow;
+
+      return waskieGardo;
     });
-    waskieGardo.lozkoOczekiwanie = wydajnoscZasobu.lozkoOczekiwanie < minWydajnosci ? 777 : null;
-    waskieGardo.wydajnoscPrzyjmowania = rows[7].wydajnoscPrzyjmowania! < przyjeciePacjentow ? 777 : null;
+
+    console.log(JSON.stringify(this.waskieGardlo(), null, 4))
 
     // Oblicz zajętość przy danej wydajości
     fields.forEach(field => {
@@ -77,11 +83,20 @@ export class StaticDataService {
     // Assign back updated rows
     rows[9] = meanTimePerPatient;
     rows[10] = wydajnoscZasobu;
-    rows[11] = waskieGardo;
-    rows[12] = zajetosc;
+    rows[11] = zajetosc;
 
     this.rowData.set(rows);
   }
+
+  readonly waskieGardlo = signal<WaskieGardlo>({
+    triage: false,
+    lozko: false,
+    lekarz: false,
+    pielegniarka: false,
+    lozkoObserwacja: false,
+    lozkoOczekiwanie: false,
+    wydajnoscPrzyjmowania: false,
+  });
 
   readonly rowData = signal<StaticRow[]>([
     {
@@ -216,20 +231,20 @@ export class StaticDataService {
       lozkoOczekiwanie: 12.5,
       wydajnoscPrzyjmowania: null,
     },
+    // {
+    //   id: 11,
+    //   typPacjenta: 'Wąskie gardło',
+    //   procPacjentow: null,
+    //   triage: null,
+    //   lozko: null,
+    //   lekarz: null,
+    //   pielegniarka: null,
+    //   lozkoObserwacja: null,
+    //   lozkoOczekiwanie: null,
+    //   wydajnoscPrzyjmowania: null,
+    // },
     {
       id: 11,
-      typPacjenta: 'Wąskie gardło',
-      procPacjentow: null,
-      triage: null,
-      lozko: null,
-      lekarz: null,
-      pielegniarka: null,
-      lozkoObserwacja: null,
-      lozkoOczekiwanie: null,
-      wydajnoscPrzyjmowania: null,
-    },
-    {
-      id: 12,
       typPacjenta: 'Zajętość przy danej wydajności',
       procPacjentow: null,
       triage: 27,

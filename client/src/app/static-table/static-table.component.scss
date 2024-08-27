@@ -21,15 +21,18 @@ ag-grid-angular {
   --ag-font-size: var(--font-size);
 
   // Cell colors
-  --ag-background-color: var(--white);
-  --ag-odd-row-background-color: var(--white);
+  --ag-background-color: white;
+  --ag-odd-row-background-color: white;
 
   // Borders
-  --ag-border-color: black;
-  --ag-cell-horizontal-border: solid var(--light-grey-new);
+  --ag-border-color: var(--dark-blue);
+  --ag-row-border-width: 0px;
 
   // Cell & header padding
-  --ag-cell-horizontal-padding: 10px;
+  --ag-cell-horizontal-padding: var(--header-horizontal-padding);
+
+  // Resize handles
+  --ag-header-column-resize-handle-display: none;
 }
 
 ::ng-deep {
@@ -37,99 +40,73 @@ ag-grid-angular {
     // Headers
     .grid-header {
       color: white;
+      background-color: var(--powder-blue);
+      border-top: var(--standard-border);
+      border-color: var(--dark-blue) !important;
 
       &.ograniczenia-przyjec,
       &.wydajnosc {
         border-right: var(--standard-border);
-        border-color: var(--border-black);
-      }
-
-      &.triage,
-      &.oczekiwanie-lozko {
-        border-left: var(--standard-border);
-        border-color: var(--border-black);
       }
     }
 
     .grid-header-outer {
-      border-top: var(--standard-border);
-      border-left: var(--standard-border);
-      border-color: var(--border-black);
       font-size: var(--outer-header-font-size);
-      background-color: var(--darkest-blue);
 
-      &.typ-pacjenta,
-      &.proc-pacjentow {
-        border-bottom: var(--standard-border);
-        border-color: var(--border-black);
+      &:not(.proc-pacjentow) {
+        border-left: var(--standard-border);
       }
     }
 
-    .grid-header-mid {
-      font-size: var(--mid-header-font-size);
-      background-color: var(--dark-blue);
-      color: var(--light-grey-new);
-    }
-
     .grid-header-inner {
-      border-bottom: var(--standard-border);
-      border-color: var(--border-black);
       font-size: var(--inner-header-font-size);
-      color: var(--light-grey-new);
-      background-color: var(--mid-blue);
+
+      &.triage,
+      &.oczekiwanie-lozko {
+        border-left: var(--standard-border);
+      }
     }
 
     // Cells
     .cell {
+      color: var(--font-color);
       text-align: center;
+      border-bottom: var(--standard-border);
+      border-bottom-color: #eee;
 
-      &:not(.typ-pacjenta) {
-        color: var(--light-grey-new);
-      }
 
       &.typ-pacjenta {
         text-align: left;
+        color: black;
+      }
+
+      // &.typ-pacjenta,
+      &.oczekiwanie-lozko,
+      &.triage {
+        border-left: var(--standard-border);
+        border-left-color: var(--dark-blue);
       }
 
       &.triage,
       &.lekarz,
       &.obserwacja,
       &.wydajnosc {
-        background-color: var(--light-blue);
+        background-color: var(--white);
       }
 
       &.part-of-table {
-        &.oczekiwanie-lozko,
-        &.triage {
-          border-left: var(--standard-border);
-          border-left-color: var(--border-blue);
-        }
       }
 
       &.summary-row {
-        &.typ-pacjenta,
-        &.oczekiwanie-lozko,
-        &.triage {
-          border-left: var(--standard-border);
-          border-left-color: var(--border-blue);
-        }
-
-        &.wydajnosc {
-          border-right: var(--standard-border);
-          border-right-color: var(--border-blue);
-        }
-
         &.bottom,
-        &.top,
-        &.waskie-gardlo {
-          color: black;
-          font-weight: bold;
+        &.top {
+          font-weight: 600;
           font-size: var(--summary-row-font-size-static);
         }
 
         &.top {
           border-top: var(--standard-border);
-          border-top-color: var(--border-blue);
+          border-top-color: var(--dark-blue);
         }
 
         &.bottom {
@@ -137,13 +114,23 @@ ag-grid-angular {
           border-bottom-color: var(--dark-blue);
         }
 
-        &.min-wydajnosci {
+        &.waskie-gardlo {
           color: var(--flashy-yellow);
           background-color: var(--flashy-red);
-          font-size: 30px;
-          border-color: var(--light-grey-new);
+          font-weight: 600;
+
+          &:not(.bottom) {
+            border-bottom: var(--standard-border);
+            border-bottom-color: var(--flashy-red);
+          }
         }
       }
+    }
+
+    // Outer grid border
+    .ag-root-wrapper {
+      border: var(--standard-border);
+      border-color: var(--dark-blue);
     }
   }
 }

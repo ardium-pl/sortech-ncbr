@@ -3,8 +3,9 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { CellValueChangedEvent, ColDef, ColGroupDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { StaticRow } from '../interfaces/static-row';
 import { StaticDataService } from '../static-data.service';
-import { markBottleneckAndRoundFormatter } from '../utils/utils';
-import { staticTableColDefs } from './col-defs-static';
+import { numberRoundingFormatter } from '../utils/utils';
+import { columnDefs } from './col-defs-static';
+
 
 @Component({
   selector: 'app-static-table',
@@ -16,8 +17,8 @@ import { staticTableColDefs } from './col-defs-static';
 export class StaticTableComponent {
   readonly staticDataService = inject(StaticDataService);
 
-  readonly ROW_HEIGHT = undefined;
-  readonly HEADER_HEIGHT = 60;
+  readonly ROW_HEIGHT = 40;
+  readonly HEADER_HEIGHT = 55;
   readonly GROUP_HEADER_HEIGHT = 55;
 
   readonly defaultColDef: ColDef = {
@@ -25,13 +26,13 @@ export class StaticTableComponent {
     cellDataType: 'number',
     sortable: false,
     resizable: true,
-    minWidth: 100,
+    minWidth: 55,
     flex: 1,
-    cellRenderer: markBottleneckAndRoundFormatter,
+    cellRenderer: numberRoundingFormatter,
     editable: ({ data }) => data['id'] < 9,
   };
 
-  readonly columnDefs: (ColDef | ColGroupDef)[] = staticTableColDefs;
+  readonly columnDefs = columnDefs(this.staticDataService.waskieGardlo)
   readonly rowData = this.staticDataService.rowData;
 
   onCellValueChanged(event: CellValueChangedEvent) {
@@ -48,5 +49,6 @@ export class StaticTableComponent {
 
     // Apply calculations
     this.staticDataService.applyRowCalculations(this.rowData(), this.rowData()[1]);
+    columnDefs(this.staticDataService.waskieGardlo);
   };
 }

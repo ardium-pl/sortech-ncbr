@@ -64,31 +64,39 @@ body {
 
   // Blue color palette
   --darkest-blue: rgb(6, 71, 131);
-  --dark-blue: rgb(26, 91, 153);
+  --dark-blue: rgb(6, 71, 131);
+  --powder-blue: rgb(47, 117, 181);
   --mid-blue: rgb(47, 117, 181);
   --light-blue: rgb(217, 225, 242);
 
   // Attention drawing colors
-  --flashy-yellow: rgb(228, 245, 0);
-  --flashy-red: rgb(255, 8, 8);
+  --flashy-yellow: yellow;
+  --flashy-red: red;
 
   // Fonts
+  --font-color: rgba(0, 0, 0, 0.8);
+
   --font-size: 16px;
   --bold-column-font-size: 19px;
 
   --summary-row-font-size-hourly: 16px;
-  --summary-row-font-size-static: 19px;
+  --summary-row-font-size-static: 17px;
 
-  --outer-header-font-size: 19px;
+  --outer-header-font-size: 16px;
   --mid-header-font-size: 16px;
   --inner-header-font-size: 16px;
 
-  --font-family: calibri;
+  --font-family: "Times New Roman", Times, serif;
 
   // Borders
-  --standard-border: solid 4px;
+  --standard-border: 1px solid;
   --border-black: black;
   --border-blue: var(--darkest-blue);
+
+  // Headers
+  --default-header-width: 55px;
+  --default-header-height: 55px;
+  --header-horizontal-padding: 8px;
 }
 
 // Centering grid headers text
