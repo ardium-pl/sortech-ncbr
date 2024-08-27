@@ -2,6 +2,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { getConnection } from '../config/database.js';
 import { defaultValues, doctorData, nurseData } from './defaultValues.js';
+import { getStanZasobow } from './sor.js';
 
 const connection = await getConnection();
 
@@ -23,32 +24,126 @@ export async function dataService(queryDate) {
       const forecast = await forecastPatients(forecastDates, forecastNs, queryDate);
       const res = await parseForecast(forecast, queryDate);
       return res;
-    } else {
-      
-
-      return daneZasobu;
     }
+    const patientsForDay = (await getPatientsByDay(queryDate)).map(v => ({
+      id: v.id,
+      typ: v.typ,
+      data: moment(v.data_przyjecia),
+    }));
+    const patientTypes = await getPatientTypes();
+    const resourceAmounts = (await getStanZasobow(queryDate)).map(v => ({
+      ...v,
+      ostatnia_aktualizacja: moment(v.ostatnia_aktualizacja),
+    }));
+    const queueState = await getQueueState(queryDate);
+
+    const patientStats = calculatePatientStates(patientsForDay, patientTypes);
+    const hourlyData = splitPatientsIntoHours(patientsForDay, resourceAmounts);
+    
+    return { czasZasobuNaPacjenta: patientTypes, statystykaChorych: patientStats, daneGodzinowe: hourlyData, kolejka: queueState };
   } catch (error) {
-    console.log('An error occured in the data service');
+    console.log('An error occured in the data service', error);
     return null;
   }
 }
 
+function calculatePatientStates(patientsForDay, patientTypes) {
+  const patiendStats = patientsForDay.reduce(
+    (acc, v) => {
+      const typeString = patientTypes[v.typ - 1].rodzajPacjenta;
+      acc[typeString]++;
+      return acc;
+    },
+    patientTypes.reduce((acc, v) => {
+      acc[v.rodzajPacjenta] = 0;
+      return acc;
+    }, {})
+  );
+  for (const type in patiendStats) {
+    patiendStats[type] /= patientsForDay.length;
+  }
+  return patiendStats;
+}
+function splitPatientsIntoHours(patientsForDay, resourceAmounts) {
+  const hourlyData = patientsForDay.reduce(
+    (acc, v, i) => {
+      acc[v.data.hour()].liczbaPacjentow++;
+      return acc;
+    },
+    Array(24)
+      .fill({})
+      .map((_, i) => ({ godzina: `${i}-${i + 1}`, liczbaPacjentow: 0, zasoby: null }))
+  );
+  return resourceAmounts.reduce((acc, v) => {
+    acc[v.ostatnia_aktualizacja.hour()].zasoby = {
+      liczbaLekarzy: v.ilosc_lekarzy,
+      liczbaPielegniarek: v.ilosc_pielegniarek,
+      liczbaLozek: v.ilosc_lozek,
+      liczbaLozekObserwacyjnych: v.ilosc_lozek_obserwacji,
+    };
+    return acc;
+  }, hourlyData);
+}
+
+async function getPatientsByDay(momentDate) {
+  const startOfDay = momentDate.startOf('day').format('YYYY-MM-DD HH:mm:ss');
+  const endOfDay = momentDate.endOf('day').format('YYYY-MM-DD HH:mm:ss');
+
+  const query = `
+    SELECT
+      id,
+      data_przyjecia,
+      typ
+    FROM
+      pacjenci
+    WHERE data_przyjecia BETWEEN ? AND ?;
+  `;
+
+  return (await connection.query(query, [startOfDay, endOfDay]))[0];
+}
+async function getQueueState(momentDate) {
+  const startOfDay = momentDate.startOf('day').format('YYYY-MM-DD HH:mm:ss');
+
+  const query = `
+    SELECT
+      minuty_lekarz as lekarz,
+      minuty_pielegniarka as pielegniarka
+    FROM
+      stan_kolejki
+    WHERE data = ?
+    LIMIT 1;
+  `;
+
+  return (await connection.query(query, [startOfDay]))[0][0] || null;
+}
+async function getPatientTypes() {
+  return (
+    await connection.query(
+      `SELECT
+        nazwa as rodzajPacjenta,
+        czas_lekarza as lekarz,
+        czas_pielegniarki as pielegniarka,
+        czas_lozka as lozko,
+        czas_lozka_obserwacji as lozkoObserwacyjne
+      FROM typy_pacjenta`
+    )
+  )[0];
+}
+
 async function getPatientsData() {
   const query = `
-        SELECT 
-            DATE(data_przyjecia) AS Data,
-            COUNT(*) AS n
-        FROM 
-            pacjenci
-        GROUP BY 
-            DATE(data_przyjecia)
-        ORDER BY 
-            Data ASC;
+    SELECT 
+      DATE(data_przyjecia) AS Data,
+      COUNT(*) AS n
+    FROM 
+      pacjenci
+    GROUP BY 
+      DATE(data_przyjecia)
+    ORDER BY 
+      Data ASC;
     `;
 
-  const patientData = await connection.query(query);
-  return patientData;
+  return await connection.query(query);
 }
 
 async function forecastPatients(forecastDates, forecastNs, queryDate) {
