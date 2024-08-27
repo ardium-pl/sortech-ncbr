@@ -35,12 +35,17 @@ export async function dataService(queryDate) {
       ...v,
       ostatnia_aktualizacja: moment(v.ostatnia_aktualizacja),
     }));
-    const queueState = await getQueueState(queryDate);
+    const kolejka = await getQueueState(queryDate);
 
-    const patientStats = calculatePatientStates(patientsForDay, patientTypes);
-    const hourlyData = splitPatientsIntoHours(patientsForDay, resourceAmounts);
-    
-    return { czasZasobuNaPacjenta: patientTypes, statystykaChorych: patientStats, daneGodzinowe: hourlyData, kolejka: queueState };
+    const statystykaChorych = calculatePatientStates(patientsForDay, patientTypes);
+    const daneGodzinowe = splitPatientsIntoHours(patientsForDay, resourceAmounts);
+
+    return {
+      daneGodzinowe,
+      czasZasobuNaPacjenta: patientTypes,
+      statystykaChorych,
+      kolejka,
+    };
   } catch (error) {
     console.log('An error occured in the data service', error);
     return null;
@@ -178,12 +183,12 @@ async function parseForecast(forecast, queryDate) {
     hour: `${i}-${i + 1}`,
     liczbaPacjentow: patientDistribution[i],
     zasoby: getResources(i),
-    statystykaChorych: defaultValues.statystykaChorych,
-    czasZasobuNaPacjenta: defaultValues.czasZasobuNaPacjenta,
   }));
 
   return {
     daneGodzinowe,
+    czasZasobuNaPacjenta: defaultValues.czasZasobuNaPacjenta,
+    statystykaChorych: defaultValues.statystykaChorych,
     kolejka: {
       lekarz: 55,
       pielegniarka: 22,
