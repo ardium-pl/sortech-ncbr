@@ -14,108 +14,95 @@ ag-grid-angular {
   margin-top: var(--grid-ofset);
 }
 
-// Customizing Ag Grid theme using predefined variables
-.ag-theme-alpine {
-  // Fonts
-  --ag-font-family: var(--font-family);
-  --ag-font-size: var(--font-size);
-
-  // Cell colors
-  --ag-background-color: var(--light-blue);
-  --ag-odd-row-background-color: var(--white);
-
-  // Borders
-  --ag-border-color: black;
-  --ag-cell-horizontal-border: solid var(--light-grey-new);
-
-  // Cell & header padding
-  --ag-cell-horizontal-padding: 10px;
-}
-
 ::ng-deep {
-  app-length-of-stay {
-    // Headers
-    .grid-header {
-      background-color: var(--dark-blue);
-      color: white;
-    }
-
-    .grid-header-outer {
-      border-top: var(--standard-border);
-      border-left: var(--standard-border);
-      border-color: var(--border-black);
-      font-size: var(--outer-header-font-size);
-
-      &.godzina,
-      &.oczekiwane-wizyty,
-      &.opoznienie-ogolem {
-        border-bottom: var(--standard-border);
-        border-color: var(--border-black);
-      }
-
-      &.opoznienie-ogolem {
-        border-right: var(--standard-border);
-        border-color: var(--border-black);
-      }
-    }
-
-    .grid-header-mid {
-      font-size: var(--mid-header-font-size);
-
-      &.liczba,
-      &.wydajnosc {
-        border-bottom: var(--standard-border);
-        border-color: var(--border-black);
-      }
-
-      &.pielegniarka,
-      &.liczba {
-        border-left: var(--standard-border);
-        border-color: var(--border-black);
-      }
-    }
-
-    .grid-header-inner {
-      border-bottom: var(--standard-border);
-      border-color: var(--border-black);
-      font-size: var(--inner-header-font-size);
-
-      &.pielegniarka {
-        &.lq,
-        &.obsluga {
-          border-left: var(--standard-border);
-          border-color: var(--border-black);
-        }
-      }
-    }
-
-    // Cells
-    .cell {
-      text-align: center;
-      color: var(--light-grey-new);
-
-      &.godzina,
-      &.liczba,
-      &.kolejka,
-      &.opoznienie-ogolem {
-        font-size: var(--bold-column-font-size);
-        font-weight: bold;
-        color: black;
-      }
-
-      &.pielegniarka.lq,
-      &.obsluga,
-      &.liczba {
-        border-left: var(--standard-border);
-        border-left-color: var(--light-grey-new);
-      }
-
-      &.opoznienie-ogolem {
-        border-left: var(--standard-border);
-        border-left-color: var(--border-black);
-        border-right: var(--standard-border);
-        border-right-color: var(--border-black);
-      }
-    }
+  app-hourly-table {
   }
 }
+
+// ::ng-deep {
+//   app-length-of-stay {
+//     // Headers
+//     .grid-header {
+//       background-color: var(--dark-blue);
+//       color: white;
+//     }
+
+//     .grid-header-outer {
+//       border-top: var(--standard-border);
+//       border-left: var(--standard-border);
+//       border-color: var(--border-black);
+//       font-size: var(--outer-header-font-size);
+
+//       &.godzina,
+//       &.oczekiwane-wizyty,
+//       &.opoznienie-ogolem {
+//         border-bottom: var(--standard-border);
+//         border-color: var(--border-black);
+//       }
+
+//       &.opoznienie-ogolem {
+//         border-right: var(--standard-border);
+//         border-color: var(--border-black);
+//       }
+//     }
+
+//     .grid-header-mid {
+//       font-size: var(--mid-header-font-size);
+
+//       &.liczba,
+//       &.wydajnosc {
+//         border-bottom: var(--standard-border);
+//         border-color: var(--border-black);
+//       }
+
+//       &.pielegniarka,
+//       &.liczba {
+//         border-left: var(--standard-border);
+//         border-color: var(--border-black);
+//       }
+//     }
+
+//     .grid-header-inner {
+//       border-bottom: var(--standard-border);
+//       border-color: var(--border-black);
+//       font-size: var(--inner-header-font-size);
+
+//       &.pielegniarka {
+//         &.lq,
+//         &.obsluga {
+//           border-left: var(--standard-border);
+//           border-color: var(--border-black);
+//         }
+//       }
+//     }
+
+//     // Cells
+//     .cell {
+//       text-align: center;
+//       color: var(--light-grey-new);
+
+//       &.godzina,
+//       &.liczba,
+//       &.kolejka,
+//       &.opoznienie-ogolem {
+//         font-size: var(--bold-column-font-size);
+//         font-weight: bold;
+//         color: black;
+//       }
+
+//       &.pielegniarka.lq,
+//       &.obsluga,
+//       &.liczba {
+//         border-left: var(--standard-border);
+//         border-left-color: var(--light-grey-new);
+//       }
+
+//       &.opoznienie-ogolem {
+//         border-left: var(--standard-border);
+//         border-left-color: var(--border-black);
+//         border-right: var(--standard-border);
+//         border-right-color: var(--border-black);
+//       }
+//     }
+//   }
+// }

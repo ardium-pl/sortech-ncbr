@@ -73,8 +73,6 @@ export class StaticDataService {
       return waskieGardo;
     });
 
-    console.log(JSON.stringify(this.waskieGardlo(), null, 4))
-
     // Oblicz zajętość przy danej wydajości
     fields.forEach(field => {
       zajetosc[field] = minWydajnosci / wydajnoscZasobu[field]!;

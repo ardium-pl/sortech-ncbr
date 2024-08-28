@@ -1,11 +1,9 @@
 <ag-grid-angular
-  class="ag-theme-alpine"
+  class="ag-theme-custom"
+  domLayout='autoHeight'
   [rowData]="rowData()"
   [columnDefs]="columnDefs"
   [defaultColDef]="defaultColDef"
-  [rowHeight]="ROW_HEIGHT"
-  [headerHeight]="HEADER_HEIGHT"
-  [groupHeaderHeight]="GROUP_HEADER_HEIGHT"
   [suppressScrollOnNewData]="true"
   (cellValueChanged)="onCellValueChanged($event)"
   (gridReady)="onGridReady($event)"

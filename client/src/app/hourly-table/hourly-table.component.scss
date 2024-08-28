@@ -14,132 +14,119 @@ ag-grid-angular {
   margin-top: var(--grid-ofset);
 }
 
-// Customizing Ag Grid theme using predefined variables
-.ag-theme-alpine {
-  // Fonts
-  --ag-font-family: var(--font-family);
-  --ag-font-size: var(--font-size);
-
-  // Cell colors
-  --ag-background-color: var(--light-blue);
-  --ag-odd-row-background-color: var(--white);
-
-  // Borders
-  --ag-border-color: black;
-  --ag-cell-horizontal-border: solid var(--light-grey-new);
-
-  // Cell & header padding
-  --ag-cell-horizontal-padding: 10px;
-}
-
 ::ng-deep {
   app-hourly-table {
-    // Headers
-    .grid-header {
-      background-color: var(--dark-blue);
-      color: white;
-    }
-
-    .grid-header-outer {
-      border-top: var(--standard-border);
-      border-left: var(--standard-border);
-      border-color: var(--border-black);
-      font-size: var(--outer-header-font-size);
-
-      &.godzina,
-      &.oczekiwane-wizyty,
-      &.waskie-gardlo,
-      &.mozliwosc-pokrycia {
-        border-bottom: var(--standard-border);
-        border-color: var(--border-black);
-      }
-
-      &.mozliwosc-pokrycia {
-        border-right: var(--standard-border);
-        border-color: var(--border-black);
-      }
-    }
-
-    .grid-header-mid {
-      border-bottom: var(--standard-border);
-      border-color: var(--border-black);
-      font-size: var(--mid-header-font-size);
-
-      &.liczba {
-        border-left: var(--standard-border);
-        border-color: var(--border-black);
-      }
-    }
-
-    // Cells
-    .cell {
-      text-align: center;
-
-      &.part-of-table {
-        &.godzina,
-        &.liczba,
-        &.mozliwosc-pokrycia {
-          font-size: var(--bold-column-font-size);
-          font-weight: bold;
-        }
-
-        &.oczekiwane-wizyty,
-        &.wydajnosc {
-          color: var(--light-grey-new);
-        }
-
-        &.mozliwosc-pokrycia {
-          border-right: var(--standard-border);
-          border-right-color: var(--border-black);
-          font-size: var(--text-column-font-size);
-        }
-
-        &.waskie-gardlo {
-          border-left: var(--standard-border);
-          border-left-color: var(--border-black);
-          font-size: var(--text-column-font-size);
-        }
-
-        &.niedobor-wydajnosci {
-          background-color: var(--light-red);
-        }
-
-        &.brak-niedoboru {
-          background-color: var(--light-green);
-        }
-      }
-
-      &.summary-row {
-        background-color: var(--dark-blue);
-        font-size: var(--summary-row-font-size-hourly);
-        color: white;
-        font-weight: bold;
-
-        &.top {
-          border-top: var(--standard-border);
-          border-top-color: var(--border-black);
-        }
-
-        &.bottom {
-          border-bottom: var(--standard-border);
-          border-bottom-color: var(--border-black);
-        }
-
-        &.top.waskie-gardlo {
-          border: var(--standard-border);
-          border-color: var(--border-black);
-        }
-
-        &.godzina {
-          border-left: var(--standard-border);
-          border-left-color: var(--border-black);
-        }
-
-        &.mozliwosc-pokrycia {
-          border-right: var(--standard-border);
-          border-right-color: var(--border-black);
-        }
-      }
-    }
   }
 }
+
+// ::ng-deep {
+//   app-hourly-table {
+//     // Headers
+//     .grid-header {
+//       background-color: var(--dark-blue);
+//       color: white;
+//     }
+
+//     .grid-header-outer {
+//       border-top: var(--standard-border);
+//       border-left: var(--standard-border);
+//       border-color: var(--border-black);
+//       font-size: var(--outer-header-font-size);
+
+//       &.godzina,
+//       &.oczekiwane-wizyty,
+//       &.waskie-gardlo,
+//       &.mozliwosc-pokrycia {
+//         border-bottom: var(--standard-border);
+//         border-color: var(--border-black);
+//       }
+
+//       &.mozliwosc-pokrycia {
+//         border-right: var(--standard-border);
+//         border-color: var(--border-black);
+//       }
+//     }
+
+//     .grid-header-mid {
+//       border-bottom: var(--standard-border);
+//       border-color: var(--border-black);
+//       font-size: var(--mid-header-font-size);
+
+//       &.liczba {
+//         border-left: var(--standard-border);
+//         border-color: var(--border-black);
+//       }
+//     }
+
+//     // Cells
+//     .cell {
+//       text-align: center;
+
+//       &.part-of-table {
+//         &.godzina,
+//         &.liczba,
+//         &.mozliwosc-pokrycia {
+//           font-size: var(--bold-column-font-size);
+//           font-weight: bold;
+//         }
+
+//         &.oczekiwane-wizyty,
+//         &.wydajnosc {
+//           color: var(--light-grey-new);
+//         }
+
+//         &.mozliwosc-pokrycia {
+//           border-right: var(--standard-border);
+//           border-right-color: var(--border-black);
+//           font-size: var(--text-column-font-size);
+//         }
+
+//         &.waskie-gardlo {
+//           border-left: var(--standard-border);
+//           border-left-color: var(--border-black);
+//           font-size: var(--text-column-font-size);
+//         }
+
+//         &.niedobor-wydajnosci {
+//           background-color: var(--light-red);
+//         }
+
+//         &.brak-niedoboru {
+//           background-color: var(--light-green);
+//         }
+//       }
+
+//       &.summary-row {
+//         background-color: var(--dark-blue);
+//         font-size: var(--summary-row-font-size-hourly);
+//         color: white;
+//         font-weight: bold;
+
+//         &.top {
+//           border-top: var(--standard-border);
+//           border-top-color: var(--border-black);
+//         }
+
+//         &.bottom {
+//           border-bottom: var(--standard-border);
+//           border-bottom-color: var(--border-black);
+//         }
+
+//         &.top.waskie-gardlo {
+//           border: var(--standard-border);
+//           border-color: var(--border-black);
+//         }
+
+//         &.godzina {
+//           border-left: var(--standard-border);
+//           border-left-color: var(--border-black);
+//         }
+
+//         &.mozliwosc-pokrycia {
+//           border-right: var(--standard-border);
+//           border-right-color: var(--border-black);
+//         }
+//       }
+//     }
+//   }
+// }

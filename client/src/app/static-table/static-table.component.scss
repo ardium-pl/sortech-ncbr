@@ -1,92 +1,54 @@
 :host {
   flex: 1;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
+/**
+* To let ag grid adjust its heigth to the height of the rows use: domLayout='autoHeight'
+* To let ag grid adjust column width to fit the desired grid width use: [autoSizeStrategy]='{type: 'fitGridWidth'}'
+* To let ag grid adjust fit its width to the width of fixed size columns you have to calculate grid size manually:
+in our case: 220 + 55 + 120 * 5 + 150 * 2 = 1175px ( + ~2px to account for borders)
+*/
+
 ag-grid-angular {
-  height: var(--grid-height);
-  width: var(--grid-width);
-
+  width: 1177px;
   margin-top: var(--grid-ofset);
-}
-
-// Customizing Ag Grid theme using predefined variables
-.ag-theme-alpine {
-  // Fonts
-  --ag-font-family: var(--font-family);
-  --ag-font-size: var(--font-size);
-
-  // Cell colors
-  --ag-background-color: white;
-  --ag-odd-row-background-color: white;
-
-  // Borders
-  --ag-border-color: var(--dark-blue);
-  --ag-row-border-width: 0px;
-
-  // Cell & header padding
-  --ag-cell-horizontal-padding: var(--header-horizontal-padding);
-
-  // Resize handles
-  --ag-header-column-resize-handle-display: none;
 }
 
 ::ng-deep {
   app-static-table {
-    // Headers
-    .grid-header {
-      color: white;
-      background-color: var(--powder-blue);
-      border-top: var(--standard-border);
-      border-color: var(--dark-blue) !important;
+    .zasoby,
+    .triage,
+    .ograniczenia-przyjec,
+    .oczekiwanie-lozko {
+      border-left: var(--standard-border);
+      border-left-color: var(--dark-blue);
+    }
 
-      &.ograniczenia-przyjec,
-      &.wydajnosc {
-        border-right: var(--standard-border);
+    .ag-row {
+      &:nth-of-type(8) {
+        .ag-cell {
+          // border-bottom: var(--standard-border) !important;
+          // border-bottom-color: var(--dark-blue) !important;
+        }
+
+        border-bottom: var(--standard-border) !important;
+        border-bottom-color: var(--dark-blue) !important;
+      }
+
+      &:nth-of-type(9),
+      &:last-of-type {
+        .ag-cell {
+          font-size: var(--summary-row-font-size-static);
+          font-weight: 600;
+        }
       }
     }
 
-    .grid-header-outer {
-      font-size: var(--outer-header-font-size);
-
-      &:not(.proc-pacjentow) {
-        border-left: var(--standard-border);
-      }
-    }
-
-    .grid-header-inner {
-      font-size: var(--inner-header-font-size);
-
-      &.triage,
-      &.oczekiwanie-lozko {
-        border-left: var(--standard-border);
-      }
-    }
-
-    // Cells
-    .cell {
-      color: var(--font-color);
-      text-align: center;
-      border-bottom: var(--standard-border);
-      border-bottom-color: #eee;
-
-
-      &.typ-pacjenta {
-        text-align: left;
-        color: black;
-      }
-
-      // &.typ-pacjenta,
-      &.oczekiwanie-lozko,
-      &.triage {
-        border-left: var(--standard-border);
-        border-left-color: var(--dark-blue);
-      }
-
+    .ag-cell {
       &.triage,
       &.lekarz,
       &.obserwacja,
@@ -94,43 +56,16 @@ ag-grid-angular {
         background-color: var(--white);
       }
 
-      &.part-of-table {
-      }
+      &.waskie-gardlo {
+        color: var(--flashy-yellow);
+        background-color: var(--flashy-red);
+        font-weight: 600;
 
-      &.summary-row {
-        &.bottom,
-        &.top {
-          font-weight: 600;
-          font-size: var(--summary-row-font-size-static);
-        }
-
-        &.top {
-          border-top: var(--standard-border);
-          border-top-color: var(--dark-blue);
-        }
-
-        &.bottom {
-          border-bottom: var(--standard-border);
-          border-bottom-color: var(--dark-blue);
-        }
-
-        &.waskie-gardlo {
-          color: var(--flashy-yellow);
-          background-color: var(--flashy-red);
-          font-weight: 600;
-
-          &:not(.bottom) {
-            border-bottom: var(--standard-border);
-            border-bottom-color: var(--flashy-red);
-          }
+        &:not(.ag-row:last-of-type *) {
+          border-bottom: var(--standard-border) !important;
+          border-bottom-color: var(--flashy-red) !important;
         }
       }
-    }
-
-    // Outer grid border
-    .ag-root-wrapper {
-      border: var(--standard-border);
-      border-color: var(--dark-blue);
     }
   }
 }
