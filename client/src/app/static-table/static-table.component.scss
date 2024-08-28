@@ -20,6 +20,7 @@ ag-grid-angular {
 
 ::ng-deep {
   app-static-table {
+    // Granatowa granica pionowa
     .zasoby,
     .triage,
     .ograniczenia-przyjec,
@@ -42,13 +43,14 @@ ag-grid-angular {
       &:nth-of-type(9),
       &:last-of-type {
         .ag-cell {
-          font-size: var(--summary-row-font-size-static);
+          font-size: 17px;
           font-weight: 600;
         }
       }
     }
 
     .ag-cell {
+      // Jasnoniebieskie tło
       &.triage,
       &.lekarz,
       &.obserwacja,
@@ -56,6 +58,15 @@ ag-grid-angular {
         background-color: var(--white);
       }
 
+      // Pierwsza kolumna
+      &.ag-column-first {
+        justify-content: flex-start;
+        text-align: start;
+        color: black;
+        font-weight: 500;
+      }
+
+      // Wyroznienie - waskie gardlo
       &.waskie-gardlo {
         color: var(--flashy-yellow);
         background-color: var(--flashy-red);

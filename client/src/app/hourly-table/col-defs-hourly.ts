@@ -118,7 +118,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     headerClass: 'grid-header grid-header-outer lozka',
     children: [
       {
-        headerName: 'Liczba Łóżek',
+        headerName: 'Liczba \n Łóżek',
         field: 'zasoby.lozko',
         headerClass: 'grid-header grid-header-mid lozka liczba',
         editable: ({ data }) => data['id'] < 24,
@@ -153,7 +153,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     headerClass: 'grid-header grid-header-outer obserwacja',
     children: [
       {
-        headerName: 'Liczba Łóżek',
+        headerName: 'Liczba \n Łóżek',
         field: 'zasoby.lozkoObserwacja',
         headerClass: 'grid-header grid-header-mid obserwacja liczba',
         editable: ({ data }) => data['id'] < 24,

@@ -15,7 +15,36 @@ ag-grid-angular {
 }
 
 ::ng-deep {
-  app-hourly-table {
+  app-length-of-stay {
+    // Granatowa granica pionowa
+    .pielegniarki:not(.wydajnosc),
+    .opoznienie-wydajnosc,
+    .opoznienie-zmiennosc,
+    .opoznienie-ogolem,
+    .lekarz.obsluga,
+    .lekarz.lq,
+    .pielegniarka.obsluga,
+    .pielegniarka.lq,
+    .pielegniarka.ag-header-group-cell {
+      border-left: var(--standard-border);
+      border-left-color: var(--dark-blue);
+    }
+
+    .ag-cell {
+      // Pierwsza kolumna + to co ma mieć grubszą czcionkę
+      &.ag-column-first,
+      &.liczba {
+        color: black;
+        font-weight: 500;
+      }
+
+      // Jasnoniebieskie tło
+      &.liczba,
+      &.obsluga,
+      &.lq {
+        background-color: var(--white);
+      }
+    }
   }
 }
 

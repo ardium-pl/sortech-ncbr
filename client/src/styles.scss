@@ -43,7 +43,6 @@ body {
   // Grey color palette
   --darkest-grey: rgb(169, 169, 169);
   --dark-grey: rgb(192, 192, 192);
-  --mid-grey: ;
   --light-grey: rgb(211, 211, 211);
   --lightest-grey: rgb(220, 220, 220);
   --white-grey: rgb(208, 208, 208);
@@ -80,9 +79,6 @@ body {
 
   --font-size: 16px;
   --bold-column-font-size: 19px;
-
-  --summary-row-font-size-hourly: 16px;
-  --summary-row-font-size-static: 17px;
 
   --outer-header-font-size: 16px;
   --mid-header-font-size: 16px;
@@ -175,14 +171,6 @@ body {
 
     border-bottom: var(--standard-border);
     border-bottom-color: var(--eee-white);
-  }
-
-  // First column
-  .ag-cell.ag-column-first {
-    justify-content: flex-start;
-    text-align: start;
-    color: black;
-    font-weight: 500;
   }
 
   // Fix row hover animation over columns with changed background

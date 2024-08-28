@@ -66,7 +66,7 @@ export const LOSTableColDefs: (ColDef | ColGroupDef)[] = [
             headerName: 'obsługa',
             field: 'obsluga.pielegniarka',
             headerClass: 'grid-header grid-header-inner pielegniarka obsluga',
-            cellClass: ({ data }) => ['cell', 'pielegiarka', 'obsluga', data['id'] === 23 ? 'bottom' : ''],
+            cellClass: ({ data }) => ['cell', 'pielegniarka', 'obsluga', data['id'] === 23 ? 'bottom' : ''],
           },
           {
             headerName: 'kolejka',

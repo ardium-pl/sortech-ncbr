@@ -16,48 +16,53 @@ ag-grid-angular {
 
 ::ng-deep {
   app-hourly-table {
+    // Granatowa granica pionowa
+    .pielegniarki:not(.wydajnosc),
+    .waskie-gardlo {
+      border-left: var(--standard-border);
+      border-left-color: var(--dark-blue);
+    }
+
+    .part-of-table {
+      // Jasnoniebieskie tło
+      &.liczba {
+        background-color: var(--white);
+      }
+
+      &.niedobor-wydajnosci {
+        background-color: var(--light-red);
+      }
+
+      &.brak-niedoboru {
+        background-color: var(--light-green);
+      }
+
+      // Pierwsza kolumna + to co ma mieć grubszą czcionkę
+      &.ag-column-first,
+      &.waskie-gardlo,
+      &.mozliwosc-pokrycia,
+      &.liczba {
+        color: black;
+        font-weight: 500;
+      }
+    }
+
+    .summary-row {
+      &.liczba {
+        color: black;
+        font-weight: bold;
+      }
+
+      &.wydajnosc {
+        color: black;
+        font-weight: 500;
+      }
+    }
   }
 }
 
 // ::ng-deep {
 //   app-hourly-table {
-//     // Headers
-//     .grid-header {
-//       background-color: var(--dark-blue);
-//       color: white;
-//     }
-
-//     .grid-header-outer {
-//       border-top: var(--standard-border);
-//       border-left: var(--standard-border);
-//       border-color: var(--border-black);
-//       font-size: var(--outer-header-font-size);
-
-//       &.godzina,
-//       &.oczekiwane-wizyty,
-//       &.waskie-gardlo,
-//       &.mozliwosc-pokrycia {
-//         border-bottom: var(--standard-border);
-//         border-color: var(--border-black);
-//       }
-
-//       &.mozliwosc-pokrycia {
-//         border-right: var(--standard-border);
-//         border-color: var(--border-black);
-//       }
-//     }
-
-//     .grid-header-mid {
-//       border-bottom: var(--standard-border);
-//       border-color: var(--border-black);
-//       font-size: var(--mid-header-font-size);
-
-//       &.liczba {
-//         border-left: var(--standard-border);
-//         border-color: var(--border-black);
-//       }
-//     }
-
 //     // Cells
 //     .cell {
 //       text-align: center;
