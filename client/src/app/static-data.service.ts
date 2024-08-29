@@ -1,89 +1,90 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { StaticRow } from './interfaces/static-row';
 import { WaskieGardlo, ZasobyITriage } from './interfaces/zasoby';
+import { ZasobyTriageILozkoOczekiwanie } from './interfaces/zasoby';
+import { LABELS_METRYKI, LABELS_ZASOBY } from './constants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StaticDataService {
-  updateRows(changedRow: StaticRow) {
-    this.rowData.update(rows => rows.map(rows => (changedRow.id === rows.id ? changedRow : rows)));
-  }
-
-  applyRowCalculations(rowData: StaticRow[], changedRow?: StaticRow) {
-    let rows: StaticRow[];
-
+  applyRowCalculations(daneStatyczne: StaticRow[], changedRow?: StaticRow) {
     if (changedRow) {
-      rows = rowData.map(row => {
-        return row.id === changedRow.id ? changedRow : row;
-      });
-    } else {
-      rows = rowData;
+      daneStatyczne[changedRow['id']] = changedRow;
     }
 
-    let liczbaZasobow = rows[8];
-    let meanTimePerPatient = rows[9];
-    let wydajnoscZasobu = rows[10];
-    let zajetosc = rows[11];
+    // Placeholder values which will be calculated in later steps
+    const metrykiDefaults: StaticRow[] = LABELS_METRYKI.map((label, i) => ({
+      id: daneStatyczne.length + i,
+      typPacjenta: label,
+      procPacjentow: 0,
+      zasoby: {
+        triage: 0,
+        lozko: 0,
+        lekarz: 0,
+        pielegniarka: 0,
+        lozkoObserwacja: 0,
+        lozkoOczekiwanie: 0,
+      },
+      wydajnoscPrzyjmowania: 0,
+    }));
 
-    const fields = [
-      'triage',
-      'lozko',
-      'lekarz',
-      'pielegniarka',
-      'lozkoObserwacja',
-      'lozkoOczekiwanie',
-      'wydajnoscPrzyjmowania',
-    ] as const;
+    // Rows essenntial for performing the calculations
+    let liczbaZasobow: StaticRow = daneStatyczne[daneStatyczne.length - 1];
+    let [meanTimePerPatient, wydajnoscZasobu, zajetosc] = metrykiDefaults;
 
-    // oblicz Średni ważony czas na pacjenta
-    fields.slice(0, 6).forEach(field => {
-      meanTimePerPatient[field] = rows.slice(0, 8).reduce((acc, row) => {
-        return acc + row.procPacjentow! * row[field]!;
-      }, 0);
-    });
+    this.obliczSredniCzasNaPacjenta(meanTimePerPatient, daneStatyczne);
+    this.obliczWydajnoscZasobu(meanTimePerPatient, wydajnoscZasobu, liczbaZasobow);
 
-    // Oblicz wydajnosc zasobu
-    wydajnoscZasobu.triage = 60 / liczbaZasobow.triage!;
-    wydajnoscZasobu.lozko = liczbaZasobow.lozko! / meanTimePerPatient.lozko!;
-    wydajnoscZasobu.lekarz = (60 * liczbaZasobow.lekarz!) / meanTimePerPatient.lekarz!;
-    wydajnoscZasobu.pielegniarka = (60 * liczbaZasobow.pielegniarka!) / meanTimePerPatient.pielegniarka!;
-    wydajnoscZasobu.lozkoObserwacja = liczbaZasobow.lozkoObserwacja! / meanTimePerPatient.lozkoObserwacja!;
-    wydajnoscZasobu.lozkoOczekiwanie = liczbaZasobow.lozkoOczekiwanie! / meanTimePerPatient.lozkoOczekiwanie!;
-    wydajnoscZasobu.wydajnoscPrzyjmowania = rows[7].wydajnoscPrzyjmowania! / rows[7].procPacjentow!;
-
-    // Oznacz wąskie gardło(a)
     const minWydajnosci = Math.min(
-      wydajnoscZasobu.triage!,
-      wydajnoscZasobu.lozko!,
-      wydajnoscZasobu.lekarz!,
-      wydajnoscZasobu.pielegniarka!,
-      wydajnoscZasobu.lozkoObserwacja!
+      wydajnoscZasobu.zasoby.triage!,
+      wydajnoscZasobu.zasoby.lozko!,
+      wydajnoscZasobu.zasoby.lekarz!,
+      wydajnoscZasobu.zasoby.pielegniarka!,
+      wydajnoscZasobu.zasoby.lozkoObserwacja!
     );
+    const przyjeciePacjentow = daneStatyczne[7].procPacjentow! * minWydajnosci;
 
-    const przyjeciePacjentow = rows[7].procPacjentow! * minWydajnosci;
+    this.oznaczWaskieGardlo(wydajnoscZasobu, minWydajnosci, daneStatyczne, przyjeciePacjentow);
+    this.obliczZajetosc(zajetosc, wydajnoscZasobu, minWydajnosci);
 
+    // Add calculated metric rows to the main array
+    daneStatyczne.push(meanTimePerPatient, wydajnoscZasobu, zajetosc);
+
+    // console.log(JSON.stringify(daneStatyczne, null, 4));
+    this.rowData.set(daneStatyczne);
+  }
+
+  obliczSredniCzasNaPacjenta(meanTimePerPatient: StaticRow, daneStatyczne: StaticRow[]) {
+    for (const zasob of Object.values(ZasobyTriageILozkoOczekiwanie)) {
+      meanTimePerPatient.zasoby[zasob] = daneStatyczne.slice(0, daneStatyczne.length).reduce((acc, row) => {
+        return acc + row.procPacjentow! * row.zasoby[zasob]!;
+      }, 0);
+    }
+    meanTimePerPatient['wydajnoscPrzyjmowania'] = null;
+  }
+  obliczWydajnoscZasobu(meanTimePerPatient: StaticRow, wydajnoscZasobu: StaticRow, liczbaZasobow: StaticRow) {
+    for (const zasob of Object.values(ZasobyTriageILozkoOczekiwanie)) {
+      wydajnoscZasobu.zasoby[zasob] = liczbaZasobow.zasoby[zasob]! / meanTimePerPatient.zasoby[zasob]!;
+    }
+    wydajnoscZasobu['wydajnoscPrzyjmowania'] = liczbaZasobow['wydajnoscPrzyjmowania']! / meanTimePerPatient['procPacjentow']!;
+  }
+  obliczZajetosc(zajetosc: StaticRow, wydajnoscZasobu: StaticRow, minWydajnosci: number) {
+    for (const zasob of Object.values(ZasobyTriageILozkoOczekiwanie)) {
+      zajetosc.zasoby[zasob] = minWydajnosci / wydajnoscZasobu.zasoby[zasob]!;
+    }
+    zajetosc.wydajnoscPrzyjmowania = minWydajnosci / wydajnoscZasobu.wydajnoscPrzyjmowania!;
+  }
+  oznaczWaskieGardlo(wydajnoscZasobu: StaticRow, minWydajnosci: number, daneStatyczne: StaticRow[], przyjeciePacjentow: number) {
     this.waskieGardlo.update(waskieGardo => {
       for (let zasob of Object.values(ZasobyITriage)) {
-        waskieGardo[zasob] = wydajnoscZasobu[zasob] === minWydajnosci;
+        waskieGardo[zasob] = wydajnoscZasobu.zasoby[zasob] === minWydajnosci;
       }
-      waskieGardo['lozkoOczekiwanie'] = wydajnoscZasobu['lozkoOczekiwanie']! < minWydajnosci;
-      waskieGardo['wydajnoscPrzyjmowania'] = rows[7]['wydajnoscPrzyjmowania']! < przyjeciePacjentow;
+      waskieGardo['lozkoOczekiwanie'] = wydajnoscZasobu.zasoby['lozkoOczekiwanie']! < minWydajnosci;
+      waskieGardo['wydajnoscPrzyjmowania'] = daneStatyczne[7]['wydajnoscPrzyjmowania']! < przyjeciePacjentow;
 
       return waskieGardo;
     });
-
-    // Oblicz zajętość przy danej wydajości
-    fields.forEach(field => {
-      zajetosc[field] = minWydajnosci / wydajnoscZasobu[field]!;
-    });
-
-    // Assign back updated rows
-    rows[9] = meanTimePerPatient;
-    rows[10] = wydajnoscZasobu;
-    rows[11] = zajetosc;
-
-    this.rowData.set(rows);
   }
 
   readonly waskieGardlo = signal<WaskieGardlo>({
@@ -101,156 +102,168 @@ export class StaticDataService {
       id: 0,
       typPacjenta: 'Triage',
       procPacjentow: 1,
-      triage: 5,
-      lozko: null,
-      lekarz: null,
-      pielegniarka: null,
-      lozkoObserwacja: null,
-      lozkoOczekiwanie: null,
+      zasoby: {
+        triage: 5,
+        lozko: null,
+        lekarz: null,
+        pielegniarka: null,
+        lozkoObserwacja: null,
+        lozkoOczekiwanie: null,
+      },
       wydajnoscPrzyjmowania: null,
     },
     {
       id: 1,
       typPacjenta: '1. Resuscytacja',
       procPacjentow: 0.0131322314049587,
-      triage: null,
-      lozko: 6,
-      lekarz: 90,
-      pielegniarka: 120,
-      lozkoObserwacja: null,
-      lozkoOczekiwanie: null,
+      zasoby: {
+        triage: null,
+        lozko: 6,
+        lekarz: 90,
+        pielegniarka: 120,
+        lozkoObserwacja: null,
+        lozkoOczekiwanie: null,
+      },
       wydajnoscPrzyjmowania: null,
     },
     {
       id: 2,
       typPacjenta: '2. Stan zagrożenia życia',
       procPacjentow: 0.146321212121212,
-      triage: null,
-      lozko: 6,
-      lekarz: 60,
-      pielegniarka: 90,
-      lozkoObserwacja: null,
-      lozkoOczekiwanie: null,
+      zasoby: {
+        triage: null,
+        lozko: 6,
+        lekarz: 60,
+        pielegniarka: 90,
+        lozkoObserwacja: null,
+        lozkoOczekiwanie: null,
+      },
       wydajnoscPrzyjmowania: null,
     },
     {
       id: 3,
       typPacjenta: '3. Pilny przypadek ostry',
       procPacjentow: 0.44884738292011,
-      triage: null,
-      lozko: 5,
-      lekarz: 40,
-      pielegniarka: 40,
-      lozkoObserwacja: null,
-      lozkoOczekiwanie: null,
+      zasoby: {
+        triage: null,
+        lozko: 5,
+        lekarz: 40,
+        pielegniarka: 40,
+        lozkoObserwacja: null,
+        lozkoOczekiwanie: null,
+      },
       wydajnoscPrzyjmowania: null,
     },
     {
       id: 4,
       typPacjenta: '4. Pilny przypadek nieostry',
       procPacjentow: 0.316226170798898,
-      triage: null,
-      lozko: 2.5,
-      lekarz: 20,
-      pielegniarka: 20,
-      lozkoObserwacja: null,
-      lozkoOczekiwanie: null,
+      zasoby: {
+        triage: null,
+        lozko: 2.5,
+        lekarz: 20,
+        pielegniarka: 20,
+        lozkoObserwacja: null,
+        lozkoOczekiwanie: null,
+      },
       wydajnoscPrzyjmowania: null,
     },
     {
       id: 5,
       typPacjenta: '5. Niepilny',
       procPacjentow: 0.0754396694214876,
-      triage: null,
-      lozko: 1.5,
-      lekarz: 20,
-      pielegniarka: 10,
-      lozkoObserwacja: null,
-      lozkoOczekiwanie: null,
+      zasoby: {
+        triage: null,
+        lozko: 1.5,
+        lekarz: 20,
+        pielegniarka: 10,
+        lozkoObserwacja: null,
+        lozkoOczekiwanie: null,
+      },
       wydajnoscPrzyjmowania: null,
     },
     {
       id: 6,
       typPacjenta: 'Obserwacja',
       procPacjentow: 0.11,
-      triage: null,
-      lozko: null,
-      lekarz: 72,
-      pielegniarka: 72,
-      lozkoObserwacja: 12,
-      lozkoOczekiwanie: null,
+      zasoby: {
+        triage: null,
+        lozko: null,
+        lekarz: 72,
+        pielegniarka: 72,
+        lozkoObserwacja: 12,
+        lozkoOczekiwanie: null,
+      },
       wydajnoscPrzyjmowania: null,
     },
     {
       id: 7,
       typPacjenta: 'Oczek. na przyj. na oddział leczniczy',
       procPacjentow: 0.4,
-      triage: null,
-      lozko: null,
-      lekarz: null,
-      pielegniarka: null,
-      lozkoObserwacja: null,
-      lozkoOczekiwanie: 6,
+      zasoby: {
+        triage: null,
+        lozko: null,
+        lekarz: null,
+        pielegniarka: null,
+        lozkoObserwacja: null,
+        lozkoOczekiwanie: 6,
+      },
       wydajnoscPrzyjmowania: 5,
     },
     {
       id: 8,
       typPacjenta: 'Liczba zasobów',
       procPacjentow: null,
-      triage: 2,
-      lozko: 50,
-      lekarz: 6,
-      pielegniarka: 8,
-      lozkoObserwacja: 20,
-      lozkoOczekiwanie: 30,
+      zasoby: {
+        triage: 2,
+        lozko: 50,
+        lekarz: 6,
+        pielegniarka: 8,
+        lozkoObserwacja: 20,
+        lozkoOczekiwanie: 30,
+      },
       wydajnoscPrzyjmowania: null,
     },
     {
       id: 9,
       typPacjenta: 'Średni ważony czas na pacjenta',
       procPacjentow: null,
-      triage: 5.0,
-      lozko: 4.1,
-      lekarz: 43.7,
-      pielegniarka: 44.5,
-      lozkoObserwacja: 1.3,
-      lozkoOczekiwanie: 2.4,
+      zasoby: {
+        triage: 5.0,
+        lozko: 4.1,
+        lekarz: 43.7,
+        pielegniarka: 44.5,
+        lozkoObserwacja: 1.3,
+        lozkoOczekiwanie: 2.4,
+      },
       wydajnoscPrzyjmowania: null,
     },
     {
       id: 10,
       typPacjenta: 'Wydajność (napływ pacj./godz.)',
       procPacjentow: null,
-      triage: 30.0,
-      lozko: 12.18,
-      lekarz: 8.24,
-      pielegniarka: 10.78,
-      lozkoObserwacja: 15.15,
-      lozkoOczekiwanie: 12.5,
+      zasoby: {
+        triage: 30.0,
+        lozko: 12.18,
+        lekarz: 8.24,
+        pielegniarka: 10.78,
+        lozkoObserwacja: 15.15,
+        lozkoOczekiwanie: 12.5,
+      },
       wydajnoscPrzyjmowania: null,
     },
-    // {
-    //   id: 11,
-    //   typPacjenta: 'Wąskie gardło',
-    //   procPacjentow: null,
-    //   triage: null,
-    //   lozko: null,
-    //   lekarz: null,
-    //   pielegniarka: null,
-    //   lozkoObserwacja: null,
-    //   lozkoOczekiwanie: null,
-    //   wydajnoscPrzyjmowania: null,
-    // },
     {
       id: 11,
       typPacjenta: 'Zajętość przy danej wydajności',
       procPacjentow: null,
-      triage: 27,
-      lozko: 68,
-      lekarz: 100,
-      pielegniarka: 76,
-      lozkoObserwacja: 54,
-      lozkoOczekiwanie: 66,
+      zasoby: {
+        triage: 27,
+        lozko: 68,
+        lekarz: 100,
+        pielegniarka: 76,
+        lozkoObserwacja: 54,
+        lozkoOczekiwanie: 66,
+      },
       wydajnoscPrzyjmowania: 66,
     },
   ]);

@@ -5,6 +5,7 @@ import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { HourlyDataService } from '../hourly-data.service';
+import { DataFetchingService } from '../data-fetching.service';
 
 @Component({
   selector: 'app-datepicker',
@@ -16,6 +17,7 @@ import { HourlyDataService } from '../hourly-data.service';
 })
 export class DatepickerComponent {
   readonly hourlyDataService = inject(HourlyDataService);
+  readonly dataFetchingService = inject(DataFetchingService);
   readonly value = model<Date>();
 
   onDateChange(event: MatDatepickerInputEvent<Date>) {
@@ -28,7 +30,7 @@ export class DatepickerComponent {
       this.hourlyDataService.currentDayOfWeek.set(pickedDate.getDay());
 
       // Fetch table data from a database for a chosen day
-      this.hourlyDataService.fetchRowData(pickedDate.toISOString());
+      this.dataFetchingService.fetchRowData(pickedDate.toISOString());
     }
   }
 }

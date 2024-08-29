@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import * as MoreRounding from 'more-rounding';
 import { CONSTANTS } from './constants';
@@ -12,7 +11,6 @@ import {
   defaultSummaryRowTop,
   defaultWoczorajszaKolejka,
 } from './utils/default-table-data';
-import { apiUrl } from './utils/apiUrl';
 
 @Injectable({
   providedIn: 'root',
@@ -21,95 +19,6 @@ export class HourlyDataService {
   readonly currentDayOfWeek = signal<number>(0);
 
   readonly currentDate = signal<Date>(new Date(2024, 7, 7));
-
-  private readonly http = inject(HttpClient);
-
-  // constructor() {
-  //   this.fetchRowData();
-  // }
-
-  fetchRowData(date: string) {
-    const sub = this.http.get<any>(apiUrl('/hourly-data'), { params: { date: date } }).subscribe({
-      next: res => {
-        console.log('✅ Response received sucessfully, response body: ', res);
-        try {
-          // construct & format rowData (=daneGodzinowe)
-          const mappedData = (res.daneGodzinowe as any[]).map((v, i): daneGodzinowe => {
-            return {
-              id: i,
-              godzina: v.hour,
-              liczbaWizyt: v.liczbaPacjentow,
-              zasoby: {
-                pielegniarka: v.zasoby.liczbaPielegniarek,
-                lekarz: v.zasoby.liczbaLekarzy,
-                lozko: v.zasoby.liczbaLozek,
-                lozkoObserwacja: v.zasoby.liczbaLozekObserwacyjnych,
-              },
-            };
-          });
-
-          // set wczorajszaKolejka
-          this.wczorajszaKolejka.set({
-            lekarz: res.kolejka.lekarz,
-            pielegniarka: res.kolejka.pielegniarka,
-          });
-
-          // set rowData
-          this.applyHourCalculations(mappedData);
-          console.log('✅ Successfully initialized table data!');
-        } catch (err) {
-          console.log('❌ An error occured during initializing table data from the response body, error message: ', err, '❌');
-        }
-      },
-      error: err => {
-        console.log('❌ Error performing the http request, error message: ', err, '❌');
-        sub.unsubscribe();
-        console.log('⚙️ Subscription terminanated by unsubscribing.');
-      },
-    });
-  }
-
-  // This function will be removed
-  fetchRowDataOld(date: string) {
-    const sub = this.http.get<any>(apiUrl('/hourly-data'), { params: { date: date } }).subscribe({
-      next: res => {
-        console.log('✅ Response received sucessfully, resonse body: ', res);
-        try {
-          // construct & format rowData (=daneGodzinowe)
-          const mappedData = (res.currentDayData as any[]).map((v, i): daneGodzinowe => {
-            return {
-              id: i,
-              godzina: `${i}-${i + 1}` as keyof Godzina,
-              liczbaWizyt: res.patientsPerHourData[i].liczba_pacjentow,
-              zasoby: {
-                pielegniarka: v.ilosc_pielegniarek,
-                lekarz: v.ilosc_lekarzy,
-                lozko: v.ilosc_lozek,
-                lozkoObserwacja: v.ilosc_lozek_obserwacji,
-              },
-            };
-          });
-
-          // set wczorajszaKolejka
-          this.wczorajszaKolejka.set({
-            lekarz: res.prevDayLastHourData.kolejka_lekarz,
-            pielegniarka: res.prevDayLastHourData.kolejka_pielegniarka,
-          });
-
-          // set rowData
-          this.applyHourCalculations(mappedData);
-          console.log('✅ Successfully initialized table data!');
-        } catch (err) {
-          console.log('❌ An error occured during initializing table data from the response body, error message: ', err, '❌');
-        }
-      },
-      error: err => {
-        console.log('❌ Error performing the http request, error message: ', err, '❌');
-        sub.unsubscribe();
-        console.log('⚙️ Subscription terminanated by unsubscribing.');
-      },
-    });
-  }
 
   applyHourCalculations(daneGodzinowe: daneGodzinowe[], changedRow?: daneGodzinowe) {
     if (changedRow) {

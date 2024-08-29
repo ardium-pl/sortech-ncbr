@@ -41,7 +41,7 @@ export function columnDefs(waskieGardlo: Signal<WaskieGardlo>): (ColDef | ColGro
       children: [
         {
           headerName: 'Triage',
-          field: 'triage',
+          field: 'zasoby.triage',
           headerClass: 'grid-header grid-header-inner triage',
           cellClass: ({ data }) => [
             'triage',
@@ -54,7 +54,7 @@ export function columnDefs(waskieGardlo: Signal<WaskieGardlo>): (ColDef | ColGro
         },
         {
           headerName: 'Łóżko',
-          field: 'lozko',
+          field: 'zasoby.lozko',
           headerClass: 'grid-header grid-header-inner lozko',
           cellClass: ({ data }) => [
             'lozko',
@@ -67,7 +67,7 @@ export function columnDefs(waskieGardlo: Signal<WaskieGardlo>): (ColDef | ColGro
         },
         {
           headerName: 'Lekarz',
-          field: 'lekarz',
+          field: 'zasoby.lekarz',
           headerClass: 'grid-header grid-header-inner lekarz',
           cellClass: ({ data }) => [
             'lekarz',
@@ -80,7 +80,7 @@ export function columnDefs(waskieGardlo: Signal<WaskieGardlo>): (ColDef | ColGro
         },
         {
           headerName: 'Pielęgn.',
-          field: 'pielegniarka',
+          field: 'zasoby.pielegniarka',
           headerClass: 'grid-header grid-header-inner pielegniarka',
           cellClass: ({ data }) => [
             'pielegniarka',
@@ -93,7 +93,7 @@ export function columnDefs(waskieGardlo: Signal<WaskieGardlo>): (ColDef | ColGro
         },
         {
           headerName: 'Łóżko obserw.',
-          field: 'lozkoObserwacja',
+          field: 'zasoby.lozkoObserwacja',
           headerClass: 'grid-header grid-header-inner obserwacja',
           cellClass: ({ data }) => [
             'obserwacja',
@@ -112,7 +112,7 @@ export function columnDefs(waskieGardlo: Signal<WaskieGardlo>): (ColDef | ColGro
       children: [
         {
           headerName: 'Łóżko oczek. na przyj. do szpitala',
-          field: 'lozkoOczekiwanie',
+          field: 'zasoby.lozkoOczekiwanie',
           headerClass: 'grid-header grid-header-inner oczekiwanie-lozko',
           cellClass: ({ data }) => [
             'oczekiwanie-lozko',

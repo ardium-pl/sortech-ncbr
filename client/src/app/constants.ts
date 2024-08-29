@@ -1,5 +1,23 @@
 import { Constants } from './utils/utils';
 
+export const LABELS_ZASOBY = [
+  'Triage',
+  '1. Resuscytacja',
+  '2. Stan zagrożenia życia',
+  '3. Pilny przypadek ostry',
+  '4. Pilny przypadek nieostry',
+  '5. Niepilny',
+  'Obserwacja',
+  'Oczek. na przyj. na oddział leczniczy',
+  'Liczba zasobów',
+];
+export const LABELS_METRYKI = [
+  'Średni ważony czas na pacjenta',
+  'Wydajność (napływ pacj./godz.)',
+  'Zajętość przy danej wydajności',
+];
+
+
 export const CONSTANTS: Constants = {
   pacjentRok: 51000,
   pacjentDzien: 140,

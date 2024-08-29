@@ -32,7 +32,7 @@ export class StaticTableComponent {
     // Get the changed row (=hour)
     const changedRow: StaticRow = event.data;
     // Apply calculations & update main signal
-    this.staticDataService.applyRowCalculations(this.rowData(), changedRow);
+    this.staticDataService.applyRowCalculations(this.rowData().slice(0, 9), changedRow);
   }
 
   private api!: GridApi;
@@ -41,6 +41,6 @@ export class StaticTableComponent {
     this.api = event.api;
 
     // Apply calculations
-    this.staticDataService.applyRowCalculations(this.rowData(), this.rowData()[1]);
+    this.staticDataService.applyRowCalculations(this.rowData().slice(0, 9), this.rowData()[1]);
   };
 }
