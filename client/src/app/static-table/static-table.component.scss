@@ -30,14 +30,12 @@ ag-grid-angular {
     }
 
     .ag-row {
+      // Granatowa granica pozioma
       &:nth-of-type(8) {
         .ag-cell {
-          // border-bottom: var(--standard-border) !important;
-          // border-bottom-color: var(--dark-blue) !important;
+          border-bottom: var(--standard-border) !important;
+          border-bottom-color: var(--dark-blue) !important;
         }
-
-        border-bottom: var(--standard-border) !important;
-        border-bottom-color: var(--dark-blue) !important;
       }
 
       &:nth-of-type(9),
@@ -73,8 +71,8 @@ ag-grid-angular {
         font-weight: 600;
 
         &:not(.ag-row:last-of-type *) {
-          // border-bottom: var(--standard-border) !important;
-          // border-bottom-color: var(--flashy-red) !important;
+          border-bottom: var(--standard-border);
+          border-bottom-color: var(--flashy-red);
         }
       }
     }

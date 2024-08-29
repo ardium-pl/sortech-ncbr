@@ -35,6 +35,36 @@ export const COLOR_MAP = [
   'rgb(150, 0, 0)', // Maroon
 ];
 
+export const RZAD_TRIAGE = {
+  id: 0,
+  typPacjenta: 'Triage',
+  procPacjentow: 0,
+  zasoby: {
+    triage: 5,
+    lozko: 0,
+    lekarz: 0,
+    pielegniarka: 0,
+    lozkoObserwacja: 0,
+    lozkoOczekiwanie: 0,
+  },
+  wydajnoscPrzyjmowania: 0,
+};
+
+export const RZAD_OCZEKIWANIE_NA_PRZYJECIE = {
+  id: 7,
+  typPacjenta: 'Oczek. na przyj. na oddział leczniczy',
+  procPacjentow: 0.4,
+  zasoby: {
+    triage: 5,
+    lozko: 0,
+    lekarz: 0,
+    pielegniarka: 0,
+    lozkoObserwacja: 0,
+    lozkoOczekiwanie: 360,
+  },
+  wydajnoscPrzyjmowania: 5,
+};
+
 export const CONSTANTS: Constants = {
   pacjentRok: 51000,
   pacjentDzien: 140,

@@ -5,51 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { daneGodzinowe } from './interfaces/hour';
 import { apiUrl } from './utils/apiUrl';
 import { StaticRow } from './interfaces/static-row';
-import { LABELS_ZASOBY } from './constants';
-
-// THIS DATA IS MISSING !!!
-const BRAKUJACY_RZAD_TRIAGE = {
-  id: 0,
-  typPacjenta: 'Triage',
-  procPacjentow: 0,
-  zasoby: {
-    triage: 5,
-    lozko: 0,
-    lekarz: 0,
-    pielegniarka: 0,
-    lozkoObserwacja: 0,
-    lozkoOczekiwanie: 0,
-  },
-  wydajnoscPrzyjmowania: 0,
-};
-const BRAKUJACY_RZAD_OCZEKIWANIE_NA_PRZYJECIE = {
-  id: 7,
-  typPacjenta: 'Oczek. na przyj. na oddział leczniczy',
-  procPacjentow: 0,
-  zasoby: {
-    triage: 5,
-    lozko: 0,
-    lekarz: 0,
-    pielegniarka: 0,
-    lozkoObserwacja: 0,
-    lozkoOczekiwanie: 0,
-  },
-  wydajnoscPrzyjmowania: 0,
-};
-const BRAKUJACY_RZAD_LICZBA_ZASOBOW = {
-  id: 8,
-  typPacjenta: 'Liczba zasobów',
-  procPacjentow: 0,
-  zasoby: {
-    triage: 5,
-    lozko: 50,
-    lekarz: 6,
-    pielegniarka: 8,
-    lozkoObserwacja: 20,
-    lozkoOczekiwanie: 30,
-  },
-  wydajnoscPrzyjmowania: 0,
-};
+import { LABELS_ZASOBY, RZAD_OCZEKIWANIE_NA_PRZYJECIE, RZAD_TRIAGE } from './constants';
 
 @Injectable({
   providedIn: 'root',
@@ -64,7 +20,6 @@ export class DataFetchingService {
       next: res => {
         console.log('✅ Response received sucessfully, response body: ', res);
         try {
-          // construct & format rowData (=daneGodzinowe)
           const mappedDataHourly = (res.daneGodzinowe as any[]).map((v, i): daneGodzinowe => {
             return {
               id: i,
@@ -81,24 +36,44 @@ export class DataFetchingService {
 
           const mappedDataStatic = (res.czasZasobuNaPacjenta as any[]).map((v, i): StaticRow => {
             return {
-              id: i + 1, // +1 bc missing 'Triage' row should be first
-              typPacjenta: LABELS_ZASOBY[i + 1], // +1 bc missing 'Triage' row should be first
+              // +1 bc 'RZAD_TRIAGE' will be the first row with id = 0
+              id: i + 1,
+              typPacjenta: LABELS_ZASOBY[i + 1],
               procPacjentow: Object.values(res.statystykaChorych)[i] as number,
               zasoby: {
-                triage: 0, // Missing
+                triage: 0, // value of 'Triage' column should be 0 for each row except 'Triage'
                 pielegniarka: v.pielegniarka,
                 lekarz: v.lekarz,
                 lozko: v.lozko,
                 lozkoObserwacja: v.lozkoObserwacyjne,
-                lozkoOczekiwanie: 0, // Missing
+                lozkoOczekiwanie: 0, // value of 'Łóżko oczek. na przyj. do szpitala' column should be 0 for each row except 'Oczek. na przyj. na oddział leczniczy'
               },
-              wydajnoscPrzyjmowania: 0, // Missing
+              wydajnoscPrzyjmowania: 0, // value of 'Wydajność przyjmowania' column should be 0 for each row except 'Oczek. na przyj. na oddział leczniczy'
             };
           });
 
-          // Those 2 lines below are temporary
-          mappedDataStatic.unshift(BRAKUJACY_RZAD_TRIAGE);
-          mappedDataStatic.push(BRAKUJACY_RZAD_OCZEKIWANIE_NA_PRZYJECIE, BRAKUJACY_RZAD_LICZBA_ZASOBOW);
+          // Set correct id
+          RZAD_OCZEKIWANIE_NA_PRZYJECIE.id = mappedDataStatic.length + 1;
+
+          // Initialize 'Liczba zasobów' row in static table based on the number of resources available at 12 hour on that day
+          const RZAD_LICZBA_ZASOBOW = {
+            id: mappedDataStatic.length + 2,
+            typPacjenta: 'Liczba zasobów',
+            procPacjentow: null, // Null
+            zasoby: {
+              triage: 2, // Should triage always be 2 ?
+              lozko: mappedDataHourly[11].zasoby.lozko,
+              lekarz: mappedDataHourly[11].zasoby.lekarz,
+              pielegniarka: mappedDataHourly[11].zasoby.pielegniarka,
+              lozkoObserwacja: mappedDataHourly[11].zasoby.lozkoObserwacja,
+              lozkoOczekiwanie: 30, // Should triage always be 30 ?
+            },
+            wydajnoscPrzyjmowania: 0,
+          };
+
+          // Complate mapppedDataStatic
+          mappedDataStatic.unshift(RZAD_TRIAGE);
+          mappedDataStatic.push(RZAD_OCZEKIWANIE_NA_PRZYJECIE, RZAD_LICZBA_ZASOBOW);
 
           // set wczorajszaKolejka
           this.hourlyDataService.wczorajszaKolejka.set({
