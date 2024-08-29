@@ -73,8 +73,8 @@ ag-grid-angular {
         font-weight: 600;
 
         &:not(.ag-row:last-of-type *) {
-          border-bottom: var(--standard-border) !important;
-          border-bottom-color: var(--flashy-red) !important;
+          // border-bottom: var(--standard-border) !important;
+          // border-bottom-color: var(--flashy-red) !important;
         }
       }
     }

@@ -1,5 +1,7 @@
 import { Constants } from './utils/utils';
 
+export const DECIMAL_PLACES = 2 as const;
+
 export const LABELS_ZASOBY = [
   'Triage',
   '1. Resuscytacja',
@@ -11,12 +13,27 @@ export const LABELS_ZASOBY = [
   'Oczek. na przyj. na oddział leczniczy',
   'Liczba zasobów',
 ];
+
 export const LABELS_METRYKI = [
   'Średni ważony czas na pacjenta',
   'Wydajność (napływ pacj./godz.)',
   'Zajętość przy danej wydajności',
 ];
 
+export const COLOR_MAP = [
+  'rgb(20, 120, 20)', // Dark Green
+  'rgb(20, 120, 20)', // Green
+  'rgb(50, 205, 50)', // Light Green
+  'rgb(173, 255, 47)', // Yellow-Green
+  'rgb(255, 255, 0)', // Yellow
+  'rgb(255, 215, 0)', // Gold
+  'rgb(255, 165, 0)', // Orange
+  'rgb(255, 140, 0)', // Light Orange
+  'rgb(255, 69, 0)', // Light Red
+  'rgb(255, 0, 0)', // Red
+  'rgb(180, 0, 0)', // Dark Red
+  'rgb(150, 0, 0)', // Maroon
+];
 
 export const CONSTANTS: Constants = {
   pacjentRok: 51000,

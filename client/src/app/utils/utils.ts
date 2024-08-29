@@ -1,7 +1,6 @@
 import { ICellRendererParams } from 'ag-grid-community';
 import * as MoreRounding from 'more-rounding';
-
-export const DECIMAL_PLACES = 2 as const;
+import { DECIMAL_PLACES } from '../constants';
 
 export function numberRoundingFormatter({ value }: ICellRendererParams) {
   if (!isNaN(Number(value))) {

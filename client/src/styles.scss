@@ -68,7 +68,7 @@ body {
   --powder-blue: rgb(47, 117, 181);
   --powder-blue-semi-transparent: rgb(47, 117, 181, 0.18);
   --mid-blue: rgb(47, 117, 181);
-  --light-blue: rgb(217, 225, 242);
+  --light-blue: rgb(167, 188, 235);
 
   // Attention drawing colors
   --flashy-yellow: yellow;
@@ -124,10 +124,6 @@ body {
   // Disable default row borders
   --ag-row-border-style: none;
 
-  // Selection
-  --ag-range-selection-border-color: var(--dark-blue);
-  --ag-range-selection-border-style: solid;
-
   // Cell & header padding
   --ag-cell-horizontal-padding: var(--header-horizontal-padding);
 
@@ -138,6 +134,7 @@ body {
   // Resize handles
   --ag-header-column-resize-handle-display: none;
 
+  // Centering text
   .ag-cell,
   .ag-header-cell-label,
   .ag-header-group-cell {
@@ -171,6 +168,17 @@ body {
 
     border-bottom: var(--standard-border);
     border-bottom-color: var(--eee-white);
+  }
+
+  // Clicked cell
+  .ag-cell.ag-cell-focus {
+    border: 3px solid !important;
+    border-color: black !important;
+  }
+
+  // Cell in edit mode
+  .ag-input-field-input {
+    background-color: var(--light-blue);
   }
 
   // Fix row hover animation over columns with changed background

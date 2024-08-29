@@ -5,21 +5,7 @@ import { HourlyDataService } from '../hourly-data.service';
 import { Hour } from '../interfaces/hour';
 import { numberRoundingFormatter } from '../utils/utils';
 import { LOSTableColDefs } from './col-defs-los';
-
-const COLOR_MAP = [
-  'rgb(20, 120, 20)', // Dark Green
-  'rgb(20, 120, 20)', // Green
-  'rgb(50, 205, 50)', // Light Green
-  'rgb(173, 255, 47)', // Yellow-Green
-  'rgb(255, 255, 0)', // Yellow
-  'rgb(255, 215, 0)', // Gold
-  'rgb(255, 165, 0)', // Orange
-  'rgb(255, 140, 0)', // Light Orange
-  'rgb(255, 69, 0)', // Light Red
-  'rgb(255, 0, 0)', // Red
-  'rgb(180, 0, 0)', // Dark Red
-  'rgb(150, 0, 0)', // Maroon
-];
+import { COLOR_MAP } from '../constants';
 
 @Component({
   selector: 'app-length-of-stay',
@@ -48,8 +34,10 @@ export class LengthOfStayComponent {
     headerClass: 'grid-header grid-header-outer opoznienie-ogolem',
     cellClass: ({ data }) => ['cell', 'opoznienie-ogolem', data['id'] === 23 ? 'bottom' : ''],
     cellStyle: ({ value }) => {
-      if (value === null || value === undefined || typeof value === 'string') return undefined;
-      const styles: any = {};
+      if (value === null || value === undefined || typeof value === 'string') {
+        console.log('Value of opoznienieOgolem column cell is undefined');
+        return undefined;
+      }
 
       const minValue = this.hourlyDataService.minValue();
       const maxValue = this.hourlyDataService.maxValue();
@@ -61,9 +49,7 @@ export class LengthOfStayComponent {
       value = Math.min(value, maxValue);
       value = Math.max(value, minValue);
 
-      styles.backgroundColor = COLOR_MAP[value];
-
-      return styles;
+      return { backgroundColor: COLOR_MAP[value] };
     },
     minWidth: 150,
   };

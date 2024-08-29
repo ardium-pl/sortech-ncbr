@@ -6,7 +6,7 @@ import { LekarzLubPielegniarka, Zasoby } from './interfaces/zasoby';
 import { SummaryBottom, SummaryTop } from './interfaces/summaries';
 import { Godzina, LQparams, SredniCzasNaPacjenta } from './utils/utils';
 import {
-  defaultRowData,
+  defaultRowDataHourly,
   defaultSummaryRowBottom,
   defaultSummaryRowTop,
   defaultWoczorajszaKolejka,
@@ -297,93 +297,12 @@ export class HourlyDataService {
 
     this.minValue.set(min);
     this.maxValue.set(max);
-
-    // const opoznienia: number[] = hours
-    //   .map(hour => (typeof hour.opoznienieOgolem === 'number' ? hour.opoznienieOgolem : NaN))
-    //   .filter(opoznienie => !isNaN(opoznienie));
-
-    // this.minValue.set(Math.min(...opoznienia));
-    // this.maxValue.set(Math.max(...opoznienia));
   }
 
   readonly minValue = signal<number>(0);
   readonly maxValue = signal<number>(0);
   readonly wczorajszaKolejka = signal<kolejka>(defaultWoczorajszaKolejka);
-  readonly rowData = signal<Hour[]>(defaultRowData);
+  readonly rowData = signal<Hour[]>(defaultRowDataHourly);
   readonly summaryRowTop = signal<SummaryTop>(defaultSummaryRowTop);
   readonly summaryRowBottom = signal<SummaryBottom>(defaultSummaryRowBottom);
-
-  // KOD NIŻEJ BEDZIE PEWNIE DO USUNIECIA
-  // applyHourCalculationsPrevious(daneGodzinowe: daneGodzinowe[], changedRow?: daneGodzinowe) {
-  //   if (changedRow) {
-  //     daneGodzinowe[changedRow['id']] = changedRow;
-  //   }
-
-  //   let hours: Hour[] = daneGodzinowe.map((daneGodziny, index) => {
-  //     // Placeholder values which will be calculated in later steps
-  //     let hour: Hour = {
-  //       ...daneGodziny,
-  //       wydajnosc: {
-  //         lekarz: 0,
-  //         pielegniarka: 0,
-  //         lozko: 0,
-  //         lozkoObserwacja: 0,
-  //       },
-  //       obsluga: {
-  //         lekarz: 0,
-  //         pielegniarka: 0,
-  //       },
-  //       oczekiwanie: {
-  //         lekarz: 0,
-  //         pielegniarka: 0,
-  //       },
-  //       lq: {
-  //         lekarz: 0,
-  //         pielegniarka: 0,
-  //       },
-  //       wq: {
-  //         lekarz: 0,
-  //         pielegniarka: 0,
-  //       },
-  //       kolejka: {
-  //         lekarz: 0,
-  //         pielegniarka: 0,
-  //       },
-  //       waskiZasob: '',
-  //       waskaWydajnosc: 0,
-  //       mozliwoscPokryciaZopatrzenia: '',
-  //       opoznienieOgolem: 0,
-  //     };
-
-  //     // Access the previous hour (if exists) - otherwise assign the first hour
-  //     const previousHour = index > 0 ? hours[index - 1] : hours[0];
-
-  //     // Obliczenia część pierwsza - dot. kalkulacji z użyciem godziny obecnej, bądź minionej
-  //     hour = this.obliczWydajnosc(hour, previousHour, hours[0]);
-  //     hour = this.obliczWaskaWydajnosc(hour);
-  //     hour = this.obliczWaskiZasob(hour);
-  //     hour = this.obliczMozliwoscPokryciaZopatrzenia(hour);
-  //     hour = this.obliczObsluga(hour, previousHour);
-  //     hour = this.obliczKolejka(hour, previousHour);
-  //     return hour;
-  //   });
-
-  //   // Obliczenia część druga - dot. kalkulacji z użyciem godziny obecnej, minionej lub przyszłej
-  //   hours.forEach((hour, index, hours) => {
-  //     // Access the next hour (if exists) - otherwise assign the first hour
-  //     const nextHour = index !== 23 ? hours[index + 1] : hours[0];
-
-  //     hour = this.obliczOczekiwanie(hour, nextHour);
-  //     hour = this.obliczLq(hour);
-  //     hour = this.obliczWq(hour);
-  //     hour = this.obliczOpoznienieOgolem(hour);
-  //   });
-
-  //   // Get min and max value of delay
-  //   this.getExtremeValues(hours);
-
-  //   // Assign calculated hours to the rowData & summaryRows signals
-  //   this.rowData.set(hours);
-  //   this.applySummaryCalcuationsForPinnedRows(hours);
-  // }
 }
