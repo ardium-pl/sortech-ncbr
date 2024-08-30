@@ -1033,7 +1033,7 @@ export const defaultRowDataStatic: StaticRow[] = [
   },
   {
     id: 1,
-    typPacjenta: '1. Resuscytacja',
+    typPacjenta: 'Resuscytacja',
     procPacjentow: 0.0131322314049587,
     zasoby: {
       triage: null,
@@ -1047,7 +1047,7 @@ export const defaultRowDataStatic: StaticRow[] = [
   },
   {
     id: 2,
-    typPacjenta: '2. Stan zagrożenia życia',
+    typPacjenta: 'Stan zagrożenia życia',
     procPacjentow: 0.146321212121212,
     zasoby: {
       triage: null,
@@ -1061,7 +1061,7 @@ export const defaultRowDataStatic: StaticRow[] = [
   },
   {
     id: 3,
-    typPacjenta: '3. Pilny przypadek ostry',
+    typPacjenta: 'Pilny przypadek ostry',
     procPacjentow: 0.44884738292011,
     zasoby: {
       triage: null,
@@ -1075,7 +1075,7 @@ export const defaultRowDataStatic: StaticRow[] = [
   },
   {
     id: 4,
-    typPacjenta: '4. Pilny przypadek nieostry',
+    typPacjenta: 'Pilny przypadek nieostry',
     procPacjentow: 0.316226170798898,
     zasoby: {
       triage: null,
@@ -1089,7 +1089,7 @@ export const defaultRowDataStatic: StaticRow[] = [
   },
   {
     id: 5,
-    typPacjenta: '5. Niepilny',
+    typPacjenta: 'Niepilny',
     procPacjentow: 0.0754396694214876,
     zasoby: {
       triage: null,
@@ -1117,7 +1117,7 @@ export const defaultRowDataStatic: StaticRow[] = [
   },
   {
     id: 7,
-    typPacjenta: 'Oczek. na przyj. na oddział leczniczy',
+    typPacjenta: 'Oczek. na przyjęcie',
     procPacjentow: 0.4,
     zasoby: {
       triage: null,
@@ -1159,7 +1159,7 @@ export const defaultRowDataStatic: StaticRow[] = [
   },
   {
     id: 10,
-    typPacjenta: 'Wydajność (napływ pacj./godz.)',
+    typPacjenta: 'Wydajność (napływ pacj./h)',
     procPacjentow: null,
     zasoby: {
       triage: 30.0,
@@ -1173,7 +1173,7 @@ export const defaultRowDataStatic: StaticRow[] = [
   },
   {
     id: 11,
-    typPacjenta: 'Zajętość przy danej wydajności',
+    typPacjenta: 'Zajętość',
     procPacjentow: null,
     zasoby: {
       triage: 27,

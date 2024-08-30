@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
-import { CellValueChangedEvent, ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
+import { CellValueChangedEvent, ColDef, GridApi, GridReadyEvent, ICellRendererParams } from 'ag-grid-community';
 import { StaticRow } from '../interfaces/static-row';
 import { StaticDataService } from '../static-data.service';
-import { numberRoundingFormatter } from '../utils/utils';
+import { numberRoundingFormatterNoZeros, percentFormatter } from '../utils/utils';
 import { columnDefs } from './col-defs-static';
 
 @Component({
@@ -21,7 +21,14 @@ export class StaticTableComponent {
     cellDataType: 'number',
     sortable: false,
     resizable: true,
-    cellRenderer: numberRoundingFormatter,
+    // cellRenderer: numberRoundingFormatterNoZeros,
+    cellRenderer: (params: ICellRendererParams) => {
+      if (params.data['id'] === 11) {
+        return percentFormatter(params);
+      } else {
+        return numberRoundingFormatterNoZeros(params);
+      }
+    },
     editable: ({ data }) => data['id'] < 9,
   };
 

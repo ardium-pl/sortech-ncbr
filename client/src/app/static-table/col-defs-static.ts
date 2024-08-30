@@ -1,6 +1,7 @@
 import { Signal } from '@angular/core';
-import { ColDef, ColGroupDef } from 'ag-grid-community';
+import { ColDef, ColGroupDef, ICellRendererParams } from 'ag-grid-community';
 import { WaskieGardlo } from '../interfaces/zasoby';
+import { percentFormatter } from '../utils/utils';
 
 const ZASOBY_MIN_WIDTH = 120;
 const OGRANICZENIA_PRZYJEC_MIN_WIDTH = 150;
@@ -33,6 +34,7 @@ export function columnDefs(waskieGardlo: Signal<WaskieGardlo>): (ColDef | ColGro
         data['id'] === 8 ? 'top' : '',
         data['id'] === 11 ? 'bottom' : '',
       ],
+      cellRenderer: (params: ICellRendererParams) => percentFormatter(params, 0),
       width: 55,
     },
     {

@@ -41,7 +41,8 @@ ag-grid-angular {
       &.ag-column-first,
       &.waskie-gardlo,
       &.mozliwosc-pokrycia,
-      &.liczba {
+      &.liczba,
+      .ag-input-field-input {
         color: black;
         font-weight: 500;
       }

@@ -32,7 +32,7 @@ ag-grid-angular {
     .ag-row {
       // Granatowa granica pozioma
       &:nth-of-type(8) {
-        .ag-cell {
+        .ag-cell:not(.ag-cell-focus):not(.ag-input-field-input) {
           border-bottom: var(--standard-border) !important;
           border-bottom-color: var(--dark-blue) !important;
         }
@@ -40,7 +40,8 @@ ag-grid-angular {
 
       &:nth-of-type(9),
       &:last-of-type {
-        .ag-cell {
+        .ag-cell,
+        .ag-input-field-input {
           font-size: 17px;
           font-weight: 600;
         }

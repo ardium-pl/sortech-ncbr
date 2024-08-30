@@ -19,7 +19,7 @@ export class StaticDataService {
     const metrykiDefaults: StaticRow[] = LABELS_METRYKI.map((label, i) => ({
       id: daneStatyczne.length + i,
       typPacjenta: label,
-      procPacjentow: 0,
+      procPacjentow: null,
       zasoby: {
         triage: 0,
         lozko: 0,

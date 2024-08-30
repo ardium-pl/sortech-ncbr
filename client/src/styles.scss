@@ -84,7 +84,7 @@ body {
   --mid-header-font-size: 16px;
   --inner-header-font-size: 16px;
 
-  --font-family: 'Times New Roman', Times, serif;
+  --font-family: calibri;
 
   // Borders
   --standard-border: 1px solid;
@@ -171,8 +171,9 @@ body {
   }
 
   // Cell in edit mode
-  .ag-input-field-input {
+  .ag-cell .ag-input-field-input {
     background-color: var(--light-blue);
+    color: var(--font-color);
   }
 
   // Fix row hover animation over columns with changed background

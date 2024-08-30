@@ -18,11 +18,13 @@ ag-grid-angular {
   app-length-of-stay {
     // Granatowa granica pionowa
     .pielegniarki:not(.wydajnosc),
+    .lekarze:not(.wydajnosc),
     .opoznienie-wydajnosc,
     .opoznienie-zmiennosc,
     .opoznienie-ogolem,
     .lekarz.obsluga,
     .lekarz.lq,
+    .lekarz.ag-header-group-cell,
     .pielegniarka.obsluga,
     .pielegniarka.lq,
     .pielegniarka.ag-header-group-cell {
@@ -33,7 +35,8 @@ ag-grid-angular {
     .ag-cell {
       // Pierwsza kolumna + to co ma mieć grubszą czcionkę
       &.ag-column-first,
-      &.liczba {
+      &.liczba,
+      .ag-input-field-input {
         color: black;
         font-weight: 500;
       }

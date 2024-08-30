@@ -1,10 +1,10 @@
 import { ColDef, ColGroupDef, ICellRendererParams } from 'ag-grid-community';
-import { numberRoundingFormatter } from '../utils/utils';
+import { numberRoundingFormatter, percentFormatter } from '../utils/utils';
 
 function cellRendererEditable({ data, value }: ICellRendererParams) {
   if (data['id'] === 24) return 'Wyd./dobę';
   if (data['id'] === 25) return 'Śr. zajęt.';
-  return value;
+  return value.toLocaleString();
 }
 
 export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
@@ -66,7 +66,13 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Wyd. \n l. pacj.',
         field: 'wydajnosc.pielegniarka',
         headerClass: 'grid-header grid-header-mid pielegniarki wydajnosc',
-        cellRenderer: numberRoundingFormatter,
+        cellRenderer: (params: ICellRendererParams) => {
+          if (params.data['id'] === 25) {
+            return percentFormatter(params);
+          } else {
+            return numberRoundingFormatter(params);
+          }
+        },
         cellClass: ({ data }) => [
           'cell',
           'pielegniarki',
@@ -101,7 +107,13 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Wyd. \n l. pacj.',
         field: 'wydajnosc.lekarz',
         headerClass: 'grid-header grid-header-mid lekarze wydajnosc',
-        cellRenderer: numberRoundingFormatter,
+        cellRenderer: (params: ICellRendererParams) => {
+          if (params.data['id'] === 25) {
+            return percentFormatter(params);
+          } else {
+            return numberRoundingFormatter(params);
+          }
+        },
         cellClass: ({ data }) => [
           'cell',
           'lekarz',
@@ -136,7 +148,13 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Wyd. \n l. pacj.',
         field: 'wydajnosc.lozko',
         headerClass: 'grid-header grid-header-mid lozka wydajnosc',
-        cellRenderer: numberRoundingFormatter,
+        cellRenderer: (params: ICellRendererParams) => {
+          if (params.data['id'] === 25) {
+            return percentFormatter(params);
+          } else {
+            return numberRoundingFormatter(params);
+          }
+        },
         cellClass: ({ data }) => [
           'cell',
           'lozko',
@@ -171,7 +189,13 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         headerName: 'Wyd. \n l. pacj.',
         field: 'wydajnosc.lozkoObserwacja',
         headerClass: 'grid-header grid-header-mid obserwacja wydajnosc',
-        cellRenderer: numberRoundingFormatter,
+        cellRenderer: (params: ICellRendererParams) => {
+          if (params.data['id'] === 25) {
+            return percentFormatter(params);
+          } else {
+            return numberRoundingFormatter(params);
+          }
+        },
         cellClass: ({ data }) => [
           'cell',
           'obserwacja',
