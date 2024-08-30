@@ -1,7 +1,7 @@
 // Ten plik jest plikiem tymczasowym
 import { Hour, kolejka } from '../interfaces/hour';
-import { SummaryTop, SummaryBottom } from '../interfaces/summaries';
 import { StaticRow } from '../interfaces/static-row';
+import { SummaryBottom, SummaryTop } from '../interfaces/summaries';
 
 export const defaultWoczorajszaKolejka: kolejka = {
   lekarz: 7.8053,
@@ -437,7 +437,7 @@ export const defaultRowDataHourly: Hour[] = [
     },
     waskiZasob: 'Pielegn',
     waskaWydajnosc: 8.84,
-    mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
+    mozliwoscPokryciaZopatrzenia: 'Niedobór wyd.',
     opoznienieOgolem: 0.422,
   },
   {
@@ -478,7 +478,7 @@ export const defaultRowDataHourly: Hour[] = [
     },
     waskiZasob: 'Pielegn',
     waskaWydajnosc: 8.84,
-    mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
+    mozliwoscPokryciaZopatrzenia: 'Niedobór wyd.',
     opoznienieOgolem: 0.9221,
   },
   {
@@ -519,7 +519,7 @@ export const defaultRowDataHourly: Hour[] = [
     },
     waskiZasob: 'Pielegn',
     waskaWydajnosc: 8.84,
-    mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
+    mozliwoscPokryciaZopatrzenia: 'Niedobór wyd.',
     opoznienieOgolem: 1.3236,
   },
   {
@@ -560,7 +560,7 @@ export const defaultRowDataHourly: Hour[] = [
     },
     waskiZasob: 'Lekarze',
     waskaWydajnosc: 8.24,
-    mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
+    mozliwoscPokryciaZopatrzenia: 'Niedobór wyd.',
     opoznienieOgolem: 1.3081,
   },
   {
@@ -601,7 +601,7 @@ export const defaultRowDataHourly: Hour[] = [
     },
     waskiZasob: 'Lekarze',
     waskaWydajnosc: 8.24,
-    mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
+    mozliwoscPokryciaZopatrzenia: 'Niedobór wyd.',
     opoznienieOgolem: 1.4982,
   },
   {
@@ -642,7 +642,7 @@ export const defaultRowDataHourly: Hour[] = [
     },
     waskiZasob: 'Lekarze',
     waskaWydajnosc: 8.24,
-    mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
+    mozliwoscPokryciaZopatrzenia: 'Niedobór wyd.',
     opoznienieOgolem: 1.5664,
   },
   {
@@ -683,7 +683,7 @@ export const defaultRowDataHourly: Hour[] = [
     },
     waskiZasob: 'Lekarze',
     waskaWydajnosc: 8.24,
-    mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
+    mozliwoscPokryciaZopatrzenia: 'Niedobór wyd.',
     opoznienieOgolem: 1.6674,
   },
   {
@@ -724,7 +724,7 @@ export const defaultRowDataHourly: Hour[] = [
     },
     waskiZasob: 'Lekarze',
     waskaWydajnosc: 8.24,
-    mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
+    mozliwoscPokryciaZopatrzenia: 'Niedobór wyd.',
     opoznienieOgolem: 1.8321,
   },
   {
@@ -765,7 +765,7 @@ export const defaultRowDataHourly: Hour[] = [
     },
     waskiZasob: 'Lekarze',
     waskaWydajnosc: 8.24,
-    mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
+    mozliwoscPokryciaZopatrzenia: 'Niedobór wyd.',
     opoznienieOgolem: 1.9754,
   },
   {
@@ -806,7 +806,7 @@ export const defaultRowDataHourly: Hour[] = [
     },
     waskiZasob: 'Lekarze',
     waskaWydajnosc: 8.24,
-    mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
+    mozliwoscPokryciaZopatrzenia: 'Niedobór wyd.',
     opoznienieOgolem: 2.1064,
   },
   {
@@ -847,7 +847,7 @@ export const defaultRowDataHourly: Hour[] = [
     },
     waskiZasob: 'Lekarze',
     waskaWydajnosc: 8.24,
-    mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
+    mozliwoscPokryciaZopatrzenia: 'Niedobór wyd.',
     opoznienieOgolem: 2.2034,
   },
   {
@@ -888,7 +888,7 @@ export const defaultRowDataHourly: Hour[] = [
     },
     waskiZasob: 'Pielegn',
     waskaWydajnosc: 5.05,
-    mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
+    mozliwoscPokryciaZopatrzenia: 'Niedobór wyd.',
     opoznienieOgolem: 2.7803,
   },
   {
@@ -929,7 +929,7 @@ export const defaultRowDataHourly: Hour[] = [
     },
     waskiZasob: 'Pielegn',
     waskaWydajnosc: 5.05,
-    mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
+    mozliwoscPokryciaZopatrzenia: 'Niedobór wyd.',
     opoznienieOgolem: 2.6702,
   },
   {
@@ -970,7 +970,7 @@ export const defaultRowDataHourly: Hour[] = [
     },
     waskiZasob: 'Pielegn',
     waskaWydajnosc: 5.05,
-    mozliwoscPokryciaZopatrzenia: 'Niedobor wydajn',
+    mozliwoscPokryciaZopatrzenia: 'Niedobór wyd.',
     opoznienieOgolem: 2.714,
   },
   {

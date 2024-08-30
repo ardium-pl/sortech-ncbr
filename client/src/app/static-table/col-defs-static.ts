@@ -38,7 +38,7 @@ export function columnDefs(waskieGardlo: Signal<WaskieGardlo>): (ColDef | ColGro
       ],
     },
     {
-      headerName: 'Zasoby',
+      headerName: 'Zasoby (min.)',
       headerClass: 'grid-header grid-header-outer zasoby',
       children: [
         {

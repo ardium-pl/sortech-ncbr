@@ -1,16 +1,16 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import * as MoreRounding from 'more-rounding';
 import { CONSTANTS } from './constants';
-import { Hour, kolejka, daneGodzinowe } from './interfaces/hour';
-import { LekarzLubPielegniarka, Zasoby } from './interfaces/zasoby';
+import { daneGodzinowe, Hour, kolejka } from './interfaces/hour';
 import { SummaryBottom, SummaryTop } from './interfaces/summaries';
-import { Godzina, LQparams, SredniCzasNaPacjenta } from './utils/utils';
+import { LekarzLubPielegniarka, Zasoby } from './interfaces/zasoby';
 import {
   defaultRowDataHourly,
   defaultSummaryRowBottom,
   defaultSummaryRowTop,
   defaultWoczorajszaKolejka,
 } from './utils/default-table-data';
+import { LQparams } from './utils/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -128,10 +128,10 @@ export class HourlyDataService {
         hour.waskiZasob = 'Łóżka';
         break;
       case hour.wydajnosc.lozkoObserwacja:
-        hour.waskiZasob = 'Obs. Łóżka';
+        hour.waskiZasob = 'Łóżka obs.';
         break;
       default:
-        hour.waskiZasob = 'Demand';
+        hour.waskiZasob = 'Popyt';
     }
   }
 

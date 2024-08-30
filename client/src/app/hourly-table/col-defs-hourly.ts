@@ -13,7 +13,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     field: 'godzina',
     headerClass: 'grid-header grid-header-outer godzina',
     cellDataType: 'text',
-    minWidth: 140,
+    minWidth: 95,
     colSpan: ({ data }) => (data['id'] === 25 ? 2 : 1),
     cellClass: ({ data }) => [
       'cell',
@@ -27,7 +27,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     headerName: 'Oczek. \n l. wizyt',
     field: 'liczbaWizyt',
     headerClass: 'grid-header grid-header-outer oczekiwane-wizyty',
-    minWidth: 140,
+    minWidth: 95,
     cellRenderer: (params: any) => {
       if (params.data['id'] === 25) {
         return '';
@@ -207,7 +207,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     headerClass: 'grid-header grid-header-outer waskie-gardlo',
     field: 'waskiZasob',
     cellDataType: 'text',
-    minWidth: 160,
+    minWidth: 120,
     rowSpan: ({ data }) => (data['id'] === 24 ? 2 : 1),
     colSpan: ({ data }) => (data['id'] < 24 ? 1 : 2),
     cellClass: ({ data }) => [
@@ -224,7 +224,7 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     field: 'mozliwoscPokryciaZopatrzenia',
     headerClass: 'grid-header grid-header-outer mozliwosc-pokrycia',
     cellDataType: 'text',
-    minWidth: 160,
+    minWidth: 120,
     cellClass: ({ data }) => [
       'cell',
       'mozliwosc-pokrycia',
