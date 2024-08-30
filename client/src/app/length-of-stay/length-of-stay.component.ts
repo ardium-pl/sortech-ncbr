@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
-import { CellValueChangedEvent, ColDef, ColGroupDef, GridApi, GridReadyEvent } from 'ag-grid-community';
-import { COLOR_MAP } from '../constants';
+import { CellValueChangedEvent, ColDef, ColGroupDef, GridReadyEvent } from 'ag-grid-community';
 import { HourlyDataService } from '../hourly-data.service';
 import { Hour } from '../interfaces/hour';
+import { getColorRangeClass } from '../utils/color-range';
 import { numberRoundingFormatter } from '../utils/utils';
 import { LOSTableColDefs } from './col-defs-los';
 
@@ -32,26 +32,15 @@ export class LengthOfStayComponent {
     headerName: 'Opóźnienie ogółem',
     field: 'opoznienieOgolem',
     headerClass: 'grid-header grid-header-outer opoznienie-ogolem',
-    cellClass: ({ data }) => ['cell', 'opoznienie-ogolem', data['id'] === 23 ? 'bottom' : ''],
-    cellStyle: ({ value }) => {
-      if (value === null || value === undefined || typeof value === 'string') {
-        console.log('Value of opoznienieOgolem column cell is undefined');
-        return undefined;
-      }
-
-      const minValue = this.hourlyDataService.minValue();
-      const maxValue = this.hourlyDataService.maxValue();
-      const step = (maxValue - minValue) / COLOR_MAP.length;
-
-      value -= minValue;
-      value /= step;
-      value = Math.floor(value);
-      value = Math.max(value, 0);
-      value = Math.min(value, COLOR_MAP.length - 1);
-
-      return { backgroundColor: COLOR_MAP[value] };
-    },
     minWidth: 150,
+    cellClass: ({ data, value }) => {
+      return [
+        'cell',
+        'opoznienie-ogolem',
+        data['id'] === 23 ? 'bottom' : '',
+        getColorRangeClass(value, this.hourlyDataService.minValue(), this.hourlyDataService.maxValue()),
+      ];
+    },
   };
   readonly columnDefs: (ColDef | ColGroupDef)[] = [...LOSTableColDefs, this.delayColumn];
   readonly rowData = this.hourlyDataService.rowData;
