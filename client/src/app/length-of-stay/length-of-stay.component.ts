@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { CellValueChangedEvent, ColDef, ColGroupDef, GridApi, GridReadyEvent } from 'ag-grid-community';
+import { COLOR_MAP } from '../constants';
 import { HourlyDataService } from '../hourly-data.service';
 import { Hour } from '../interfaces/hour';
 import { numberRoundingFormatter } from '../utils/utils';
 import { LOSTableColDefs } from './col-defs-los';
-import { COLOR_MAP } from '../constants';
 
 @Component({
   selector: 'app-length-of-stay',
@@ -46,8 +46,8 @@ export class LengthOfStayComponent {
       value -= minValue;
       value /= step;
       value = Math.floor(value);
-      value = Math.min(value, maxValue);
-      value = Math.max(value, minValue);
+      value = Math.max(value, 0);
+      value = Math.min(value, COLOR_MAP.length - 1);
 
       return { backgroundColor: COLOR_MAP[value] };
     },
