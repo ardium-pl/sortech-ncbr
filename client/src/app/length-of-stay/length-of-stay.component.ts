@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
-import { CellValueChangedEvent, ColDef, ColGroupDef, GridReadyEvent } from 'ag-grid-community';
+import { CellValueChangedEvent, ColDef, ColGroupDef } from 'ag-grid-community';
 import { HourlyDataService } from '../hourly-data.service';
 import { Hour } from '../interfaces/hour';
 import { getColorRangeClass } from '../utils/color-range';
@@ -46,18 +46,11 @@ export class LengthOfStayComponent {
   readonly rowData = this.hourlyDataService.rowData;
 
   onCellValueChanged(event: CellValueChangedEvent) {
-    // Get the changed row (=hour)
     const changedHour: Hour = event.data;
-    // Apply calculations & update main signal
     this.hourlyDataService.applyHourCalculations(this.rowData(), changedHour);
   }
 
-  private api!: GridApi;
-  onGridReady = (event: GridReadyEvent) => {
-    // Store the api for later use
-    this.api = event.api;
-
-    // Apply calculations
+  onGridReady() {
     this.hourlyDataService.applyHourCalculations(this.rowData());
   };
 }

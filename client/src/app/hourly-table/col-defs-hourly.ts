@@ -13,6 +13,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     field: 'godzina',
     headerClass: 'grid-header grid-header-outer godzina',
     cellDataType: 'text',
+    minWidth: 140,
+    colSpan: ({ data }) => (data['id'] === 25 ? 2 : 1),
     cellClass: ({ data }) => [
       'cell',
       'godzina',
@@ -20,19 +22,17 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       data['id'] === 24 ? 'top' : '',
       data['id'] === 25 ? 'bottom' : '',
     ],
-    colSpan: ({ data }) => (data['id'] === 25 ? 2 : 1),
-    minWidth: 140,
   },
   {
     headerName: 'Oczek. \n l. wizyt',
     field: 'liczbaWizyt',
     headerClass: 'grid-header grid-header-outer oczekiwane-wizyty',
+    minWidth: 140,
     cellRenderer: (params: any) => {
       if (params.data['id'] === 25) {
         return '';
-      } else {
-        return numberRoundingFormatter(params);
       }
+      return numberRoundingFormatter(params);
     },
     cellClass: ({ data }) => [
       'cell',
@@ -41,7 +41,6 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       data['id'] === 24 ? 'top' : '',
       data['id'] === 25 ? 'bottom' : '',
     ],
-    minWidth: 140,
   },
   {
     headerName: 'Pielęgniarki',
@@ -69,9 +68,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         cellRenderer: (params: ICellRendererParams) => {
           if (params.data['id'] === 25) {
             return percentFormatter(params);
-          } else {
-            return numberRoundingFormatter(params);
           }
+          return numberRoundingFormatter(params);
         },
         cellClass: ({ data }) => [
           'cell',
@@ -110,9 +108,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         cellRenderer: (params: ICellRendererParams) => {
           if (params.data['id'] === 25) {
             return percentFormatter(params);
-          } else {
-            return numberRoundingFormatter(params);
           }
+          return numberRoundingFormatter(params);
         },
         cellClass: ({ data }) => [
           'cell',
@@ -151,9 +148,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         cellRenderer: (params: ICellRendererParams) => {
           if (params.data['id'] === 25) {
             return percentFormatter(params);
-          } else {
-            return numberRoundingFormatter(params);
           }
+          return numberRoundingFormatter(params);
         },
         cellClass: ({ data }) => [
           'cell',
@@ -192,9 +188,8 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
         cellRenderer: (params: ICellRendererParams) => {
           if (params.data['id'] === 25) {
             return percentFormatter(params);
-          } else {
-            return numberRoundingFormatter(params);
           }
+          return numberRoundingFormatter(params);
         },
         cellClass: ({ data }) => [
           'cell',
@@ -212,6 +207,9 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
     headerClass: 'grid-header grid-header-outer waskie-gardlo',
     field: 'waskiZasob',
     cellDataType: 'text',
+    minWidth: 160,
+    rowSpan: ({ data }) => (data['id'] === 24 ? 2 : 1),
+    colSpan: ({ data }) => (data['id'] < 24 ? 1 : 2),
     cellClass: ({ data }) => [
       'cell',
       'waskie-gardlo',
@@ -220,15 +218,13 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       data['id'] === 25 ? 'bottom' : '',
       data['mozliwoscPokryciaZopatrzenia'] === 'Niedobór wyd.' ? 'niedobor-wydajnosci' : 'brak-niedoboru',
     ],
-    rowSpan: ({ data }) => (data['id'] === 24 ? 2 : 1),
-    colSpan: ({ data }) => (data['id'] < 24 ? 1 : 2),
-    minWidth: 160,
   },
   {
     headerName: 'Możliwość pokrycia zapotrz. okresu',
     field: 'mozliwoscPokryciaZopatrzenia',
     headerClass: 'grid-header grid-header-outer mozliwosc-pokrycia',
     cellDataType: 'text',
+    minWidth: 160,
     cellClass: ({ data }) => [
       'cell',
       'mozliwosc-pokrycia',
@@ -237,7 +233,5 @@ export const hourlyTableColDefs: (ColDef | ColGroupDef)[] = [
       data['id'] === 25 ? 'bottom' : '',
       data['mozliwoscPokryciaZopatrzenia'] === 'Niedobór wyd.' ? 'niedobor-wydajnosci' : 'brak-niedoboru',
     ],
-
-    minWidth: 160,
   },
 ];
