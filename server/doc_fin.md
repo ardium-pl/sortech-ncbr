@@ -84,11 +84,29 @@ export async function createTCPConnection() {
 
 ### Zmienne środowiskowe (.env)
 
+Projekt korzysta z pliku `.env` do konfiguracji zmiennych środowiskowych. Oto przykładowa konfiguracja (z fikcyjnymi danymi):
+
 ```
-PORT=8080
-MYSQL_URL=mysql://user:password@host:port/database
-LOG_LEVEL=info
+MYSQLHOST=db.example.com
+MYSQLPORT=3306
+MYSQLUSER=sor_user
+MYSQLPASSWORD=example_password_123
+MYSQL_DATABASE=sor_database
+R_URL=https://r-service.example.com/predict
 ```
+
+Objaśnienie zmiennych:
+- `MYSQLHOST`: Adres hosta bazy danych MySQL
+- `MYSQLPORT`: Port, na którym nasłuchuje baza danych MySQL
+- `MYSQLUSER`: Nazwa użytkownika do bazy danych MySQL
+- `MYSQLPASSWORD`: Hasło do bazy danych MySQL
+- `MYSQL_DATABASE`: Nazwa bazy danych MySQL
+- `R_URL`: URL do serwisu R używanego do przewidywania liczby pacjentów
+
+**Ważne:** 
+1. Upewnij się, że plik `.env` jest dodany do `.gitignore`, aby uniknąć przypadkowego upublicznienia wrażliwych danych.
+2. Nigdy nie udostępniaj rzeczywistych danych dostępowych w dokumentacji lub repozytorium kodu.
+3. W środowisku produkcyjnym używaj silnych, unikalnych haseł i ogranicz dostęp do minimum niezbędnego dla działania aplikacji.
 
 ## 4. Endpointy API
 
