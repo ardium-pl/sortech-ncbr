@@ -1,15 +1,15 @@
 import { Injectable, signal } from '@angular/core';
-import * as MoreRounding from 'more-rounding';
-import { CONSTANTS, DEFAULT_DATE } from './constants';
-import { daneGodzinowe, Hour, kolejka } from './interfaces/hour';
+import {
+  DEFAULT_SUMMARY_ROW_TOP,
+  DEFAULT_SUMMARY_ROW_BOTTOM,
+  DEFAULT_KOLEJKA,
+  WSPOLCZYNNIK_V,
+  SREDNI_CZAS_NA_PACJENTA,
+} from './constants';
+import { daneGodzinowe, Hour} from './interfaces/hour';
 import { SummaryBottom, SummaryTop } from './interfaces/summaries';
 import { LekarzLubPielegniarka, Zasoby } from './interfaces/zasoby';
-import {
-  defaultSummaryRowBottom,
-  defaultSummaryRowTop,
-  defaultWoczorajszaKolejka,
-} from './utils/default-table-data';
-import { LQparams } from './utils/utils';
+import { Kolejka, LQparams } from './interfaces/other-interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -17,10 +17,10 @@ import { LQparams } from './utils/utils';
 export class HourlyDataService {
   readonly minValue = signal<number>(0);
   readonly maxValue = signal<number>(0);
-  readonly wczorajszaKolejka = signal<kolejka>(defaultWoczorajszaKolejka);
+  readonly wczorajszaKolejka = signal<Kolejka>(DEFAULT_KOLEJKA);
   readonly rowData = signal<Hour[]>([]);
-  readonly summaryRowTop = signal<SummaryTop | {}>(defaultSummaryRowTop);
-  readonly summaryRowBottom = signal<SummaryBottom | {}>(defaultSummaryRowBottom);
+  readonly summaryRowTop = signal<SummaryTop | { id: 24 }>({ id: 24 });
+  readonly summaryRowBottom = signal<SummaryBottom | { id: 25 }>({ id: 25 });
 
   applyHourCalculations(daneGodzinowe: daneGodzinowe[], changedRow?: daneGodzinowe) {
     if (changedRow) {
@@ -104,7 +104,7 @@ export class HourlyDataService {
       } else {
         liczbaZasobow = zasob === 'lozkoObserwacja' ? hour.zasoby[zasob] : previousHour.zasoby[zasob];
       }
-      hour.wydajnosc[zasob] = liczbaZasobow / CONSTANTS.sredniCzasNaPacjenta[zasob];
+      hour.wydajnosc[zasob] = liczbaZasobow / SREDNI_CZAS_NA_PACJENTA[zasob];
     }
   }
 
@@ -165,12 +165,12 @@ export class HourlyDataService {
         // Calling Lq function implemented from VBA script
         hour.lq[zasob] = this.Lq({
           arrivalRate: hour.liczbaWizyt,
-          serviceRate: 1 / CONSTANTS.sredniCzasNaPacjenta[zasob], // Wydajnosc godzinowa 1 zasobu
+          serviceRate: 1 / SREDNI_CZAS_NA_PACJENTA[zasob], // Wydajnosc godzinowa 1 zasobu
           servers: hour.zasoby[zasob],
         });
 
         if (typeof hour.lq[zasob] === 'number') {
-          (hour.lq[zasob] as number) *= CONSTANTS.wspolczynnikV;
+          (hour.lq[zasob] as number) *= WSPOLCZYNNIK_V;
         }
       }
     }
@@ -252,8 +252,8 @@ export class HourlyDataService {
   }
 
   applySummaryCalcuationsForPinnedRows(hours: Hour[]) {
-    const summaryRowTop = { ...defaultSummaryRowTop };
-    const summaryRowBottom = { ...defaultSummaryRowBottom };
+    const summaryRowTop = { ...DEFAULT_SUMMARY_ROW_TOP };
+    const summaryRowBottom = { ...DEFAULT_SUMMARY_ROW_BOTTOM };
 
     summaryRowTop.liczbaWizyt = hours.reduce((acc, hour) => acc + hour.liczbaWizyt, 0);
 

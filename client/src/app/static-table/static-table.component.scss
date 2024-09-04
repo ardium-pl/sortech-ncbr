@@ -14,6 +14,8 @@ in our case: 220 + 55 + 120 * 5 + 150 * 2 = 1175px ( + ~2px to account for borde
 */
 
 ag-grid-angular {
+  // height = (header height) * 2 + (row height) * 12 + (safety marign) 3
+  height: 593px;
   width: 1177px;
   margin-top: var(--grid-ofset);
 }
@@ -76,6 +78,11 @@ ag-grid-angular {
           border-bottom-color: var(--flashy-red);
         }
       }
+    }
+
+    // Set min height for the grid in auto height mode
+    .ag-center-cols-viewport {
+      min-height: 300px !important;
     }
   }
 }

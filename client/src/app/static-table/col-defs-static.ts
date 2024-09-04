@@ -1,7 +1,7 @@
 import { Signal } from '@angular/core';
 import { ColDef, ColGroupDef, ICellRendererParams } from 'ag-grid-community';
 import { WaskieGardlo } from '../interfaces/zasoby';
-import { percentFormatter } from '../utils/utils';
+import { percentFormatter } from '../utils/value-formatters';
 
 const ZASOBY_MIN_WIDTH = 120;
 const OGRANICZENIA_PRZYJEC_MIN_WIDTH = 150;

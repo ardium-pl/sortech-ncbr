@@ -100,9 +100,12 @@ export class DataFetchingService {
           this.shouldRenderTables.set(true);
         } catch (err) {
           console.log('❌ An error occured during initializing table data from the response body. ❌\nError message:\n', err);
+          // clear table data
           this.shouldRenderTables.set(false);
-          this.hourlyDataService.rowData.set([]);
           this.staticDataService.rowData.set([]);
+          this.hourlyDataService.rowData.set([]);
+          this.hourlyDataService.summaryRowTop.set({ id: 24 });
+          this.hourlyDataService.summaryRowBottom.set({ id: 25 });
         }
       },
       error: err => {

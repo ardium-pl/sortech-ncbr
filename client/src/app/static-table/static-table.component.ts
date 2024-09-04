@@ -3,10 +3,10 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { CellValueChangedEvent, ColDef, ICellRendererParams } from 'ag-grid-community';
 import { StaticRow } from '../interfaces/static-row';
 import { StaticDataService } from '../static-data.service';
-import { numberRoundingFormatterNoZeros, percentFormatter } from '../utils/utils';
+import { numberRoundingFormatterNoZeros, percentFormatter } from '../utils/value-formatters';
 import { columnDefs } from './col-defs-static';
 import { DataFetchingService } from '../data-fetching.service';
-import { WarningContainerComponent } from "../warning-container/warning-container.component";
+import { WarningContainerComponent } from '../warning-container/warning-container.component';
 
 @Component({
   selector: 'app-static-table',

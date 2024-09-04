@@ -1,13 +1,15 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { StaticRow } from './interfaces/static-row';
 import { WaskieGardlo, ZasobyITriage } from './interfaces/zasoby';
 import { ZasobyTriageILozkoOczekiwanie } from './interfaces/zasoby';
-import { LABELS_METRYKI, LABELS_ZASOBY } from './constants';
+import { LABELS_METRYKI, DEFAULT_WASKIE_GARDLO } from './constants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StaticDataService {
+  readonly waskieGardlo = signal<WaskieGardlo>(DEFAULT_WASKIE_GARDLO);
+  readonly rowData = signal<StaticRow[]>([]);
   // Wydajnosc przyjmowania w jednostkach godzinowych, reszta zamieniona na minuty
   applyRowCalculations(daneStatyczne: StaticRow[], changedRow?: StaticRow) {
     if (changedRow) {
@@ -74,7 +76,7 @@ export class StaticDataService {
       wydajnoscZasobu.zasoby[zasob] = (liczbaZasobow.zasoby[zasob]! * 60) / meanTimePerPatient.zasoby[zasob]!;
     }
     wydajnoscZasobu['wydajnoscPrzyjmowania'] =
-      (daneStatyczne[daneStatyczne.length - 2]['wydajnoscPrzyjmowania']!) /
+      daneStatyczne[daneStatyczne.length - 2]['wydajnoscPrzyjmowania']! /
       daneStatyczne[daneStatyczne.length - 2]['procPacjentow']!;
   }
   obliczZajetosc(zajetosc: StaticRow, wydajnoscZasobu: StaticRow, minWydajnosci: number) {
@@ -94,18 +96,4 @@ export class StaticDataService {
       return waskieGardo;
     });
   }
-
-  readonly waskieGardlo = signal<WaskieGardlo>({
-    triage: false,
-    lozko: false,
-    lekarz: false,
-    pielegniarka: false,
-    lozkoObserwacja: false,
-    lozkoOczekiwanie: false,
-    wydajnoscPrzyjmowania: false,
-  });
-
-  readonly rowData = signal<StaticRow[]>([]);
-
-  constructor() {}
 }

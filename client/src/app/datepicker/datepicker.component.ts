@@ -26,8 +26,6 @@ export class DatepickerComponent {
 
     if (pickedDate) {
       console.log(`⚙️ Fetching table data ...`);
-
-      // Fetch table data from a database for a chosen day
       this.dataFetchingService.fetchRowData(pickedDate.toISOString());
     }
   }

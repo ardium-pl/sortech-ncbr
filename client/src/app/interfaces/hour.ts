@@ -1,4 +1,4 @@
-import { Godzina } from '../utils/utils';
+import { Kolejka, Godzina } from './other-interfaces';
 
 export interface daneGodzinowe {
   id: number;
@@ -10,11 +10,6 @@ export interface daneGodzinowe {
     lozko: number;
     lozkoObserwacja: number;
   };
-}
-
-export interface kolejka {
-  lekarz: number;
-  pielegniarka: number;
 }
 
 export interface Hour extends daneGodzinowe {
@@ -40,7 +35,7 @@ export interface Hour extends daneGodzinowe {
     lekarz: number | string;
     pielegniarka: number | string;
   };
-  kolejka: kolejka;
+  kolejka: Kolejka;
   waskiZasob: string;
   waskaWydajnosc: number;
   mozliwoscPokryciaZopatrzenia: string;

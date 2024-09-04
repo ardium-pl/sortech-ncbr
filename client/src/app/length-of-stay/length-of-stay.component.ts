@@ -4,10 +4,10 @@ import { CellValueChangedEvent, ColDef, ColGroupDef } from 'ag-grid-community';
 import { HourlyDataService } from '../hourly-data.service';
 import { Hour } from '../interfaces/hour';
 import { getColorRangeClass } from '../utils/color-range';
-import { numberRoundingFormatter } from '../utils/utils';
+import { numberRoundingFormatter } from '../utils/value-formatters';
 import { LOSTableColDefs } from './col-defs-los';
 import { DataFetchingService } from '../data-fetching.service';
-import { WarningContainerComponent } from "../warning-container/warning-container.component";
+import { WarningContainerComponent } from '../warning-container/warning-container.component';
 
 @Component({
   selector: 'app-length-of-stay',
