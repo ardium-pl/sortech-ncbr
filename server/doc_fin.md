@@ -1,5 +1,3 @@
-Rozszerzona dokumentacja serwera Express dla Systemu Obsługi SOR:
-
 # Dokumentacja Serwera Express dla Systemu Obsługi SOR (Szpitalnego Oddziału Ratunkowego)
 
 ## Spis treści
