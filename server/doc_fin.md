@@ -8,11 +8,6 @@ Rozszerzona dokumentacja serwera Express dla Systemu Obsługi SOR:
 2. Struktura projektu
 3. Konfiguracja
 4. Endpointy API
-
-- 4.1. SOR Router
-- 4.2. Personel Router
-- 4.3. Leki Router
-
 5. Modele danych
 6. Usługi (Services)
 7. Middleware
@@ -22,24 +17,28 @@ Rozszerzona dokumentacja serwera Express dla Systemu Obsługi SOR:
 11. Testowanie
 12. Deployment
 13. Diagramy sekwencyjne
+14. Przykłady użycia API
+15. Opis procesu rozwoju (Development Workflow)
+16. Słownik terminów
 
 ## 1. Wprowadzenie
 
-Ten serwer Express jest kluczową częścią systemu zarządzania Szpitalnym Oddziałem Ratunkowym (SOR). Głównym celem
-projektu jest dostarczenie narzędzi do efektywnego monitorowania i zarządzania pacjentami, zasobami ludzkimi oraz
-infrastrukturą SOR. Serwer obsługuje wszystkie operacje związane z danymi pacjentów, zarządzaniem personelem medycznym i
-dostępnymi łóżkami, a także umożliwia śledzenie kolejek i stanu zasobów w czasie rzeczywistym.
+Ten serwer Express jest kluczową częścią systemu zarządzania Szpitalnym Oddziałem Ratunkowym (SOR). 
+Głównym celem projektu jest dostarczenie narzędzi do efektywnego monitorowania i zarządzania 
+pacjentami, zasobami ludzkimi oraz infrastrukturą SOR. Serwer obsługuje wszystkie operacje związane z 
+danymi pacjentów, zarządzaniem personelem medycznym i dostępnymi łóżkami, a także umożliwia śledzenie 
+kolejek i stanu zasobów w czasie rzeczywistym.
 
 ## 2. Struktura projektu
 
 Projekt został zorganizowany w następującej strukturze katalogów:
 
 ```
-projekt-sor/
+server/
 │
 ├── config/
-│   └── database.js
-│
+│   ├── database.js
+│   └── dummy_records_generator.js
 │
 ├── middleware/
 │   └── validation.js
@@ -48,14 +47,19 @@ projekt-sor/
 │   └── sor.js
 │
 ├── services/
+│   ├── dataService.js
+│   ├── defaultValues.js
 │   └── sor.js
 │
 ├── utils/
 │   └── logger.js
 │
-├── .env
+├── .gitignore
+├── client.js
+├── doc.md
 ├── index.js
-└── package.json
+├── package.json
+└── package-lock.json
 ```
 
 Struktura ta zapewnia czytelny i modularny podział odpowiedzialności w aplikacji. Główne składniki to:
@@ -85,10 +89,6 @@ PORT=8080
 MYSQL_URL=mysql://user:password@host:port/database
 LOG_LEVEL=info
 ```
-
-## 4. Endpointy API
-
-Oczywiście, dostosujmy dokumentację do faktycznych endpointów w naszym kodzie. Oto zaktualizowana sekcja dokumentacji dotycząca endpointów:
 
 ## 4. Endpointy API
 
@@ -221,51 +221,59 @@ Endpoint ten zwraca dane godzinowe o stanie zasobów dla wybranego dnia oraz dan
 
 ```json
 {
-  "currentDayData": [
+  "daneGodzinowe": [
     {
-      "hour": "2023-06-15 00:00:00",
-      "avg_ilosc_lekarzy": 5,
-      "avg_ilosc_pielegniarek": 10,
-      "avg_ilosc_lozek": 20,
-      "avg_ilosc_lozek_obserwacji": 5
-    }
+      "godzina": "0-1",
+      "liczbaPacjentow": 5,
+      "zasoby": {
+        "liczbaLekarzy": 2,
+        "liczbaPielegniarek": 3,
+        "liczbaLozek": 10,
+        "liczbaLozekObserwacyjnych": 2
+      }
+    },
     // ... dane dla kolejnych godzin
   ],
-  "prevDayLastHourData": {
-    "ilosc_lekarzy": 4,
-    "ilosc_pielegniarek": 8,
-    "ilosc_lozek": 18,
-    "ilosc_lozek_obserwacji": 4,
-    "kolejka_lekarz": 30,
-    "kolejka_pielegniarka": 15
+  "czasZasobuNaPacjenta": [
+    {
+      "rodzajPacjenta": "Triage",
+      "lekarz": 5,
+      "pielegniarka": 10,
+      "lozko": 0,
+      "lozkoObserwacyjne": 0
+    },
+    // ... dane dla innych typów pacjentów
+  ],
+  "statystykaChorych": {
+    "Triage": 0.2,
+    "Resuscytacja": 0.05,
+    // ... statystyki dla innych typów pacjentów
+  },
+  "kolejka": {
+    "lekarz": 30,
+    "pielegniarka": 15
+  },
+  "sredniaWazonaCzasuZasobow": {
+    "lekarz": 25,
+    "pielegniarka": 20,
+    "lozko": 120,
+    "lozkoObserwacyjne": 60
   }
 }
 ```
 
-#### POST /api/stan-kolejki
+#### Pozostałe endpointy (nieaktywne)
 
-Endpoint ten służy do dodawania lub aktualizowania stanu kolejki dla danego dnia.
+Następujące endpointy są zdefiniowane w kodzie, ale obecnie nie są używane w głównej funkcjonalności aplikacji:
 
-**Przykładowe body żądania:**
+- GET /api/stan-zasobow
+- GET /api/pacjenci
+- POST /api/stan-zasobow
+- POST /api/pacjenci
+- GET /api/hourly-data
+- POST /api/stan-kolejki
 
-```json
-{
-  "data": "2023-06-15",
-  "minuty_lekarz": 30,
-  "minuty_pielegniarka": 15
-}
-```
-
-**Odpowiedź:**
-
-```json
-{
-  "message": "Stan kolejki dodany/zaktualizowany",
-  "result": 1
-}
-```
-
-Ta zaktualizowana dokumentacja odzwierciedla faktyczne endpointy zdefiniowane w kodzie `routes/sor.js`. Zawiera ona opisy wszystkich dostępnych endpointów, ich parametrów, przykładowych żądań i odpowiedzi.
+Szczegółowe informacje o tych endpointach można znaleźć w kodzie źródłowym.
 
 ## 5. Modele danych
 
@@ -280,8 +288,8 @@ Aplikacja używa następujących tabel w bazie danych:
 - `czas_lozka`: double
 - `czas_lozka_obserwacji`: double
 
-Tabela ta przechowuje informacje o różnych typach pacjentów, takich jak czas pobytu u lekarza, pielęgniarki, czas
-zajmowania łóżka oraz czas obserwacji.
+Tabela ta przechowuje informacje o różnych typach pacjentów, takich jak czas pobytu u lekarza, 
+pielęgniarki, czas zajmowania łóżka oraz czas obserwacji.
 
 ### Tabela: pacjenci
 
@@ -300,8 +308,8 @@ Tabela ta zawiera informacje o pacjentach przyjętych do SOR, w tym datę przyj�
 - `ilosc_lozek`: int unsigned
 - `ilosc_lozek_obserwacji`: int unsigned
 
-Tabela ta przechowuje informacje o bieżącym stanie zasobów w SOR, takich jak liczba lekarzy, pielęgniarek, łóżek i łóżek
-obserwacyjnych.
+Tabela ta przechowuje informacje o bieżącym stanie zasobów w SOR, takich jak liczba lekarzy, 
+pielęgniarek, łóżek i łóżek obserwacyjnych.
 
 ### Tabela: stan_kolejki
 
@@ -314,24 +322,42 @@ Tabela ta zawiera informacje o kolejkach do lekarza i pielęgniarki w danym dniu
 
 ## 6. Usługi (Services)
 
+### dataService.js
+
+Ten serwis zawiera główną logikę biznesową dla endpointu `/dane`. Obsługuje on:
+- Pobieranie i przetwarzanie danych pacjentów
+- Obliczanie statystyk pacjentów
+- Generowanie danych godzinowych
+- Obliczanie średnich ważonych czasu zasobów
+- Obsługę prognozowania dla przyszłych dat
+
+### defaultValues.js
+
+Zawiera domyślne wartości używane w aplikacji, takie jak:
+- Dane o lekarzach i pielęgniarkach
+- Domyślne statystyki pacjentów
+- Domyślne czasy zasobów na pacjenta
+- Rozkłady pacjentów w ciągu dnia dla różnych dni tygodnia
+
 ### sor.js
 
 #### getHourlyData(date)
 
-Funkcja ta pobiera godzinowe dane o stanie zasobów dla wybranego dnia oraz dane z ostatniej godziny poprzedniego dnia.
-Korzysta z zapytań SQL do tabel `stan_zasobow` i `stan_kolejki`, aby uzyskać potrzebne informacje.
+Funkcja ta pobiera godzinowe dane o stanie zasobów dla wybranego dnia oraz dane z ostatniej 
+godziny poprzedniego dnia. Korzysta z zapytań SQL do tabel `stan_zasobow` i `stan_kolejki`, aby 
+uzyskać potrzebne informacje.
 
 #### addStanKolejki(stanKolejki)
 
-Funkcja ta dodaje lub aktualizuje stan kolejki dla danego dnia w tabeli `stan_kolejki`. Używa zapytania SQL z
-klauzulą `ON DUPLICATE KEY UPDATE`, aby zoptymalizować operację.
+Funkcja ta dodaje lub aktualizuje stan kolejki dla danego dnia w tabeli `stan_kolejki`. 
+Używa zapytania SQL z klauzulą `ON DUPLICATE KEY UPDATE`, aby zoptymalizować operację.
 
 ## 7. Middleware
 
 ### validation.js
 
-Plik ten zawiera funkcje walidacyjne dla różnych endpointów, np. `validatePacjent` do walidacji danych pacjenta przed
-dodaniem do bazy.
+Plik ten zawiera funkcje walidacyjne dla różnych endpointów, np. `validatePacjent` do walidacji 
+danych pacjenta przed dodaniem do bazy.
 
 ## 8. Obsługa błędów
 
@@ -344,13 +370,13 @@ app.use((err, req, res, next) => {
 });
 ```
 
-Wszystkie błędy wychwycone w aplikacji są logowane za pomocą modułu loggera, a następnie zwracana jest ogólna odpowiedź
-z kodem 500 (Błąd serwera).
+Wszystkie błędy wychwycone w aplikacji są logowane za pomocą modułu loggera, a następnie zwracana 
+jest ogólna odpowiedź z kodem 500 (Błąd serwera).
 
 ## 9. Logowanie
 
-Projekt używa biblioteki Winston do logowania. Konfiguracja znajduje się w `utils/logger.js`. Logging jest
-konfigurowalny za pomocą zmiennej środowiskowej `LOG_LEVEL`.
+Projekt używa biblioteki Winston do logowania. Konfiguracja znajduje się w `utils/logger.js`. 
+Logging jest konfigurowalny za pomocą zmiennej środowiskowej `LOG_LEVEL`.
 
 ## 10. Bezpieczeństwo
 
@@ -378,92 +404,45 @@ pm2 start index.js --name "sor-server"
 
 ## 13. Diagramy sekwencyjne
 
-Poniżej przedstawiono przykładowy diagram sekwencyjny połączenia z bazą danych:
+Poniżej przedstawiono przykładowy diagram sekwencyjny dla endpointu `/api/sor/dane`:
 
 ```mermaid
 sequenceDiagram
     participant Client
     participant Express
+    participant DataService
     participant Database
 
-    Client->>Express: GET /api/sor/hourly-data?date=2023-06-15
-    Express->>Database: getHourlyData(2023-06-15)
-    Database->>Express: Dane godzinowe, dane z ostatniej godziny
+    Client->>Express: GET /api/sor/dane?date=2023-06-15
+    Express->>DataService: dataService(2023-06-15)
+    DataService->>Database: Pobierz dane pacjentów
+    Database->>DataService: Dane pacjentów
+    DataService->>Database: Pobierz dane zasobów
+    Database->>DataService: Dane zasobów
+    DataService->>DataService: Przetwórz dane
+    DataService->>Express: Przetworzone dane
     Express->>Client: Odpowiedź JSON
-
-    Client->>Express: POST /api/sor/stan-kolejki
-    Express->>Database: addStanKolejki(stanKolejki)
-    Database->>Express: ID nowego rekordu
-    Express->>Client: Potwierdzenie dodania
 ```
 
-Ten diagram ilustruje sekwencję wydarzeń dla dwóch kluczowych endpointów: pobrania danych godzinowych oraz dodawania
-stanu kolejki. Klient inicjuje żądanie, które jest obsługiwane przez warstwę Express, a ta z kolei korzysta z warstwy
-usług (Services) do interakcji z bazą danych.
-
-Oczywiście. Oto propozycje tych trzech dodatkowych sekcji do dokumentacji:
-
----
+Ten diagram ilustruje sekwencję wydarzeń dla endpointu `/api/sor/dane`. 
+Klient inicjuje żądanie, które jest obsługiwane przez warstwę Express. 
+Express przekazuje żądanie do DataService, który pobiera niezbędne dane z bazy danych, 
+przetwarza je i zwraca do Express, który z kolei wysyła odpowiedź do klienta.
 
 ## 14. Przykłady użycia API
 
-Poniżej przedstawiamy przykłady użycia głównych endpointów API za pomocą narzędzia cURL oraz JavaScript (z użyciem fetch).
-
-### 14.1. Pobieranie stanu zasobów
+### 14.1. Pobieranie danych z endpointu /dane
 
 #### cURL:
 
 ```bash
-curl -X GET "http://localhost:8080/api/stan-zasobow?date=2023-06-15"
+curl -X GET "http://localhost:8080/api/sor/dane?date=2023-06-15"
 ```
 
 #### JavaScript (fetch):
 
 ```javascript
-fetch('http://localhost:8080/api/stan-zasobow?date=2023-06-15')
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
-```
-
-### 14.2. Dodawanie nowego pacjenta
-
-#### cURL:
-
-```bash
-curl -X POST -H "Content-Type: application/json" -d '{"data_przyjecia": "2023-06-15 13:45:00", "typ": 1}' http://localhost:8080/api/pacjenci
-```
-
-#### JavaScript (fetch):
-
-```javascript
-fetch('http://localhost:8080/api/pacjenci', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    data_przyjecia: '2023-06-15 13:45:00',
-    typ: 1,
-  }),
-})
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
-```
-
-### 14.3. Pobieranie danych godzinowych
-
-#### cURL:
-
-```bash
-curl -X GET "http://localhost:8080/api/hourly-data?date=2023-06-15"
-```
-
-#### JavaScript (fetch):
-
-```javascript
-fetch('http://localhost:8080/api/hourly-data?date=2023-06-15')
+fetch('http://localhost:8080/api/sor/dane?date=2023-06-15')
   .then(response => response.json())
   .then(data => console.log(data))
   .catch(error => console.error('Error:', error));
