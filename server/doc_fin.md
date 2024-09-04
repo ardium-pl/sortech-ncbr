@@ -491,5 +491,3 @@ fetch('http://localhost:8080/api/sor/dane?date=2023-06-15')
 - **CRUD**: Create, Read, Update, Delete - podstawowe operacje na danych
 
 ---
-
-Te dodatkowe sekcje wzbogacą dokumentację o praktyczne przykłady użycia API, jasne wytyczne dotyczące procesu rozwoju projektu oraz słownik kluczowych terminów, co powinno znacznie ułatwić pracę z systemem zarówno nowym, jak i doświadczonym deweloperom.
