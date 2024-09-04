@@ -105,4 +105,11 @@ export const defaultValues = {
       0.65, 0.58, 0.48, 0.39, 0.31,
     ],
   },
+  sredniWazonyCzasNaPacjenta:{
+    triage: 5,
+    lekarz: 43.7,
+    pielegniarka: 44.5,
+    lozko: 246,
+    lozkoObserwacyjne : 78
+}
 };

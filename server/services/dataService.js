@@ -40,11 +40,15 @@ export async function dataService(queryDate) {
     const statystykaChorych = calculatePatientStates(patientsForDay, patientTypes);
     const daneGodzinowe = splitPatientsIntoHours(patientsForDay, resourceAmounts);
 
+    const sredniaWazonaCzasuZasobow = calculateWeightedAverage(statystykaChorych);
+
+
     return {
       daneGodzinowe,
       czasZasobuNaPacjenta: patientTypes,
       statystykaChorych,
       kolejka,
+      sredniaWazonaCzasuZasobow,
     };
   } catch (error) {
     console.log('An error occured in the data service', error);
@@ -151,6 +155,45 @@ async function getPatientsData() {
   return await connection.query(query);
 }
 
+async function getResourceStatistics() {
+  const query = `
+    SELECT 
+      * 
+    FROM 
+      railway.typy_pacjenta;
+  `;
+
+  return await connection.query(query);
+}
+
+async function calculateWeightedAverage(statystykaChorych) {
+  const [resources] = await getResourceStatistics();
+
+  const resourceTypes = {
+    lekarz: 'czas_lekarza',
+    pielegniarka: 'czas_pielegniarki',
+    lozko: 'czas_lozka',
+    lozkoObserwacyjne: 'czas_lozka_obserwacji',
+  };
+
+  const multiplyPercentAndTime = resourceType =>
+    resources.reduce((acc, { nazwa, [resourceType]: time }) => {
+      const percent = statystykaChorych[nazwa] || 0;
+      return acc + percent * time;
+    }, 0);
+
+  // First calculate all resource types except triage that's 5 minutes as defult
+  const result = Object.entries(resourceTypes).reduce((acc, [key, resourceType]) => {
+    acc[key] = multiplyPercentAndTime(resourceType);
+    return acc;
+  }, {});
+
+  // Add triage key after all calculations
+  result.triage = defaultValues.sredniWazonyCzasNaPacjenta.triage;
+
+  return result;
+}
+
 async function forecastPatients(forecastDates, forecastNs, queryDate) {
   try {
     const response = await axios.post(process.env.R_URL, {
@@ -193,6 +236,7 @@ async function parseForecast(forecast, queryDate) {
       lekarz: 55,
       pielegniarka: 22,
     },
+    sredniWazonyCzasZasobuNaPacjenta: defaultValues.sredniWazonyCzasNaPacjenta
   };
 }
 
