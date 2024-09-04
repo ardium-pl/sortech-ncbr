@@ -6,6 +6,8 @@ import { daneGodzinowe } from './interfaces/hour';
 import { apiUrl } from './utils/apiUrl';
 import { StaticRow } from './interfaces/static-row';
 import { LABELS_ZASOBY, RZAD_OCZEKIWANIE_NA_PRZYJECIE, RZAD_TRIAGE } from './constants';
+import { GridLoadingOverlayComponent } from './grid-loading-overlay/grid-loading-overlay.component';
+import { WarningContainerComponent } from './warning-container/warning-container.component';
 
 @Injectable({
   providedIn: 'root',
@@ -14,9 +16,14 @@ export class DataFetchingService {
   private readonly http = inject(HttpClient);
   readonly staticDataService = inject(StaticDataService);
   readonly hourlyDataService = inject(HourlyDataService);
-  readonly shouldRenderTables = signal<boolean>(true);
+
+  readonly noRowsOverlayComponent = WarningContainerComponent;
+  readonly gridLoadingOverlayComponent = GridLoadingOverlayComponent;
+  readonly shouldRenderTables = signal<boolean>(false);
+  readonly isLoading = signal<boolean>(false);
 
   fetchRowData(date: string) {
+    this.isLoading.set(true);
     const sub = this.http.get<any>(apiUrl('/dane'), { params: { date: date } }).subscribe({
       next: res => {
         console.log('✅ Response received sucessfully, response body: ', res);
@@ -90,7 +97,7 @@ export class DataFetchingService {
           this.staticDataService.applyRowCalculations(mappedDataStatic);
           console.log('✅ Successfully initialized table data (staticDataService)!');
 
-          this.shouldRenderTables.set(true)
+          this.shouldRenderTables.set(true);
         } catch (err) {
           console.log('❌ An error occured during initializing table data from the response body. ❌\nError message:\n', err);
           this.shouldRenderTables.set(false);
@@ -101,10 +108,13 @@ export class DataFetchingService {
       error: err => {
         console.log('❌ Error performing the http request, error message: ', err, '❌');
         sub.unsubscribe();
+        this.isLoading.set(false);
         console.log('⚙️ Subscription terminanated by unsubscribing.');
+      },
+      complete: () => {
+        sub.unsubscribe();
+        this.isLoading.set(false);
       },
     });
   }
-
-  constructor() {}
 }

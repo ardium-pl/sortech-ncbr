@@ -1,6 +1,7 @@
 import { Constants } from './utils/utils';
 
 export const DECIMAL_PLACES = 2 as const;
+export const DEFAULT_DATE = new Date(2024, 7, 1);
 
 export const LABELS_ZASOBY = [
   'Triage',
@@ -14,11 +15,7 @@ export const LABELS_ZASOBY = [
   'Liczba zasobów',
 ];
 
-export const LABELS_METRYKI = [
-  'Średni ważony czas na pacjenta',
-  'Wydajność (napływ pacj./h)',
-  'Zajętość',
-];
+export const LABELS_METRYKI = ['Średni ważony czas na pacjenta', 'Wydajność (napływ pacj./h)', 'Zajętość'];
 
 export const RZAD_TRIAGE = {
   id: 0,

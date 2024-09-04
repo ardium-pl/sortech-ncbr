@@ -3,7 +3,6 @@ import { StaticRow } from './interfaces/static-row';
 import { WaskieGardlo, ZasobyITriage } from './interfaces/zasoby';
 import { ZasobyTriageILozkoOczekiwanie } from './interfaces/zasoby';
 import { LABELS_METRYKI, LABELS_ZASOBY } from './constants';
-import { defaultRowDataStatic } from './utils/default-table-data';
 
 @Injectable({
   providedIn: 'root',
@@ -106,7 +105,7 @@ export class StaticDataService {
     wydajnoscPrzyjmowania: false,
   });
 
-  readonly rowData = signal<StaticRow[]>(defaultRowDataStatic);
+  readonly rowData = signal<StaticRow[]>([]);
 
   constructor() {}
 }

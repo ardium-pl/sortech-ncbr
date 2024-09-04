@@ -3,7 +3,7 @@
   <input
     matInput
     [matDatepicker]="picker"
-    [(ngModel)]="value"
+    [formControl]="defaultDate"
     (dateChange)="onDateChange($event)"
   />
   <mat-hint>DD/MM/YYYY</mat-hint>

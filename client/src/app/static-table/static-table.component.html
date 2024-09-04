@@ -1,4 +1,18 @@
-@if (this.dataFetchingService.shouldRenderTables()) {
+<ag-grid-angular
+  class="ag-theme-custom"
+  [loading]="this.dataFetchingService.isLoading()"
+  [loadingOverlayComponent]="this.dataFetchingService.gridLoadingOverlayComponent"
+  [noRowsOverlayComponent]="this.dataFetchingService.noRowsOverlayComponent"
+  domLayout="autoHeight"
+  [rowData]="rowData()"
+  [columnDefs]="columnDefs"
+  [defaultColDef]="defaultColDef"
+  [suppressScrollOnNewData]="true"
+  (cellValueChanged)="onCellValueChanged($event)"
+>
+</ag-grid-angular>
+
+<!-- @if (this.dataFetchingService.shouldRenderTables()) {
   <ag-grid-angular
     class="ag-theme-custom"
     domLayout="autoHeight"
@@ -12,4 +26,4 @@
   </ag-grid-angular>
 } @else {
   <app-warning-container></app-warning-container>
-}
+} -->

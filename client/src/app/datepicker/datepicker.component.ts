@@ -1,16 +1,17 @@
-import { Component, inject, model } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject } from '@angular/core';
+import {  FormControl, ReactiveFormsModule } from '@angular/forms';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { HourlyDataService } from '../hourly-data.service';
 import { DataFetchingService } from '../data-fetching.service';
+import { DEFAULT_DATE } from '../constants';
 
 @Component({
   selector: 'app-datepicker',
   standalone: true,
-  imports: [MatDatepickerModule, MatFormFieldModule, MatInputModule, FormsModule],
+  imports: [MatDatepickerModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule],
   providers: [provideNativeDateAdapter()],
   templateUrl: './datepicker.component.html',
   styleUrl: './datepicker.component.scss',
@@ -18,16 +19,13 @@ import { DataFetchingService } from '../data-fetching.service';
 export class DatepickerComponent {
   readonly hourlyDataService = inject(HourlyDataService);
   readonly dataFetchingService = inject(DataFetchingService);
-  readonly value = model<Date>();
+  readonly defaultDate = new FormControl(DEFAULT_DATE);
 
   onDateChange(event: MatDatepickerInputEvent<Date>) {
     const pickedDate = event.value;
 
     if (pickedDate) {
       console.log(`⚙️ Fetching table data ...`);
-
-      // Update the currentDayOfWeek
-      this.hourlyDataService.currentDayOfWeek.set(pickedDate.getDay());
 
       // Fetch table data from a database for a chosen day
       this.dataFetchingService.fetchRowData(pickedDate.toISOString());

@@ -30,7 +30,6 @@ export class LengthOfStayComponent {
     flex: 1,
     cellRenderer: numberRoundingFormatter,
   };
-
   readonly delayColumn: ColDef = {
     headerName: 'Opóźnienie ogółem',
     field: 'opoznienieOgolem',
@@ -51,9 +50,5 @@ export class LengthOfStayComponent {
   onCellValueChanged(event: CellValueChangedEvent) {
     const changedHour: Hour = event.data;
     this.hourlyDataService.applyHourCalculations(this.rowData(), changedHour);
-  }
-
-  onGridReady() {
-    this.hourlyDataService.applyHourCalculations(this.rowData());
   }
 }
