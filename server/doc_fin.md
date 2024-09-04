@@ -278,7 +278,7 @@ Endpoint ten zwraca dane godzinowe o stanie zasobów dla wybranego dnia oraz dan
 }
 ```
 
-#### Pozostałe endpointy (nieaktywne)
+#### Endpointy (nieaktywne)
 
 Następujące endpointy są zdefiniowane w kodzie, ale obecnie nie są używane w głównej funkcjonalności aplikacji:
 
