@@ -4,16 +4,19 @@ import { CellValueChangedEvent, ColDef, ColGroupDef, GridApi, GridReadyEvent } f
 import { HourlyDataService } from '../hourly-data.service';
 import { Hour } from '../interfaces/hour';
 import { hourlyTableColDefs } from './col-defs-hourly';
+import { DataFetchingService } from '../data-fetching.service';
+import { WarningContainerComponent } from "../warning-container/warning-container.component";
 
 @Component({
   selector: 'app-hourly-table',
   standalone: true,
-  imports: [AgGridAngular],
+  imports: [AgGridAngular, WarningContainerComponent],
   templateUrl: './hourly-table.component.html',
   styleUrl: './hourly-table.component.scss',
 })
 export class HourlyTableComponent {
   readonly hourlyDataService = inject(HourlyDataService);
+  readonly dataFetchingService = inject(DataFetchingService);
 
   readonly defaultColDef: ColDef = {
     headerClass: 'grid-header grid-header-outer',

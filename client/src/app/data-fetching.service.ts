@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HourlyDataService } from './hourly-data.service';
 import { StaticDataService } from './static-data.service';
 import { HttpClient } from '@angular/common/http';
@@ -14,6 +14,7 @@ export class DataFetchingService {
   private readonly http = inject(HttpClient);
   readonly staticDataService = inject(StaticDataService);
   readonly hourlyDataService = inject(HourlyDataService);
+  readonly shouldRenderTables = signal<boolean>(true);
 
   fetchRowData(date: string) {
     const sub = this.http.get<any>(apiUrl('/dane'), { params: { date: date } }).subscribe({
@@ -88,8 +89,13 @@ export class DataFetchingService {
           // set staticDataService rowData
           this.staticDataService.applyRowCalculations(mappedDataStatic);
           console.log('✅ Successfully initialized table data (staticDataService)!');
+
+          this.shouldRenderTables.set(true)
         } catch (err) {
-          console.log('❌ An error occured during initializing table data from the response body, error message: ', err, '❌');
+          console.log('❌ An error occured during initializing table data from the response body. ❌\nError message:\n', err);
+          this.shouldRenderTables.set(false);
+          this.hourlyDataService.rowData.set([]);
+          this.staticDataService.rowData.set([]);
         }
       },
       error: err => {

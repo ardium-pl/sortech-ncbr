@@ -1,11 +1,15 @@
-<ag-grid-angular
-  class="ag-theme-custom"
-  domLayout='autoHeight'
-  [rowData]="rowData()"
-  [columnDefs]="columnDefs"
-  [defaultColDef]="defaultColDef"
-  [suppressScrollOnNewData]="true"
-  (cellValueChanged)="onCellValueChanged($event)"
-  (gridReady)="onGridReady($event)"
->
-</ag-grid-angular>
+@if (this.dataFetchingService.shouldRenderTables()) {
+  <ag-grid-angular
+    class="ag-theme-custom"
+    domLayout="autoHeight"
+    [rowData]="rowData()"
+    [columnDefs]="columnDefs"
+    [defaultColDef]="defaultColDef"
+    [suppressScrollOnNewData]="true"
+    (cellValueChanged)="onCellValueChanged($event)"
+    (gridReady)="onGridReady($event)"
+  >
+  </ag-grid-angular>
+} @else {
+  <app-warning-container></app-warning-container>
+}

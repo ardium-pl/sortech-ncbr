@@ -6,16 +6,19 @@ import { Hour } from '../interfaces/hour';
 import { getColorRangeClass } from '../utils/color-range';
 import { numberRoundingFormatter } from '../utils/utils';
 import { LOSTableColDefs } from './col-defs-los';
+import { DataFetchingService } from '../data-fetching.service';
+import { WarningContainerComponent } from "../warning-container/warning-container.component";
 
 @Component({
   selector: 'app-length-of-stay',
   standalone: true,
-  imports: [AgGridAngular],
+  imports: [AgGridAngular, WarningContainerComponent],
   templateUrl: './length-of-stay.component.html',
   styleUrl: './length-of-stay.component.scss',
 })
 export class LengthOfStayComponent {
   readonly hourlyDataService = inject(HourlyDataService);
+  readonly dataFetchingService = inject(DataFetchingService);
 
   readonly defaultColDef: ColDef = {
     headerClass: 'grid-header grid-header-outer',
@@ -52,5 +55,5 @@ export class LengthOfStayComponent {
 
   onGridReady() {
     this.hourlyDataService.applyHourCalculations(this.rowData());
-  };
+  }
 }

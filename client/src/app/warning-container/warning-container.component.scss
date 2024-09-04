@@ -1,0 +1,13 @@
+.warning-container {
+  margin: 100px 0;
+  padding: 60px 100px;
+
+  font-family: var(--font-family); 
+  font-size: 22px;
+
+  border: var(--standard-border);
+  border-color: var(--dark-blue);
+  border-radius: 16px;
+  box-shadow: 0px 8px 20px 0 rgba(0, 0, 0, 0.2);
+  background-color: rgb(255, 255, 255);
+}

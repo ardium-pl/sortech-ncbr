@@ -1,4 +1,5 @@
-<ag-grid-angular
+@if (this.dataFetchingService.shouldRenderTables()) {
+  <ag-grid-angular
   class="ag-theme-custom"
   [rowData]="rowData()"
   [columnDefs]="columnDefs"
@@ -10,3 +11,6 @@
   (gridReady)="onGridReady($event)"
 >
 </ag-grid-angular>
+} @else {
+  <app-warning-container></app-warning-container>
+}

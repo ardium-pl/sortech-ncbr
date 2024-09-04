@@ -5,16 +5,19 @@ import { StaticRow } from '../interfaces/static-row';
 import { StaticDataService } from '../static-data.service';
 import { numberRoundingFormatterNoZeros, percentFormatter } from '../utils/utils';
 import { columnDefs } from './col-defs-static';
+import { DataFetchingService } from '../data-fetching.service';
+import { WarningContainerComponent } from "../warning-container/warning-container.component";
 
 @Component({
   selector: 'app-static-table',
   standalone: true,
-  imports: [AgGridAngular],
+  imports: [AgGridAngular, WarningContainerComponent],
   templateUrl: './static-table.component.html',
   styleUrl: './static-table.component.scss',
 })
 export class StaticTableComponent {
   readonly staticDataService = inject(StaticDataService);
+  readonly dataFetchingService = inject(DataFetchingService);
 
   readonly defaultColDef: ColDef = {
     headerClass: 'grid-header grid-header-outer',
