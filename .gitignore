@@ -1,48 +1,42 @@
-# Dependencje
-**/node_modules
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# Katalogi cache
-**/.angular/cache
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
 
-# Katalogi buildów
-dist
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
 
-# Logi
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
-# Pliki środowiskowe
-.env
-.env.local
-.env.*.local
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
 
-# Pliki systemowe
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+
+# System files
 .DS_Store
 Thumbs.db
-
-# Pliki IDE i edytorów
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Pliki tymczasowe
-tmp/
-temp/
-
-# Pliki konfiguracyjne dla różnych narzędzi
-.nyc_output
-.yarn-integrity
-
-# Pliki testów i pokrycia
-coverage/
-
-# Pliki backupowe
-*.bak
-*.backup
-
-# Pliki konfiguracyjne specyficzne dla użytkownika
-config.user.js
