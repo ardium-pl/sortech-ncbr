@@ -5,6 +5,5 @@
   "semi": true,
   "singleQuote": true,
   "arrowParens": "avoid",
-  "printWidth": 130,
-  "singleAttributePerLine": true
+  "printWidth": 120
 }
