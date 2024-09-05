@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { INoRowsOverlayAngularComp } from 'ag-grid-angular';
+import { ILoadingOverlayAngularComp } from 'ag-grid-angular';
 
 @Component({
   selector: 'app-warning-container',
@@ -8,6 +8,6 @@ import { INoRowsOverlayAngularComp } from 'ag-grid-angular';
   templateUrl: './warning-container.component.html',
   styleUrl: './warning-container.component.scss',
 })
-export class WarningContainerComponent implements INoRowsOverlayAngularComp {
+export class WarningContainerComponent implements ILoadingOverlayAngularComp {
   agInit(): void {}
 }

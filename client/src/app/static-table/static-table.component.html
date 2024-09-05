@@ -1,8 +1,8 @@
+@if (this.dataFetchingService.isLoading()) {
 <ag-grid-angular
   class="ag-theme-custom"
-  [loading]="this.dataFetchingService.isLoading()"
+  loading
   [loadingOverlayComponent]="this.dataFetchingService.gridLoadingOverlayComponent"
-  [noRowsOverlayComponent]="this.dataFetchingService.noRowsOverlayComponent"
   [rowData]="rowData()"
   [columnDefs]="columnDefs"
   [defaultColDef]="defaultColDef"
@@ -10,19 +10,16 @@
   (cellValueChanged)="onCellValueChanged($event)"
 >
 </ag-grid-angular>
-
-<!-- @if (this.dataFetchingService.shouldRenderTables()) {
-  <ag-grid-angular
-    class="ag-theme-custom"
-    domLayout="autoHeight"
-    [rowData]="rowData()"
-    [columnDefs]="columnDefs"
-    [defaultColDef]="defaultColDef"
-    [suppressScrollOnNewData]="true"
-    (cellValueChanged)="onCellValueChanged($event)"
-    (gridReady)="onGridReady($event)"
-  >
-  </ag-grid-angular>
 } @else {
-  <app-warning-container></app-warning-container>
-} -->
+  <ag-grid-angular
+  class="ag-theme-custom"
+  [loading]="!this.dataFetchingService.shouldRenderTables()"
+  [loadingOverlayComponent]="this.dataFetchingService.noRowsOverlayComponent"
+  [rowData]="rowData()"
+  [columnDefs]="columnDefs"
+  [defaultColDef]="defaultColDef"
+  [suppressScrollOnNewData]="true"
+  (cellValueChanged)="onCellValueChanged($event)"
+>
+</ag-grid-angular>
+}
