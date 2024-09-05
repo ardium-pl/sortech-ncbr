@@ -1,4 +1,4 @@
-<app-datepicker></app-datepicker>
+<app-datepicker [(value)]="pickedDate" (valueChange)="onDateChange($event)" />
 
 <div class="mat-tabs-container">
   <mat-tab-group [selectedIndex]="selectedTabIndex">
