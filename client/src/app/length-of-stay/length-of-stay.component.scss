@@ -1,0 +1,95 @@
+:host {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+ag-grid-angular {
+  height: var(--grid-height);
+  width: var(--grid-width);
+
+  margin-top: var(--grid-ofset);
+}
+
+::ng-deep {
+  app-length-of-stay {
+    // Granatowa granica pionowa
+    .pielegniarki:not(.wydajnosc),
+    .lekarze:not(.wydajnosc),
+    .opoznienie-wydajnosc,
+    .opoznienie-zmiennosc,
+    .opoznienie-ogolem,
+    .lekarz.obsluga,
+    .lekarz.lq,
+    .lekarz.ag-header-group-cell,
+    .pielegniarka.obsluga,
+    .pielegniarka.lq,
+    .pielegniarka.ag-header-group-cell {
+      border-left: var(--standard-border);
+      border-left-color: var(--dark-blue);
+    }
+
+    .ag-cell {
+      // Pierwsza kolumna + to co ma mieć grubszą czcionkę
+      &.ag-column-first,
+      &.liczba,
+      .ag-input-field-input {
+        color: black;
+        font-weight: 500;
+      }
+
+      // Jasnoniebieskie tło
+      &.liczba,
+      &.obsluga,
+      &.lq {
+        background-color: var(--white);
+      }
+
+      &.color-dark-green {
+        background-color: rgb(20, 120, 20);
+        color: white;
+      }
+      &.color-green {
+        background-color: rgb(32, 196, 32);
+      }
+      &.color-light-green {
+        background-color: rgb(50, 205, 50);
+      }
+      &.color-yellow-green {
+        background-color: rgb(161 237 44);
+      }
+      &.color-yellow {
+        background-color: rgb(255, 255, 0);
+      }
+      &.color-gold {
+        background-color: rgb(255, 215, 0);
+      }
+      &.color-orange {
+        background-color: rgb(255, 165, 0);
+      }
+      &.color-dark-orange {
+        background-color: rgb(255, 140, 0);
+        color: white;
+      }
+      &.color-orange-red {
+        background-color: rgb(255, 69, 0);
+        color: white;
+      }
+      &.color-red {
+        background-color: rgb(255, 0, 0);
+        color: white;
+      }
+      &.color-dark-red {
+        background-color: rgb(180, 0, 0);
+        color: white;
+      }
+      &.color-maroon {
+        background-color: rgb(150, 0, 0);
+        color: white;
+      }
+    }
+  }
+}

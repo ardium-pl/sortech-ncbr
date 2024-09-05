@@ -1,0 +1,184 @@
+// CSS reset
+html,
+body {
+  margin: 0px;
+  height: 100%;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+
+  background-color: var(--background);
+}
+
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --grid-ofset: 30px;
+  --grid-height: 75vh;
+  --grid-width: 100%;
+
+  /* Color palettes: */
+
+  // App layout
+  --white: #f1f6f9;
+  --eee-white: #eee;
+  --navy: #14274e;
+  --faded-blue: #394867;
+  --grey: #9ba4b4;
+  --background: #dfdfdf;
+
+  // Orange color palette
+  --darkest-orange: #e3a598;
+  --dark-orange: #d0b8a8;
+  --mid-orange: #dfd3c3;
+  --light-orange: #f8ede3;
+  --lightest-orange: #fbeae0;
+  --white-orange: #fdf5eb;
+
+  // Grey color palette
+  --darkest-grey: rgb(169, 169, 169);
+  --dark-grey: rgb(192, 192, 192);
+  --light-grey: rgb(211, 211, 211);
+  --lightest-grey: rgb(220, 220, 220);
+  --white-grey: rgb(208, 208, 208);
+  --light-grey-new: rgb(178, 178, 182);
+
+  // Red color palette
+  --super-dark-red: rgb(146, 26, 64);
+  --darkest-red: rgb(199, 91, 122);
+  --dark-red: rgb(217, 171, 171);
+  --mid-red: rgb(244, 217, 208);
+  --light-red: rgb(255, 199, 206);
+
+  // Green color palette
+  --super-dark-green: rgb(97, 130, 100);
+  --darkest-green: rgb(121, 172, 120);
+  --dark-green: rgb(176, 217, 177);
+  --mid-green: rgb(208, 231, 210);
+  --light-green: rgb(198, 239, 206);
+
+  // Blue color palette
+  --darkest-blue: rgb(6, 71, 131);
+  --dark-blue: rgb(6, 71, 131);
+  --powder-blue: rgb(47, 117, 181);
+  --powder-blue-semi-transparent: rgb(47, 117, 181, 0.18);
+  --mid-blue: rgb(47, 117, 181);
+  --light-blue: rgb(167, 188, 235);
+
+  // Attention drawing colors
+  --flashy-yellow: yellow;
+  --flashy-red: red;
+
+  // Fonts
+  --font-color: rgba(0, 0, 0, 0.8);
+
+  --font-size: 16px;
+  --bold-column-font-size: 19px;
+
+  --outer-header-font-size: 16px;
+  --mid-header-font-size: 16px;
+  --inner-header-font-size: 16px;
+
+  --font-family: calibri;
+
+  // Borders
+  --standard-border: 1px solid;
+  --border-black: black;
+  --border-blue: var(--darkest-blue);
+
+  // Headers
+  --default-header-width: 55px;
+  --default-header-height: 55px;
+  --header-horizontal-padding: 8px;
+}
+
+// AG Grid specific rules
+@import 'ag-grid-community/styles/ag-grid.css';
+@import 'ag-grid-community/styles/ag-theme-quartz.css';
+@import 'ag-grid-community/styles/ag-theme-alpine.css';
+
+// Customizing Ag Grid theme using predefined variables
+.ag-theme-custom {
+  // Fonts
+  --ag-font-family: var(--font-family);
+  --ag-font-size: var(--font-size);
+  --ag-data-color: var(--font-color);
+
+  // Background color
+  --ag-background-color: rgb(255, 255, 255);
+  --ag-header-background-color: var(--powder-blue);
+  --ag-row-hover-color: var(--powder-blue-semi-transparent);
+
+  // Grid outer borders
+  --ag-borders: var(--standard-border);
+  --ag-border-color: var(--dark-blue);
+
+  // --ag-borders: 3px solid;
+  // --ag-border-color: red;
+
+  // Disable default row borders
+  --ag-row-border-style: none;
+
+  // Cell & header padding
+  --ag-cell-horizontal-padding: var(--header-horizontal-padding);
+
+  // Header & row heights
+  --ag-header-height: 55px;
+  --ag-row-height: 40px;
+
+  // Resize handles
+  --ag-header-column-resize-handle-display: none;
+
+  // Centering text
+  .ag-cell,
+  .ag-header-cell-label,
+  .ag-header-group-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    // Ensuring that headers text wraps when necessary and on line-breaks
+    &:not(.ag-cell) {
+      white-space: pre-line;
+    }
+  }
+
+  // Headers
+  .ag-header-cell-label,
+  .ag-header-group-cell {
+    color: white;
+    font-weight: 600;
+  }
+
+  // Row borders
+  .ag-row:not(:last-of-type) {
+    .ag-cell {
+      border-bottom: var(--standard-border);
+      border-bottom-color: var(--eee-white);
+    }
+  }
+
+  // Clicked cell
+  .ag-cell.ag-cell-focus {
+    border: 3px solid !important;
+    border-color: black !important;
+  }
+
+  // Cell in edit mode
+  .ag-cell .ag-input-field-input {
+    background-color: var(--light-blue);
+    color: var(--font-color);
+  }
+
+  // Fix row hover animation over columns with changed background
+  .ag-row-hover:not(.ag-full-width-row)::before,
+  .ag-row-hover.ag-full-width-row.ag-row-group::before {
+    z-index: 1;
+  }
+}

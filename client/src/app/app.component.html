@@ -1,0 +1,17 @@
+<app-datepicker [(value)]="pickedDate" (valueChange)="onDateChange($event)" />
+
+<div class="mat-tabs-container">
+  <mat-tab-group [selectedIndex]="selectedTabIndex">
+    <mat-tab label="Analiza Statyczna">
+      <app-static-table></app-static-table>
+    </mat-tab>
+
+    <mat-tab label="Analiza Godzinowa">
+      <app-hourly-table></app-hourly-table>
+    </mat-tab>
+
+    <mat-tab label="Analiza Czasu Pobytu - LOS">
+      <app-length-of-stay></app-length-of-stay>
+    </mat-tab>
+  </mat-tab-group>
+</div>

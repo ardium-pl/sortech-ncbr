@@ -1,0 +1,32 @@
+<ag-grid-angular
+  class="ag-theme-custom"
+  [loading]="this.dataFetchingService.isLoading()"
+  [loadingOverlayComponent]="this.dataFetchingService.gridLoadingOverlayComponent"
+  [noRowsOverlayComponent]="this.dataFetchingService.noRowsOverlayComponent"
+  [rowData]="rowData()"
+  [columnDefs]="columnDefs"
+  [defaultColDef]="defaultColDef"
+  [suppressScrollOnNewData]="true"
+  [suppressRowTransform]="true"
+  [pinnedBottomRowData]="[summaryRowTop(), summaryRowBottom()]"
+  (cellValueChanged)="onCellValueChanged($event)"
+>
+</ag-grid-angular>
+
+<!-- @if (this.dataFetchingService.shouldRenderTables()) {
+  <ag-grid-angular
+  class="ag-theme-custom"
+  [loading]="this.dataFetchingService.isLoading()"
+  [rowData]="rowData()"
+  [columnDefs]="columnDefs"
+  [defaultColDef]="defaultColDef"
+  [suppressScrollOnNewData]="true"
+  [suppressRowTransform]="true"
+  [pinnedBottomRowData]="[summaryRowTop(), summaryRowBottom()]"
+  (cellValueChanged)="onCellValueChanged($event)"
+  (gridReady)="onGridReady($event)"
+>
+</ag-grid-angular>
+} @else {
+  <app-warning-container></app-warning-container>
+} -->
