@@ -40,7 +40,7 @@ export async function dataService(queryDate) {
     const statystykaChorych = calculatePatientStates(patientsForDay, patientTypes);
     const daneGodzinowe = splitPatientsIntoHours(patientsForDay, resourceAmounts);
 
-    const sredniaWazonaCzasuZasobow = calculateWeightedAverage(statystykaChorych);
+    const sredniaWazonaCzasuZasobow = await calculateWeightedAverage(statystykaChorych);
 
 
     return {

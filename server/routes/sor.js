@@ -17,7 +17,7 @@ sorRouter.get('/dane', async (req, res, next) => {
     const { date } = req.query;
 
     const parsedDate = moment(date);
-    if (!parsedDate.isValid()) {
+    if (!parsedDate.isValid() || !date) {
       return res.status(400).json({ message: 'Nieprawidłowy format daty' });
     }
 
