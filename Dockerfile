@@ -1,4 +1,4 @@
-FROM rocker/verse:4.2.0
+FROM rocker/verse:latest
 
 RUN apt-get update && apt-get install -y \
     git-core \
